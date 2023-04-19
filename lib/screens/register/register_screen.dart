@@ -6,6 +6,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 
 import '../../components/export_components.dart';
 import '../../models/user.dart';
+import '../../res/export_res.dart';
 import '../../utils/export_utils.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -41,9 +42,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   List<Widget> _listContent(BuildContext context) => [
-        const AntreeText(
+        AntreeText(
           "Register",
-          textType: AntreeTextType.title,
+          style: AntreeTextStyle.title,
         ),
         FormBuilder(
           key: _formKey,
@@ -104,7 +105,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
         ),
         AntreeButton(
-          name: "Register",
+          "Register",
           onclick: () {
             onClickRegister(context);
           },

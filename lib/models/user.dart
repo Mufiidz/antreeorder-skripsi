@@ -1,18 +1,19 @@
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'user.g.dart';
 
 @JsonSerializable()
-class User {
-  String id;
-  String name;
-  String username;
-  String password;
-  String token;
-  DateTime? createdAt;
-  DateTime? updateAt;
+class User extends Equatable {
+  final String id;
+  final String name;
+  final String username;
+  final String password;
+  final String token;
+  final DateTime? createdAt;
+  final DateTime? updateAt;
 
-  User({
+  const User({
     this.id = "",
     this.name = "",
     this.username = "",
@@ -33,13 +34,17 @@ class User {
         "password": password,
       };
 
-  factory User.fromJson(Map<String,dynamic> data) => _$UserFromJson(data);
+  factory User.fromJson(Map<String, dynamic> data) => _$UserFromJson(data);
 
-  Map<String,dynamic> toJson() => _$UserToJson(this);
+  Map<String, dynamic> toJson() => _$UserToJson(this);
 
   @override
   String toString() {
-    return 'User(id: $id, name: $name, username: $username, password: $password, token: $token,' 
-    ' createdAt: $createdAt, updateAt: $updateAt)';
+    return 'User(id: $id, name: $name, username: $username, password: $password, token: $token,'
+        ' createdAt: $createdAt, updateAt: $updateAt)';
   }
+
+  @override
+  List<Object?> get props =>
+      [id, name, username, password, token, createdAt, updateAt];
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../components/export_components.dart';
+import '../res/export_res.dart';
 import '../utils/export_utils.dart';
 import 'login/login_screen.dart';
 
@@ -32,13 +33,15 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
+        backgroundColor: Colors.black,
         body: Center(
-      child: AntreeText(
-        "AntreeOrder",
-        textType: AntreeTextType.title,
-      ),
-    ));
+          child: AntreeText(
+            "AntreeOrder",
+            style: AntreeTextStyle.title,
+            textColor: Colors.white,
+          ),
+        ));
   }
 
   void _initialize() async {

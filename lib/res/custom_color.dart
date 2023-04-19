@@ -15,4 +15,6 @@ class AntreeColors {
     800: Color.fromRGBO(0, 0, 0, 0.9),
     900: Color.fromRGBO(0, 0, 0, 1),
   });
+
+  static const Color separator = Color(0xFFEEEEEE);
 }

@@ -5,19 +5,21 @@ class AntreeButton extends StatelessWidget {
   final double? width;
   final double? height;
   final Function()? onclick;
+  final bool isChecked;
 
-  const AntreeButton({
+  const AntreeButton(
+    this.name, {
     Key? key,
-    required this.name,
     this.onclick,
     this.width,
     this.height,
+    this.isChecked = true,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-        onPressed: onclick,
+        onPressed: isChecked ? onclick : null,
         style: ElevatedButton.styleFrom(
             elevation: 10,
             fixedSize: Size(width ?? 100, height ?? 50),

@@ -1,9 +1,11 @@
+import 'package:antreeorder/screens/home/home_screen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 import '../../components/export_components.dart';
 import '../../models/user.dart';
+import '../../res/export_res.dart';
 import '../../utils/export_utils.dart';
 import '../register/register_screen.dart';
 
@@ -34,9 +36,9 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   List<Widget> _getWidget(BuildContext context) => [
-        const AntreeText(
+        AntreeText(
           "Login",
-          textType: AntreeTextType.title,
+          style: AntreeTextStyle.title,
         ),
         FormBuilder(
           key: _formKey,
@@ -62,10 +64,11 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
         AntreeButton(
-          name: "Login",
-          onclick: () {
-            onClickLogin(context);
-          },
+          "Login",
+          onclick: () => AppRoute.clearAll(const HomeScreen()),
+          // onclick: () {
+          //   onClickLogin(context);
+          // },
         ),
         RichText(
             textAlign: TextAlign.center,

@@ -4,7 +4,7 @@ class AntreeButton extends StatelessWidget {
   final String name;
   final double? width;
   final double? height;
-  final Function()? onclick;
+  final void Function()? onclick;
   final bool isChecked;
 
   const AntreeButton(

@@ -1,5 +1,10 @@
 import 'dart:async';
 
+import 'package:antreeorder/di/injection.dart';
+import 'package:antreeorder/repository/sharedprefs_repository.dart';
+import 'package:antreeorder/screens/merchant_side/home/home_screen.dart';
+import 'package:antreeorder/screens/user_side/home/home_screen.dart'
+    as userside;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -45,10 +50,15 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void _initialize() async {
-    // var sharedPreferences = await SharedPreferences.getInstance();
-    // var isLogin = sharedPreferences.getBool(SharedPref.isLogin) ?? false;
+    final account = getIt<SharedPrefsRepository>().account;
     Timer(const Duration(seconds: 3), () {
-      AppRoute.clearTopTo(const LoginScreen());
+      if (account == null) {
+        AppRoute.clearTopTo(const LoginScreen());
+      } else {
+        AppRoute.clearTopTo(account.isMerchant
+            ? const HomeScreen()
+            : const userside.HomeScreen());
+      }
     });
   }
 }

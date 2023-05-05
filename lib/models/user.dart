@@ -1,14 +1,12 @@
-import 'package:equatable/equatable.dart';
+import 'package:antreeorder/models/login_dto.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'user.g.dart';
 
 @JsonSerializable()
-class User extends Equatable {
+class User extends LoginDto {
   final String id;
   final String name;
-  final String username;
-  final String password;
   final String token;
   final DateTime? createdAt;
   final DateTime? updateAt;
@@ -16,26 +14,16 @@ class User extends Equatable {
   const User({
     this.id = "",
     this.name = "",
-    this.username = "",
-    this.password = "",
     this.token = "",
+    super.username,
+    super.password,
     this.createdAt,
     this.updateAt,
   });
 
-  Map<String, dynamic> toRegister() => {
-        "name": name,
-        "username": username,
-        "password": password,
-      };
-
-  Map<String, dynamic> toLogin() => {
-        "username": username,
-        "password": password,
-      };
-
   factory User.fromJson(Map<String, dynamic> data) => _$UserFromJson(data);
 
+  @override
   Map<String, dynamic> toJson() => _$UserToJson(this);
 
   @override

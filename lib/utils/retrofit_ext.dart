@@ -1,8 +1,7 @@
+import 'package:antreeorder/config/remote/dio_exceptions.dart';
+import 'package:antreeorder/models/api_response.dart';
 import 'package:antreeorder/utils/export_utils.dart';
 import 'package:dio/dio.dart';
-
-import '../config/dio_exceptions.dart';
-import '../models/api_response.dart';
 
 extension AwaitResult<T> on Future<ApiResponse<T>> {
   Future<ApiResponse<T>> get awaitResult async {
@@ -25,13 +24,16 @@ extension AwaitResult<T> on Future<ApiResponse<T>> {
 
   ApiResponse<T> onDioError(DioError error, ApiResponse<T> apiResponse) {
     final res = error.response?.data;
+    logger.d(res);
     var apires = apiResponse;
 
     try {
-      apires = ApiResponse.errorResponse("$res");
+      apires = ApiResponse.errorFromMap(res);
+      logger.d(apires);
     } catch (e) {
+      logger.d(e);
       final errorMessage = DioExceptions.fromDioError(error).toString();
-      apires.copyWith(message: errorMessage);
+      apires = apires.copyWith(message: errorMessage);
       logger.e(errorMessage);
     }
     return apires;

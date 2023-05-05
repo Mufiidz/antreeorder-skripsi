@@ -1,40 +1,21 @@
-import 'package:antreeorder/models/antree.dart';
-import 'package:antreeorder/models/api_response.dart';
 import 'package:dio/dio.dart';
-import 'package:retrofit/retrofit.dart';
 
-import '../models/merchant.dart';
-import '../models/product.dart';
-import '../models/user.dart';
-import '../utils/export_utils.dart';
+import 'remote/antree_apiclient.dart';
+import 'remote/auth_apiclient.dart';
+import 'remote/merchant_apiclient.dart';
+import 'remote/product_apiclient.dart';
 
-part 'api_client.g.dart';
+class ApiClient {
+  final Dio dio;
+  static const String baseUrl = 'http://10.0.2.2:8080/antree-order';
 
-@RestApi(baseUrl: Const.baseUrl)
-abstract class ApiClient {
-  factory ApiClient(Dio dio, {String baseUrl}) = _ApiClient;
+  ApiClient(this.dio);
 
-  @GET(ConstEndpoints.merchants)
-  Future<ApiResponse<List<Merchant>>> merchants({@Query('page') int page = 1});
+  AuthApiClient get auth => AuthApiClient(dio, baseUrl: baseUrl);
 
-  @GET('${ConstEndpoints.merchants}${ConstEndpoints.products}')
-  Future<ApiResponse<List<Product>>> merchantProducts(
-      @Query('id') String merchantId,
-      {@Query('page') int page = 1});
+  MerchantApiClient get merchant => MerchantApiClient(dio, baseUrl: baseUrl);
 
-  @POST(ConstEndpoints.antree)
-  Future<ApiResponse<Antree>> addAntree(@Body() Antree antree);
+  ProductApiClient get product => ProductApiClient(dio, baseUrl: baseUrl);
 
-  @POST(ConstEndpoints.register)
-  Future<ApiResponse<String>> registerUser(@Body() User user);
-
-  @POST(ConstEndpoints.login)
-  Future<ApiResponse<User>> loginUser(@Body() User user);
-
-  @GET(ConstEndpoints.detailAntree)
-  Future<ApiResponse<Antree>> detailAntree(@Path('id') String antreeId);
-
-  @PATCH(ConstEndpoints.antreePickup)
-  Future<ApiResponse<Antree>> pickupAntree(
-      @Path('id') String antreeId, @Query('isVerify') bool isVerify);
+  AntreeApiClient get antree => AntreeApiClient(dio, baseUrl: baseUrl);
 }

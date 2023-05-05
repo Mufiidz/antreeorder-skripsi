@@ -1,22 +1,22 @@
 import 'package:equatable/equatable.dart';
 
-enum StatusState { loading, success, failure }
+enum StatusState { loading, success, failure, idle }
 
 abstract class BaseState<Data> extends Equatable {
   final StatusState status;
-  final String errorMessage;
+  final String message;
   final Data data;
 
   const BaseState(
     this.data, {
-    this.status = StatusState.loading,
-    this.errorMessage = "Unknown Error",
+    this.status = StatusState.idle,
+    this.message = "Unknown Error",
   });
 
   @override
-  List<Object> get props => [status, errorMessage, data as Object];
+  List<Object?> get props => [status, message, data as Object];
 
   @override
   String toString() =>
-      'BaseState(status: $status, errorMessage: $errorMessage, data: $data)';
+      'BaseState(status: $status, errorMessage: $message, data: $data)';
 }

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'page.dart';
@@ -44,9 +42,6 @@ class ApiResponse<T> extends Equatable {
     T Function(Object? json) fromJsonT,
   ) =>
       _$ApiResponseFromJson<T>(json, fromJsonT);
-
-  factory ApiResponse.errorResponse(String source) =>
-      ApiResponse.errorFromMap(json.decode(source));
 
   factory ApiResponse.errorFromMap(Map<String, dynamic> map) {
     return ApiResponse<T>(

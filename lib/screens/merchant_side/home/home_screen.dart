@@ -44,26 +44,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 icon: const Icon(Icons.account_circle))
           ],
         ),
-        // body: StreamBuilder<List<Antree>>(
-        //     stream: _homeBloc.streamController.stream,
-        //     builder: (context, snapshot) {
-        //       if (snapshot.connectionState == ConnectionState.waiting) {
-        //         return const Center(
-        //           child: CircularProgressIndicator(),
-        //         );
-        //       } else {
-        //         if (snapshot.hasError) {
-        //           return Center(
-        //             child: Text(snapshot.error.toString()),
-        //           );
-        //         } else {
-        //           return AntreeList(snapshot.data ?? [],
-        //               itemBuilder: (context, antree, index) => ItemHome(antree,
-        //                   onSwipeChange: (statusId) => _homeBloc
-        //                       .add(UpadateStatusAntree(antree.id, statusId))));
-        //         }
-        //       }
-        //     }),
         body: RefreshIndicator(
           onRefresh: () async {
             if (merchantId.isNotEmpty) {
@@ -72,6 +52,11 @@ class _HomeScreenState extends State<HomeScreen> {
           },
           child: AntreeState<HomeBloc, HomeState>(
             _homeBloc,
+            onRetry: () {
+              if (merchantId.isNotEmpty) {
+                _homeBloc.add(GetAntrians(merchantId));
+              }
+            },
             child: (state, context) => ListView.builder(
               itemBuilder: (context, index) {
                 final antree = state.data[index];

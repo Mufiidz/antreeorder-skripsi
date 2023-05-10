@@ -15,6 +15,7 @@ abstract class MerchantApiClient {
 
   static const String id = 'id';
   static const String page = 'page';
+  static const String isOpen = 'isOpen';
 
   @GET(ConstEndpoints.merchants)
   Future<ApiResponse<List<Merchant>>> merchants({@Query(page) int page = 1});
@@ -25,8 +26,8 @@ abstract class MerchantApiClient {
       {@Query(page) int page = 1});
 
   @GET(ConstEndpoints.antrianMerchants)
-  Future<ApiResponse<List<Antree>>> antrianMerchant(
-      @Path(id) String merchantId);
+  Future<ApiResponse<List<Antree>>> antrianMerchant(@Path(id) String merchantId,
+      {@Query('date') int? date});
 
   @GET(ConstEndpoints.antrianMerchants)
   Stream<ApiResponse<List<Antree>>> streamAntrianMerchant(
@@ -34,6 +35,10 @@ abstract class MerchantApiClient {
 
   @GET(ConstEndpoints.detailMerchant)
   Future<ApiResponse<Merchant>> detailMerchant(@Path(id) String merchantId);
+
+  @PATCH(ConstEndpoints.detailMerchant)
+  Future<ApiResponse<Merchant>> updateStatusMerchant(
+      @Path(id) String merchantId, @Query(isOpen) bool isOpen);
 
   // @POST(ConstEndpoints.merchantCategory)
   // Future<ApiResponse<String>> addCategory(

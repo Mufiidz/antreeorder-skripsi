@@ -182,7 +182,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void onClickRegister(BuildContext context, bool isUser) {
     final formKeyState = _formKey.currentState;
     if (formKeyState != null && formKeyState.validate()) {
-      _dialog.showLoadingDialog(context, dismissable: false);
+      _dialog.showLoadingDialog(context);
       formKeyState.save();
       final user = User.fromJson(formKeyState.value);
       final merchant = Merchant.fromJson(formKeyState.value);

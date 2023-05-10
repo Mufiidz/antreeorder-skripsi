@@ -2,7 +2,7 @@ import 'package:antreeorder/models/antree.dart';
 import 'package:antreeorder/models/api_response.dart';
 import 'package:antreeorder/utils/export_utils.dart';
 import 'package:dio/dio.dart';
-import 'package:retrofit/http.dart';
+import 'package:retrofit/retrofit.dart';
 
 part 'antree_apiclient.g.dart';
 
@@ -19,7 +19,9 @@ abstract class AntreeApiClient {
   Future<ApiResponse<Antree>> addAntree(@Body() Antree antree);
 
   @GET(ConstEndpoints.listAntreeUser)
-  Future<ApiResponse<List<Antree>>> listAntree(@Path(id) String userId);
+  Future<ApiResponse<List<Antree>>> listAntree(
+      @Path(id) String userId, @CancelRequest() CancelToken cancelToken,
+      {@Query('date') int? date});
 
   @GET(ConstEndpoints.detailAntree)
   Future<ApiResponse<Antree>> detailAntree(@Path(id) String antreeId);

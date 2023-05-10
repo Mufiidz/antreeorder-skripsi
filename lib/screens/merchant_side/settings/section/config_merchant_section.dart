@@ -11,18 +11,15 @@ class ConfigMerchantSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: AntreeList(
-        configs,
-        isSeparated: true,
-        shrinkWrap: true,
-        scrollPhysics: const NeverScrollableScrollPhysics(),
-        itemBuilder: (state, configMerch, index) =>
-            ItemConfigMerch(configMerch: configMerch),
-        separatorBuilder: (state, configMerch, index) => const Divider(
-          color: AntreeColors.separator,
-        ),
+    return AntreeList(
+      configs,
+      isSeparated: true,
+      shrinkWrap: true,
+      scrollPhysics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (state, configMerch, index) =>
+          ItemConfigMerch(configMerch: configMerch),
+      separatorBuilder: (state, configMerch, index) => const Divider(
+        color: AntreeColors.separator,
       ),
     );
   }

@@ -9,15 +9,17 @@ import 'package:antreeorder/screens/merchant_side/category/bloc/category_bloc.da
 import 'package:antreeorder/screens/merchant_side/home/bloc/home_bloc.dart'
     as merchant_home;
 import 'package:antreeorder/screens/merchant_side/product/bloc/product_bloc.dart';
-import 'package:antreeorder/screens/merchant_side/settings/bloc/settings_bloc.dart';
+import 'package:antreeorder/screens/merchant_side/settings/bloc/settings_bloc.dart'
+    as merchant_setting;
 import 'package:antreeorder/screens/register/bloc/register_bloc.dart';
+import 'package:antreeorder/screens/user_side/antree/bloc/antree_bloc.dart';
+import 'package:antreeorder/screens/user_side/cart/bloc/cart_bloc.dart';
+import 'package:antreeorder/screens/user_side/confirm_order/bloc/confirm_order_bloc.dart';
 import 'package:antreeorder/screens/user_side/home/bloc/home_bloc.dart';
+import 'package:antreeorder/screens/user_side/merchant/bloc/merchant_bloc.dart';
+import 'package:antreeorder/screens/user_side/product/bloc/merchant_product_bloc.dart';
+import 'package:antreeorder/screens/user_side/setting/bloc/setting_bloc.dart';
 import 'package:injectable/injectable.dart';
-
-import '../screens/user_side/cart/bloc/cart_bloc.dart';
-import '../screens/user_side/confirm_order/bloc/confirm_order_bloc.dart';
-import '../screens/user_side/merchant/bloc/merchant_bloc.dart';
-import '../screens/user_side/product/bloc/merchant_product_bloc.dart';
 
 @module
 @injectable
@@ -78,7 +80,17 @@ abstract class BlocModule {
 
   @singleton
   @factoryMethod
-  SettingsBloc settingsBloc(MerchantRepository merchantRepository,
+  merchant_setting.SettingsBloc merchantSettingsBloc(
+          MerchantRepository merchantRepository,
           SharedPrefsRepository sharedPrefsRepository) =>
-      SettingsBloc(merchantRepository, sharedPrefsRepository);
+      merchant_setting.SettingsBloc(merchantRepository, sharedPrefsRepository);
+
+  @singleton
+  @factoryMethod
+  SettingBloc userSettingBloc(SharedPrefsRepository sharedPrefsRepository) =>
+      SettingBloc(sharedPrefsRepository);
+
+  @singleton
+  @factoryMethod
+  AntreeBloc antreeUserBloc() => AntreeBloc();
 }

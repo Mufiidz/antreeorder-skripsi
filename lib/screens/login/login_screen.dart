@@ -152,7 +152,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void onClickLogin(BuildContext context, bool isUser) {
     final formKeyState = _formKey.currentState;
     if (formKeyState != null && formKeyState.validate()) {
-      _dialog.showLoadingDialog(context, dismissable: true);
+      _dialog.showLoadingDialog(context);
       formKeyState.save();
       final user = LoginDto.fromJson(formKeyState.value);
       _loginBloc.add(isUser ? LoginUser(user) : LoginMerchant(user));

@@ -1,8 +1,13 @@
 import 'package:antreeorder/config/api_client.dart';
 import 'package:antreeorder/models/antree.dart';
+import 'package:antreeorder/models/order.dart' as order;
 import 'package:antreeorder/models/api_response.dart';
-import 'package:antreeorder/utils/retrofit_ext.dart';
+import 'package:antreeorder/utils/export_utils.dart';
+import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
+
+import 'merchant_repository.dart';
+import 'product_repository.dart';
 
 abstract class AntreeRepository {
   Future<ApiResponse<Antree>> add(Antree antree);
@@ -10,13 +15,20 @@ abstract class AntreeRepository {
   Future<ApiResponse<Antree>> pickup(String antreeId, bool isVerify);
   Future<ApiResponse<List<Antree>>> listAntree(String userId);
   Future<ApiResponse<Antree>> updateStatusAntree(String antreeId, int statusId);
+  void cancelRequest({String? reason});
 }
 
 @Injectable(as: AntreeRepository)
 class AntreeRepositoryImpl implements AntreeRepository {
   final ApiClient _apiClient;
+  final ProductRepository _productRepository;
+  final MerchantRepository _merchantRepository;
+  final CancelToken _cancelToken;
 
-  AntreeRepositoryImpl(@factoryMethod this._apiClient);
+  @factoryMethod
+  AntreeRepositoryImpl(this._apiClient, this._cancelToken,
+      this._productRepository, this._merchantRepository);
+
   @override
   Future<ApiResponse<Antree>> add(Antree antree) =>
       _apiClient.antree.addAntree(antree).awaitResult;
@@ -35,6 +47,32 @@ class AntreeRepositoryImpl implements AntreeRepository {
       _apiClient.antree.updateStatusAntree(antreeId, statusId).awaitResult;
 
   @override
-  Future<ApiResponse<List<Antree>>> listAntree(String userId) =>
-      _apiClient.antree.listAntree(userId).awaitResult;
+  Future<ApiResponse<List<Antree>>> listAntree(String userId) async {
+    var response = await _apiClient.antree
+        .listAntree(userId, _cancelToken, date: 5)
+        .awaitResult;
+    List<Antree> data = response.data ?? [];
+    if (response.code == 200 && data.isNotEmpty) {
+      for (var antree in data) {
+        List<order.Order> newOrders = [];
+        final merchantResponse =
+            await _merchantRepository.detailMerchant(antree.merchantId);
+
+        for (var order in antree.orders) {
+          final productResponse =
+              await _productRepository.detailProduct(order.productId);
+          order = order.copyWith(product: productResponse.data);
+          newOrders.add(order);
+        }
+        data =
+            data.map((antree) => antree.copyWith(merchant: merchantResponse.data, orders: newOrders)).toList();
+        logger.d(data);
+        response = response.copyWith(data: data);
+      }
+    }
+    return response;
+  }
+
+  @override
+  void cancelRequest({String? reason}) => _cancelToken.cancel(reason);
 }

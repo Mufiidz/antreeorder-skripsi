@@ -131,7 +131,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
     product = Product.fromMap(formState.value)
         .copyWith(merchantId: merchantId, id: id);
 
-    _dialog.showLoadingDialog(context, dismissable: false);
+    _dialog.showLoadingDialog(context);
     if (widget.product == null) {
       _productBloc.add(AddProduct(product));
     }

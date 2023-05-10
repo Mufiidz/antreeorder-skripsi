@@ -1,8 +1,12 @@
-import 'package:antreeorder/components/export_components.dart';
+import 'package:antreeorder/components/antree_appbar.dart';
+import 'package:antreeorder/components/antree_button.dart';
+import 'package:antreeorder/components/antree_list.dart';
 import 'package:antreeorder/models/antree.dart';
-import 'package:antreeorder/res/export_res.dart';
 import 'package:antreeorder/utils/export_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'bloc/antree_bloc.dart';
 
 class AntreeScreen extends StatelessWidget {
   final Antree antree;
@@ -10,43 +14,40 @@ class AntreeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Stack(
-            alignment: Alignment.center,
+    return BlocProvider(
+      create: (context) => AntreeBloc()..add(AntreeEvent.initial(antree)),
+      child: Scaffold(
+        appBar: AntreeAppBar('Detail Antree'),
+        body: BlocSelector<AntreeBloc, AntreeState, List<Widget>>(
+          selector: (state) => state.sections,
+          builder: (context, sections) => Column(
             children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const AntreeText("Your Antree"),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  AntreeText(
-                    antree.antreeNum.toString(),
-                    style: AntreeTextStyle.title,
-                    fontSize: 70,
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  AntreeText(
-                    "Please wait until ${antree.remaining} more people again to reach your order. Thank you.",
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
+              Expanded(
+                  flex: 2,
+                  child: AntreeList<Widget>(
+                    sections,
+                    itemBuilder: (context, item, index) => item,
+                  )),
+              Container(
+                width: context.mediaSize.width,
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(16),
+                      topRight: Radius.circular(16)),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 2,
+                        offset: Offset(0, -2))
+                  ],
+                ),
                 child: Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
+                  padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
                   child: AntreeButton(
                     "Home",
-                    width: double.maxFinite,
-                    onclick: () => AppRoute.back(),
+                    onclick: () {},
                   ),
                 ),
               )

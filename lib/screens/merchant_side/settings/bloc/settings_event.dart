@@ -18,4 +18,14 @@ class DetailMerchant extends SettingsEvent {
 
 class GetSettings extends SettingsEvent {}
 
+class UpdateStatusMerchant extends SettingsEvent {
+  final String merchantId;
+  final bool isOpen;
+
+  const UpdateStatusMerchant(this.merchantId, this.isOpen);
+
+  @override
+  List<Object?> get props => [merchantId, isOpen];
+}
+
 class LogOut extends SettingsEvent {}

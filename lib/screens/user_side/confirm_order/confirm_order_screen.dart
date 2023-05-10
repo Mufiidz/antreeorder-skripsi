@@ -141,7 +141,7 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
     if (userId.isEmpty) return;
     final merchantId = widget.orders.first.product?.merchantId;
     if (merchantId == null || merchantId.isEmpty) return;
-    _dialog.showLoadingDialog(context, dismissable: false);
+    _dialog.showLoadingDialog(context);
     setState(() {
       _isEnabledBack = false;
     });

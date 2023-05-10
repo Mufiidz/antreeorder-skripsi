@@ -11,6 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'bloc/settings_bloc.dart';
 import 'section/config_merchant_section.dart';
 import 'section/logout_section.dart';
+import 'section/merchant_status_section.dart';
 import 'section/profile_section.dart';
 
 class SettingMerchantScreen extends StatefulWidget {
@@ -25,14 +26,17 @@ class _SettingMerchantScreenState extends State<SettingMerchantScreen>
   late final SettingsBloc _settingsBloc;
   late final Merchant? merchant;
   late final AntreeLoadingDialog _loading;
+  late final SharedPrefsRepository _sharedPrefsRepository;
   SettingsState state = const SettingsState([]);
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _settingsBloc = getIt<SettingsBloc>();
     _loading = getIt<AntreeLoadingDialog>();
-    merchant = getIt<SharedPrefsRepository>().account?.merchant;
+    _sharedPrefsRepository = getIt<SharedPrefsRepository>();
+    merchant = _sharedPrefsRepository.account?.merchant;
     _settingsBloc.add(GetSettings());
   }
 
@@ -50,6 +54,10 @@ class _SettingMerchantScreenState extends State<SettingMerchantScreen>
               context.snackbar.showSnackBar(AntreeSnackbar(state.message));
               AppRoute.clearAll(const SplashScreen());
             }
+            context.snackbar.showSnackBar(AntreeSnackbar(
+              state.message,
+              status: SnackbarStatus.success,
+            ));
           },
           child: (state, context) {
             this.state = state;
@@ -70,7 +78,20 @@ class _SettingMerchantScreenState extends State<SettingMerchantScreen>
   }
 
   List<Widget> get _section => [
-        ProfileSection(merchant),
+        ProfileSection(merchant?.name ?? ''),
+        BlocSelector<SettingsBloc, SettingsState, Merchant?>(
+          bloc: _settingsBloc,
+          selector: (state) => state.merchant,
+          builder: (context, state) => MerchantStatusSection(
+              value: state?.isOpen ?? _sharedPrefsRepository.isOpen,
+              onChanged: (newValue) {
+                final merchantId = merchant?.id;
+                _sharedPrefsRepository.isOpen = newValue;
+                if (merchantId != null && merchantId.isNotEmpty) {
+                  _settingsBloc.add(UpdateStatusMerchant(merchantId, newValue));
+                }
+              }),
+        ),
         ConfigMerchantSection(state.data),
         LogoutSection(
           onTapLogout: () {

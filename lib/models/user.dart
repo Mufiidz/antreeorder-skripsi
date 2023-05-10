@@ -9,7 +9,7 @@ class User extends LoginDto {
   final String name;
   final String token;
   final DateTime? createdAt;
-  final DateTime? updateAt;
+  final DateTime? updatedAt;
 
   const User({
     this.id = "",
@@ -18,7 +18,7 @@ class User extends LoginDto {
     super.username,
     super.password,
     this.createdAt,
-    this.updateAt,
+    this.updatedAt,
   });
 
   factory User.fromJson(Map<String, dynamic> data) => _$UserFromJson(data);
@@ -29,10 +29,10 @@ class User extends LoginDto {
   @override
   String toString() {
     return 'User(id: $id, name: $name, username: $username, password: $password, token: $token,'
-        ' createdAt: $createdAt, updateAt: $updateAt)';
+        ' createdAt: $createdAt, updateAt: $updatedAt)';
   }
 
   @override
   List<Object?> get props =>
-      [id, name, username, password, token, createdAt, updateAt];
+      [id, name, username, password, token, createdAt, updatedAt];
 }

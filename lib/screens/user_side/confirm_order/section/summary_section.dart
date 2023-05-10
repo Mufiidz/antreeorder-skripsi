@@ -1,10 +1,8 @@
-
 import 'package:antreeorder/components/export_components.dart';
 import 'package:antreeorder/models/summary.dart';
 import 'package:antreeorder/res/export_res.dart';
 import 'package:antreeorder/utils/int_ext.dart';
 import 'package:flutter/material.dart';
-
 
 class SummarySection extends StatelessWidget {
   final List<Summary> summaries;
@@ -17,10 +15,9 @@ class SummarySection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AntreeText(
-            "Ringkasan",
-            style: AntreeTextStyle.medium.bold.copyWith(fontSize: 18),
-          ),
+          AntreeText("Ringkasan",
+              style: AntreeTextStyle.medium.bold, fontSize: 18),
+          const AntreeSpacer(),
           ListView.builder(
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,

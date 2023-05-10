@@ -10,6 +10,7 @@ class SharedPrefsRepository {
 
   final String _isUserKey = 'isUser';
   final String _accountKey = 'account';
+  final String _isOpen = 'isOpen';
 
   Account? get account {
     final data = _sharedPreferences.getString(_accountKey);
@@ -33,6 +34,10 @@ class SharedPrefsRepository {
   bool get isUser => _sharedPreferences.getBool(_isUserKey) ?? true;
 
   set isUser(bool isUser) => _sharedPreferences.setBool(_isUserKey, isUser);
+
+  bool get isOpen => _sharedPreferences.getBool(_isOpen) ?? false;
+
+  set isOpen(bool isOpen) => _sharedPreferences.setBool(_isOpen, isOpen);
 
   void onLogout() {
     _sharedPreferences.remove(_accountKey);

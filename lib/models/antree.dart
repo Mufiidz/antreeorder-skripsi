@@ -1,74 +1,31 @@
-import 'package:equatable/equatable.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:flutter/foundation.dart';
 
-import 'package:antreeorder/models/status_antree.dart';
-
+import 'merchant.dart';
 import 'order.dart';
+import 'status_antree.dart';
 
+part 'antree.freezed.dart';
 part 'antree.g.dart';
 
-@JsonSerializable()
-class Antree extends Equatable {
-  final String id;
-  final String merchantId;
-  final String userId;
-  final int totalPrice;
-  @JsonKey(name: 'listOrder')
-  final List<Order> orders;
-  final StatusAntree status;
-  final bool isVerify;
-  @JsonKey(name: 'nomor_antri')
-  final int antreeNum;
-  final int remaining;
-
-  const Antree(
-      {this.id = '',
-      this.merchantId = '',
-      this.userId = '',
-      this.totalPrice = 0,
-      this.orders = const [],
-      this.status = const StatusAntree(),
-      this.isVerify = false,
-      this.antreeNum = 0,
-      this.remaining = 0});
-
-  Antree copyWith({
-    String? id,
-    String? merchantId,
-    String? userId,
-    int? totalPrice,
-    List<Order>? orders,
-  }) {
-    return Antree(
-      id: id ?? this.id,
-      merchantId: merchantId ?? this.merchantId,
-      userId: userId ?? this.userId,
-      totalPrice: totalPrice ?? this.totalPrice,
-      orders: orders ?? this.orders,
-    );
-  }
+@freezed
+class Antree with _$Antree {
+  const factory Antree({
+    @Default('') String id,
+    @Default('') String merchantId,
+    @Default('') String userId,
+    @Default(0) int totalPrice,
+    @Default([]) List<Order> orders,
+    @Default(StatusAntree()) StatusAntree status,
+    @Default(false) bool isVerify,
+    @Default(0) @JsonKey(name: 'nomor_antri') int antreeNum,
+    @Default(0) int remaining,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    @Default(Merchant())
+    @JsonKey(includeToJson: false, includeFromJson: false)
+        Merchant? merchant,
+  }) = _Antree;
 
   factory Antree.fromJson(Map<String, dynamic> data) => _$AntreeFromJson(data);
-
-  Map<String, dynamic> toJson() => _$AntreeToJson(this);
-
-  @override
-  String toString() {
-    return 'Antree(id: $id, merchantId: $merchantId, userId: $userId, totalPrice: $totalPrice, orders: $orders, status: $status, isVerify: $isVerify, antreeNum: $antreeNum, remaining: $remaining)';
-  }
-
-  @override
-  List<Object> get props {
-    return [
-      id,
-      merchantId,
-      userId,
-      totalPrice,
-      orders,
-      status,
-      isVerify,
-      antreeNum,
-      remaining,
-    ];
-  }
 }

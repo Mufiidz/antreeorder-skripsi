@@ -13,10 +13,8 @@ class PaymentSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AntreeText(
-            "Pilih Pembayaran",
-            style: AntreeTextStyle.medium.bold.copyWith(fontSize: 18),
-          ),
+          AntreeText("Pilih Pembayaran",
+              style: AntreeTextStyle.medium.bold, fontSize: 18),
           const SizedBox(
             height: 10,
           ),

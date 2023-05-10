@@ -61,4 +61,7 @@ abstract class AppModule {
 
   @singleton
   AntreeLoadingDialog antreeDialog() => AntreeLoadingDialog();
+
+  @singleton
+  CancelToken cancelToken() => CancelToken();
 }

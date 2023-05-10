@@ -12,3 +12,8 @@ class GetAntrians extends HomeEvent {
   @override
   List<Object?> get props => [userId];
 }
+
+class Dispose extends HomeEvent {
+  @override
+  List<Object?> get props => [];
+}

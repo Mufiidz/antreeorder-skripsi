@@ -3,6 +3,7 @@ import 'package:antreeorder/di/injection.dart';
 import 'package:antreeorder/repository/sharedprefs_repository.dart';
 import 'package:antreeorder/screens/user_side/home/bloc/home_bloc.dart';
 import 'package:antreeorder/screens/user_side/merchant/choose_merchant_screen.dart';
+import 'package:antreeorder/screens/user_side/setting/setting_user_screen.dart';
 import 'package:antreeorder/utils/export_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,13 +36,24 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => _homeBloc,
-      child: RefreshIndicator(
-        onRefresh: () async => _homeBloc.add(GetAntrians(userId)),
-        child: Scaffold(
-          backgroundColor: Colors.white,
-          appBar: AntreeAppBar("AntreeOrder", showBackButton: false),
-          body: AntreeState<HomeBloc, HomeState>(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AntreeAppBar(
+          "AntreeOrder",
+          showBackButton: false,
+          actions: [
+            IconButton(
+                onPressed: () {
+                  AppRoute.to(const SettingUserScreen());
+                },
+                icon: const Icon(Icons.account_circle))
+          ],
+        ),
+        body: RefreshIndicator(
+          onRefresh: () async => _homeBloc.add(GetAntrians(userId)),
+          child: AntreeState<HomeBloc, HomeState>(
             _homeBloc,
+            onRetry: () => _homeBloc.add(GetAntrians(userId)),
             child: (state, context) => GridView.builder(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -50,10 +62,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 itemCount: state.data.length,
                 itemBuilder: (context, index) => ItemHome(state.data[index])),
           ),
-          floatingActionButton: FloatingActionButton.small(
-            onPressed: () => AppRoute.to(const ChooseMerchantScreen()),
-            child: const Icon(Icons.add),
-          ),
+        ),
+        floatingActionButton: FloatingActionButton.small(
+          onPressed: () => AppRoute.to(const ChooseMerchantScreen()),
+          child: const Icon(Icons.add),
         ),
       ),
     );

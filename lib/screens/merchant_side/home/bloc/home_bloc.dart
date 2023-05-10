@@ -20,10 +20,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<GetAntrians>((event, emit) async {
       emit(state.copyWith(status: StatusState.loading));
       try {
-        final response =
-            await _merchantRepository.antrianMerchant(event.merchantId);
+        final response = await _merchantRepository
+            .antrianMerchant(event.merchantId, date: 5);
         final data = response.data;
-        logger.e(response.message);
+        logger.d(data);
         emit(data != null
             ? state.copyWith(data: data, status: StatusState.idle)
             : state.copyWith(

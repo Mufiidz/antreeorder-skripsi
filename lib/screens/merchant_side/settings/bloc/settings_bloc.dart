@@ -34,7 +34,24 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
             await _merchantRepository.detailMerchant(event.merchantId);
         final data = response.data;
         emit(data != null
-            ? state.copyWith(status: StatusState.idle, merchant: data, isLogout: false)
+            ? state.copyWith(
+                status: StatusState.idle, merchant: data, isLogout: false)
+            : state.copyWith(
+                status: StatusState.failure, message: response.message));
+      } catch (e) {
+        emit(state.copyWith(status: StatusState.failure, message: 'ERROR'));
+      }
+    });
+    on<UpdateStatusMerchant>((event, emit) async {
+      try {
+        final response = await _merchantRepository.updateStatusMerchant(
+            event.merchantId, event.isOpen);
+        final data = response.data;
+        emit(data != null
+            ? state.copyWith(
+                status: StatusState.success,
+                merchant: data,
+                message: response.message)
             : state.copyWith(
                 status: StatusState.failure, message: response.message));
       } catch (e) {

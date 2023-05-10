@@ -15,7 +15,7 @@ class AntreeText extends StatelessWidget {
       this.textAlign,
       this.maxLines,
       this.style = AntreeTextStyle.normal,
-      this.overflow = TextOverflow.ellipsis,
+      this.overflow,
       this.textColor = Colors.black,
       this.fontSize})
       : super(key: key);

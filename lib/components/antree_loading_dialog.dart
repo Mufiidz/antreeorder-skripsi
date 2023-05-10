@@ -6,7 +6,7 @@ class AntreeLoadingDialog {
   bool isShow = false;
   AntreeLoadingDialog();
   void showLoadingDialog(BuildContext context,
-      {String message = '', bool dismissable = true}) {
+      {String message = '', bool dismissable = false}) {
     isShow = true;
     logger.d(isShow);
     showDialog(

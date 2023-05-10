@@ -1,12 +1,11 @@
 import 'package:antreeorder/components/export_components.dart';
-import 'package:antreeorder/models/merchant.dart';
 import 'package:antreeorder/res/export_res.dart';
 import 'package:antreeorder/utils/export_utils.dart';
 import 'package:flutter/material.dart';
 
 class ProfileSection extends StatelessWidget {
-  final Merchant? merchant;
-  const ProfileSection(this.merchant, {Key? key}) : super(key: key);
+  final String name;
+  const ProfileSection(this.name, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +22,7 @@ class ProfileSection extends StatelessWidget {
           ),
           const AntreeSpacer(),
           AntreeText(
-            merchant?.name ?? 'Merchant Name',
+            name.isNotEmpty ? name : 'NAME',
             textAlign: TextAlign.center,
             maxLines: 2,
             style: AntreeTextStyle.title.copyWith(fontSize: 25),

@@ -11,6 +11,7 @@ class AntreeState<Bloc extends StateStreamable<State>, State extends BaseState>
   final Widget Function(State state, BuildContext context) child;
   final void Function(BuildContext context, State state)? onError;
   final void Function(BuildContext context, State state)? onSuccess;
+  final void Function()? onRetry;
   final String textEmpty;
   final Widget? loading;
   final Widget? error;
@@ -23,7 +24,8 @@ class AntreeState<Bloc extends StateStreamable<State>, State extends BaseState>
       this.error,
       this.onError,
       this.onSuccess,
-      this.loadingDialog})
+      this.loadingDialog,
+      this.onRetry})
       : super(key: key);
 
   @override
@@ -37,6 +39,7 @@ class AntreeState<Bloc extends StateStreamable<State>, State extends BaseState>
           if (onError != null) {
             onError!(context, state);
           } else {
+            if (state.message.contain('cancel', ignoreCase: true)) return;
             showError(context, state.message);
           }
         }
@@ -53,22 +56,34 @@ class AntreeState<Bloc extends StateStreamable<State>, State extends BaseState>
           return loading ?? const AntreeLoading();
         }
         if (state.status == StatusState.failure) {
-          return error ??
-              Center(
-                child: Text(
-                  state.message,
-                ),
-              );
+          return error ?? retryWidget(context, state.message);
         }
         if (data is List && data.isEmpty) {
-          return Center(
-            child: Text(textEmpty),
-          );
+          return retryWidget(context, textEmpty);
         }
         return child(state, context);
       },
     );
   }
+
+  Widget retryWidget(BuildContext context, String message) => Container(
+        width: context.mediaSize.width,
+        height: context.mediaSize.height,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AntreeText(
+              message,
+              textAlign: TextAlign.center,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const AntreeSpacer(),
+            TextButton(onPressed: onRetry, child: const Text('Retry'))
+          ],
+        ),
+      );
 
   void showError(BuildContext context, String message) {
     context.snackbar.showSnackBar(AntreeSnackbar(

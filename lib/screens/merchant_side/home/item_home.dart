@@ -1,8 +1,11 @@
 import 'package:antreeorder/components/export_components.dart';
 import 'package:antreeorder/models/antree.dart';
+import 'package:antreeorder/res/export_res.dart';
 import 'package:antreeorder/screens/merchant_side/detail_antree/detail_antree_screen.dart';
 import 'package:antreeorder/utils/export_utils.dart';
 import 'package:flutter/material.dart';
+
+import 'home_orders_section.dart';
 
 typedef OnSwipeChange = void Function(int);
 
@@ -24,16 +27,8 @@ class ItemHome extends StatelessWidget {
       confirmDismiss: (direction) async {
         if (direction == DismissDirection.startToEnd) {
           onSwipeChange!(antree.status.id + 1);
-          // context.snackbar.showSnackBar(SnackBar(
-          //   content: Text(direction.toString()),
-          //   backgroundColor: Colors.green,
-          // ));
         } else {
           onSwipeChange!(antree.status.id - 1);
-          // context.snackbar.showSnackBar(SnackBar(
-          //   content: Text(direction.toString()),
-          //   backgroundColor: Colors.red,
-          // ));
         }
         return false;
       },
@@ -44,14 +39,49 @@ class ItemHome extends StatelessWidget {
             antree: antree,
           )),
           child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [AntreeText('Order id ${antree.id}')],
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Card(
+              surfaceTintColor: Colors.white,
+              elevation: 10,
+              child: AntreeList<Widget>(
+                _section,
+                isSeparated: true,
+                shrinkWrap: true,
+                scrollPhysics: const NeverScrollableScrollPhysics(),
+                itemBuilder: (context, item, index) => item,
+                separatorBuilder: (context, item, index) => const Divider(
+                  color: AntreeColors.separator,
+                ),
+              ),
             ),
           ),
         ),
       ),
     );
   }
+
+  List<Widget> get _section => [
+        Padding(
+          padding: const EdgeInsets.only(left: 16, right: 16, top: 8),
+          child: Row(
+            children: [
+              Expanded(
+                  child: RichText(
+                      text: TextSpan(children: [
+                const TextSpan(
+                    text: 'No. Antree : ', style: AntreeTextStyle.normal),
+                TextSpan(
+                    text: antree.antreeNum.toString(),
+                    style: AntreeTextStyle.bold.copyWith(fontSize: 16)),
+              ]))),
+              Expanded(
+                  child: AntreeText(
+                antree.status.message,
+                textAlign: TextAlign.end,
+              )),
+            ],
+          ),
+        ),
+        HomeOrdersSection(antree.orders)
+      ];
 }

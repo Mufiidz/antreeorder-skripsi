@@ -1,6 +1,7 @@
 import 'package:antreeorder/models/antree.dart';
 import 'package:antreeorder/models/base_state.dart';
 import 'package:antreeorder/repository/antree_repository.dart';
+import 'package:antreeorder/utils/export_utils.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -22,6 +23,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       } catch (e) {
         emit(state.copyWith(status: StatusState.failure, message: "Error"));
       }
+    });
+    on<Dispose>((event, emit) {
+      logger.d('dispose');
+      _antreeRepository.cancelRequest(reason: 'Disposed');
     });
   }
 }

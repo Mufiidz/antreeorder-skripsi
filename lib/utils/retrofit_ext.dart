@@ -31,7 +31,6 @@ extension AwaitResult<T> on Future<ApiResponse<T>> {
       apires = ApiResponse.errorFromMap(res);
       logger.d(apires);
     } catch (e) {
-      logger.d(e);
       final errorMessage = DioExceptions.fromDioError(error).toString();
       apires = apires.copyWith(message: errorMessage);
       logger.e(errorMessage);

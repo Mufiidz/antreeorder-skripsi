@@ -49,8 +49,8 @@ class AddSeatScreen extends StatelessWidget {
                         label: "Title",
                       ),
                       const AntreeSpacer(),
-                      Row(
-                        children: const [
+                      const Row(
+                        children: [
                           Expanded(
                             child: AntreeTextField(
                               'capacity',

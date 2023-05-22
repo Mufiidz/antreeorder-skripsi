@@ -37,7 +37,7 @@ class AntreeBloc extends Bloc<AntreeEvent, AntreeState> {
 
   List<ContentDetail> detailsAntree(Antree antree) => [
         ContentDetail(title: "Status", value: antree.status.message),
-        ContentDetail(title: "Antree ID", value: antree.id),
+        ContentDetail(title: "Antree ID", value: antree.id.toString()),
         ContentDetail(
             title: "Tanggal Pembelian",
             value: antree.createdAt

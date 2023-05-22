@@ -24,7 +24,7 @@ class SettingMerchantScreen extends StatefulWidget {
 class _SettingMerchantScreenState extends State<SettingMerchantScreen>
     with WidgetsBindingObserver {
   late final SettingsBloc _settingsBloc;
-  late final Merchant? merchant;
+  final Merchant? merchant= Merchant();
   late final AntreeLoadingDialog _loading;
   late final SharedPrefsRepository _sharedPrefsRepository;
   SettingsState state = const SettingsState([]);
@@ -36,7 +36,6 @@ class _SettingMerchantScreenState extends State<SettingMerchantScreen>
     _settingsBloc = getIt<SettingsBloc>();
     _loading = getIt<AntreeLoadingDialog>();
     _sharedPrefsRepository = getIt<SharedPrefsRepository>();
-    merchant = _sharedPrefsRepository.account?.merchant;
     _settingsBloc.add(GetSettings());
   }
 
@@ -78,7 +77,7 @@ class _SettingMerchantScreenState extends State<SettingMerchantScreen>
   }
 
   List<Widget> get _section => [
-        ProfileSection(merchant?.name ?? ''),
+        ProfileSection(merchant?.user.name ?? '-'),
         BlocSelector<SettingsBloc, SettingsState, Merchant?>(
           bloc: _settingsBloc,
           selector: (state) => state.merchant,
@@ -87,8 +86,9 @@ class _SettingMerchantScreenState extends State<SettingMerchantScreen>
               onChanged: (newValue) {
                 final merchantId = merchant?.id;
                 _sharedPrefsRepository.isOpen = newValue;
-                if (merchantId != null && merchantId.isNotEmpty) {
-                  _settingsBloc.add(UpdateStatusMerchant(merchantId, newValue));
+                if (merchantId != null && merchantId != 0) {
+                  _settingsBloc.add(
+                      UpdateStatusMerchant(merchantId.toString(), newValue));
                 }
               }),
         ),

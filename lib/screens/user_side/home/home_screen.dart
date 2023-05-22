@@ -25,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     _homeBloc = getIt<HomeBloc>();
     final sharedPrefs = getIt<SharedPrefsRepository>();
-    userId = sharedPrefs.id;
+    userId = sharedPrefs.id.toString();
     if (userId.isNotEmpty) {
       _homeBloc.add(GetAntrians(userId));
     }

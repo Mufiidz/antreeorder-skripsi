@@ -20,9 +20,9 @@ Antree _$AntreeFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Antree {
-  String get id => throw _privateConstructorUsedError;
-  String get merchantId => throw _privateConstructorUsedError;
-  String get userId => throw _privateConstructorUsedError;
+  int get id => throw _privateConstructorUsedError;
+  int get merchantId => throw _privateConstructorUsedError;
+  int get userId => throw _privateConstructorUsedError;
   int get totalPrice => throw _privateConstructorUsedError;
   List<Order> get orders => throw _privateConstructorUsedError;
   StatusAntree get status => throw _privateConstructorUsedError;
@@ -32,8 +32,7 @@ mixin _$Antree {
   int get remaining => throw _privateConstructorUsedError;
   DateTime? get createdAt => throw _privateConstructorUsedError;
   DateTime? get updatedAt => throw _privateConstructorUsedError;
-  @JsonKey(includeToJson: false, includeFromJson: false)
-  Merchant? get merchant => throw _privateConstructorUsedError;
+  Merchant get merchant => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -46,20 +45,20 @@ abstract class $AntreeCopyWith<$Res> {
       _$AntreeCopyWithImpl<$Res, Antree>;
   @useResult
   $Res call(
-      {String id,
-      String merchantId,
-      String userId,
+      {int id,
+      int merchantId,
+      int userId,
       int totalPrice,
       List<Order> orders,
       StatusAntree status,
       bool isVerify,
-      @JsonKey(name: 'nomor_antri')
-          int antreeNum,
+      @JsonKey(name: 'nomor_antri') int antreeNum,
       int remaining,
       DateTime? createdAt,
       DateTime? updatedAt,
-      @JsonKey(includeToJson: false, includeFromJson: false)
-          Merchant? merchant});
+      Merchant merchant});
+
+  $MerchantCopyWith<$Res> get merchant;
 }
 
 /// @nodoc
@@ -86,21 +85,21 @@ class _$AntreeCopyWithImpl<$Res, $Val extends Antree>
     Object? remaining = null,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
-    Object? merchant = freezed,
+    Object? merchant = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       merchantId: null == merchantId
           ? _value.merchantId
           : merchantId // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       userId: null == userId
           ? _value.userId
           : userId // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       totalPrice: null == totalPrice
           ? _value.totalPrice
           : totalPrice // ignore: cast_nullable_to_non_nullable
@@ -133,11 +132,19 @@ class _$AntreeCopyWithImpl<$Res, $Val extends Antree>
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      merchant: freezed == merchant
+      merchant: null == merchant
           ? _value.merchant
           : merchant // ignore: cast_nullable_to_non_nullable
-              as Merchant?,
+              as Merchant,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $MerchantCopyWith<$Res> get merchant {
+    return $MerchantCopyWith<$Res>(_value.merchant, (value) {
+      return _then(_value.copyWith(merchant: value) as $Val);
+    });
   }
 }
 
@@ -148,20 +155,21 @@ abstract class _$$_AntreeCopyWith<$Res> implements $AntreeCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {String id,
-      String merchantId,
-      String userId,
+      {int id,
+      int merchantId,
+      int userId,
       int totalPrice,
       List<Order> orders,
       StatusAntree status,
       bool isVerify,
-      @JsonKey(name: 'nomor_antri')
-          int antreeNum,
+      @JsonKey(name: 'nomor_antri') int antreeNum,
       int remaining,
       DateTime? createdAt,
       DateTime? updatedAt,
-      @JsonKey(includeToJson: false, includeFromJson: false)
-          Merchant? merchant});
+      Merchant merchant});
+
+  @override
+  $MerchantCopyWith<$Res> get merchant;
 }
 
 /// @nodoc
@@ -185,21 +193,21 @@ class __$$_AntreeCopyWithImpl<$Res>
     Object? remaining = null,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
-    Object? merchant = freezed,
+    Object? merchant = null,
   }) {
     return _then(_$_Antree(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       merchantId: null == merchantId
           ? _value.merchantId
           : merchantId // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       userId: null == userId
           ? _value.userId
           : userId // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       totalPrice: null == totalPrice
           ? _value.totalPrice
           : totalPrice // ignore: cast_nullable_to_non_nullable
@@ -232,32 +240,30 @@ class __$$_AntreeCopyWithImpl<$Res>
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      merchant: freezed == merchant
+      merchant: null == merchant
           ? _value.merchant
           : merchant // ignore: cast_nullable_to_non_nullable
-              as Merchant?,
+              as Merchant,
     ));
   }
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$_Antree with DiagnosticableTreeMixin implements _Antree {
-  const _$_Antree(
-      {this.id = '',
-      this.merchantId = '',
-      this.userId = '',
+class _$_Antree implements _Antree {
+  _$_Antree(
+      {this.id = 0,
+      this.merchantId = 0,
+      this.userId = 0,
       this.totalPrice = 0,
       final List<Order> orders = const [],
       this.status = const StatusAntree(),
       this.isVerify = false,
-      @JsonKey(name: 'nomor_antri')
-          this.antreeNum = 0,
+      @JsonKey(name: 'nomor_antri') this.antreeNum = 0,
       this.remaining = 0,
       this.createdAt,
       this.updatedAt,
-      @JsonKey(includeToJson: false, includeFromJson: false)
-          this.merchant = const Merchant()})
+      this.merchant = const Merchant()})
       : _orders = orders;
 
   factory _$_Antree.fromJson(Map<String, dynamic> json) =>
@@ -265,13 +271,13 @@ class _$_Antree with DiagnosticableTreeMixin implements _Antree {
 
   @override
   @JsonKey()
-  final String id;
+  final int id;
   @override
   @JsonKey()
-  final String merchantId;
+  final int merchantId;
   @override
   @JsonKey()
-  final String userId;
+  final int userId;
   @override
   @JsonKey()
   final int totalPrice;
@@ -301,31 +307,12 @@ class _$_Antree with DiagnosticableTreeMixin implements _Antree {
   @override
   final DateTime? updatedAt;
   @override
-  @JsonKey(includeToJson: false, includeFromJson: false)
-  final Merchant? merchant;
+  @JsonKey()
+  final Merchant merchant;
 
   @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+  String toString() {
     return 'Antree(id: $id, merchantId: $merchantId, userId: $userId, totalPrice: $totalPrice, orders: $orders, status: $status, isVerify: $isVerify, antreeNum: $antreeNum, remaining: $remaining, createdAt: $createdAt, updatedAt: $updatedAt, merchant: $merchant)';
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('type', 'Antree'))
-      ..add(DiagnosticsProperty('id', id))
-      ..add(DiagnosticsProperty('merchantId', merchantId))
-      ..add(DiagnosticsProperty('userId', userId))
-      ..add(DiagnosticsProperty('totalPrice', totalPrice))
-      ..add(DiagnosticsProperty('orders', orders))
-      ..add(DiagnosticsProperty('status', status))
-      ..add(DiagnosticsProperty('isVerify', isVerify))
-      ..add(DiagnosticsProperty('antreeNum', antreeNum))
-      ..add(DiagnosticsProperty('remaining', remaining))
-      ..add(DiagnosticsProperty('createdAt', createdAt))
-      ..add(DiagnosticsProperty('updatedAt', updatedAt))
-      ..add(DiagnosticsProperty('merchant', merchant));
   }
 
   @override
@@ -387,30 +374,28 @@ class _$_Antree with DiagnosticableTreeMixin implements _Antree {
 }
 
 abstract class _Antree implements Antree {
-  const factory _Antree(
-      {final String id,
-      final String merchantId,
-      final String userId,
+  factory _Antree(
+      {final int id,
+      final int merchantId,
+      final int userId,
       final int totalPrice,
       final List<Order> orders,
       final StatusAntree status,
       final bool isVerify,
-      @JsonKey(name: 'nomor_antri')
-          final int antreeNum,
+      @JsonKey(name: 'nomor_antri') final int antreeNum,
       final int remaining,
       final DateTime? createdAt,
       final DateTime? updatedAt,
-      @JsonKey(includeToJson: false, includeFromJson: false)
-          final Merchant? merchant}) = _$_Antree;
+      final Merchant merchant}) = _$_Antree;
 
   factory _Antree.fromJson(Map<String, dynamic> json) = _$_Antree.fromJson;
 
   @override
-  String get id;
+  int get id;
   @override
-  String get merchantId;
+  int get merchantId;
   @override
-  String get userId;
+  int get userId;
   @override
   int get totalPrice;
   @override
@@ -429,8 +414,7 @@ abstract class _Antree implements Antree {
   @override
   DateTime? get updatedAt;
   @override
-  @JsonKey(includeToJson: false, includeFromJson: false)
-  Merchant? get merchant;
+  Merchant get merchant;
   @override
   @JsonKey(ignore: true)
   _$$_AntreeCopyWith<_$_Antree> get copyWith =>

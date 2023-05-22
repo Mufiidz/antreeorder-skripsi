@@ -1,6 +1,5 @@
 import 'package:antreeorder/components/export_components.dart';
 import 'package:antreeorder/di/injection.dart';
-import 'package:antreeorder/repository/sharedprefs_repository.dart';
 import 'package:antreeorder/screens/merchant_side/home/item_home.dart';
 import 'package:antreeorder/screens/merchant_side/settings/setting_merchant_screen.dart';
 import 'package:antreeorder/utils/export_utils.dart';
@@ -22,8 +21,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     _homeBloc = getIt<HomeBloc>();
-    final merchant = getIt<SharedPrefsRepository>().account?.merchant;
-    merchantId = merchant?.id ?? '';
+    // final merchant = getIt<SharedPrefsRepository>().account?.merchant;
+    merchantId = '';
     if (merchantId.isNotEmpty) {
       _homeBloc.add(GetAntrians(merchantId));
     }
@@ -62,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 final antree = state.data[index];
                 return ItemHome(antree,
                     onSwipeChange: (statusId) => _homeBloc
-                        .add(UpadateStatusAntree(antree.id, statusId)));
+                        .add(UpadateStatusAntree(antree.id.toString(), statusId)));
               },
               itemCount: state.data.length,
             ),

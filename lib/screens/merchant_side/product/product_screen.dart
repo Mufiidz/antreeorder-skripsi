@@ -1,6 +1,6 @@
 import 'package:antreeorder/components/export_components.dart';
 import 'package:antreeorder/di/injection.dart';
-import 'package:antreeorder/models/base_state.dart';
+import 'package:antreeorder/models/base_state2.dart';
 import 'package:antreeorder/models/product.dart';
 import 'package:antreeorder/repository/sharedprefs_repository.dart';
 import 'package:antreeorder/screens/merchant_side/product/add_product_screen.dart';
@@ -27,7 +27,7 @@ class _ProductScreenState extends State<ProductScreen> {
     super.initState();
     _productBloc = getIt<ProductBloc>();
     final sharedPrefRepo = getIt<SharedPrefsRepository>();
-    merchantId = sharedPrefRepo.account?.merchant?.id ?? '';
+    merchantId = '';
     if (merchantId.isNotEmpty) {
       _productBloc.add(MerchantProducts(merchantId));
     } else {

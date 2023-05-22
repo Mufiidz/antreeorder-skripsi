@@ -3,7 +3,7 @@ import 'package:antreeorder/utils/export_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../models/base_state.dart';
+import '../models/base_state2.dart';
 
 class AntreeState<Bloc extends StateStreamable<State>, State extends BaseState>
     extends StatelessWidget {

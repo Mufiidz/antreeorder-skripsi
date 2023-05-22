@@ -59,9 +59,7 @@ abstract class BlocModule {
 
   @singleton
   @factoryMethod
-  LoginBloc loginBloc(AuthRepository authRepository,
-          SharedPrefsRepository sharedPrefsRepository) =>
-      LoginBloc(authRepository, sharedPrefsRepository);
+  LoginBloc loginBloc(AuthRepository authRepository) => LoginBloc(authRepository);
 
   @singleton
   @factoryMethod

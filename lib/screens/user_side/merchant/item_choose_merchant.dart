@@ -25,7 +25,7 @@ class ItemChooseMerchant extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               AntreeText(
-                merchant.name,
+                merchant.user.name,
                 style: AntreeTextStyle.medium,
               ),
               const Icon(

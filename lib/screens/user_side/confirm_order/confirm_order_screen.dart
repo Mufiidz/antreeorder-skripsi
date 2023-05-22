@@ -1,7 +1,7 @@
 import 'package:antreeorder/components/export_components.dart';
 import 'package:antreeorder/di/injection.dart';
 import 'package:antreeorder/models/antree.dart';
-import 'package:antreeorder/models/base_state.dart';
+import 'package:antreeorder/models/base_state2.dart';
 import 'package:antreeorder/models/order.dart';
 import 'package:antreeorder/models/summary.dart';
 import 'package:antreeorder/repository/sharedprefs_repository.dart';
@@ -138,9 +138,9 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
   void _antree(ConfirmOrderState state) {
     final userId = _sharedPrefsRepository.id;
     if (widget.orders.isEmpty) return;
-    if (userId.isEmpty) return;
+    if (userId == null) return;
     final merchantId = widget.orders.first.product?.merchantId;
-    if (merchantId == null || merchantId.isEmpty) return;
+    if (merchantId == null) return;
     _dialog.showLoadingDialog(context);
     setState(() {
       _isEnabledBack = false;

@@ -27,7 +27,7 @@ class ItemHome extends StatelessWidget {
               style: AntreeTextStyle.title,
               fontSize: 40,
             ),
-            AntreeText(antree.merchant?.name ?? "Merchant Name")
+            AntreeText(antree.merchant.user.name)
           ],
         ),
       ),

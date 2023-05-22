@@ -102,7 +102,7 @@ class __$$_ContentDetailCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_ContentDetail with DiagnosticableTreeMixin implements _ContentDetail {
+class _$_ContentDetail implements _ContentDetail {
   _$_ContentDetail({this.title = '', this.value = ''});
 
   @override
@@ -113,17 +113,8 @@ class _$_ContentDetail with DiagnosticableTreeMixin implements _ContentDetail {
   final String value;
 
   @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+  String toString() {
     return 'ContentDetail(title: $title, value: $value)';
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('type', 'ContentDetail'))
-      ..add(DiagnosticsProperty('title', title))
-      ..add(DiagnosticsProperty('value', value));
   }
 
   @override

@@ -1,4 +1,4 @@
-import 'package:antreeorder/models/base_state.dart';
+import 'package:antreeorder/models/base_state2.dart';
 import 'package:antreeorder/models/order.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';

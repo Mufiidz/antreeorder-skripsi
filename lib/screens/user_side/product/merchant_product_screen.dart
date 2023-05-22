@@ -1,5 +1,5 @@
 import 'package:antreeorder/di/injection.dart';
-import 'package:antreeorder/models/base_state.dart';
+import 'package:antreeorder/models/base_state2.dart';
 import 'package:antreeorder/models/group_product.dart';
 import 'package:antreeorder/models/merchant.dart';
 import 'package:antreeorder/models/order.dart';
@@ -33,7 +33,8 @@ class _MerchantProductScreenState extends State<MerchantProductScreen> {
   void initState() {
     _merchantProductBloc = getIt<MerchantProductBloc>();
     _pagingController.addPageRequestListener((pageKey) => _merchantProductBloc
-        .add(GetMerchantProductEvent(widget.merchant.id, page: 1)));
+        .add(GetMerchantProductEvent(widget.merchant.user.id.toString(),
+            page: 1)));
     super.initState();
   }
 
@@ -42,7 +43,7 @@ class _MerchantProductScreenState extends State<MerchantProductScreen> {
     return BlocProvider(
       create: (context) => _merchantProductBloc,
       child: Scaffold(
-        appBar: AntreeAppBar(widget.merchant.name),
+        appBar: AntreeAppBar(widget.merchant.user.name),
         body: BlocListener<MerchantProductBloc, MerchantProductState>(
           bloc: _merchantProductBloc,
           listenWhen: ((previous, current) => previous.data != current.data),
@@ -53,8 +54,7 @@ class _MerchantProductScreenState extends State<MerchantProductScreen> {
               if (state.isLastPage) {
                 _pagingController.appendLastPage(state.data);
               } else {
-                _pagingController.appendPage(
-                    state.data, currentPage++);
+                _pagingController.appendPage(state.data, currentPage++);
               }
             }
             if (state.status == StatusState.failure) {

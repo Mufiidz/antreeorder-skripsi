@@ -1,5 +1,5 @@
 import 'package:antreeorder/models/antree.dart';
-import 'package:antreeorder/models/base_state.dart';
+import 'package:antreeorder/models/base_state2.dart';
 import 'package:antreeorder/repository/antree_repository.dart';
 import 'package:antreeorder/utils/export_utils.dart';
 import 'package:bloc/bloc.dart';

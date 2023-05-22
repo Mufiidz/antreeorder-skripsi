@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:flutter/foundation.dart';
 import 'package:antreeorder/utils/string_ext.dart';
 
 import 'order.dart';
@@ -13,8 +12,8 @@ class Product with _$Product {
   @Assert('quantity >= 0')
   @Assert('price >= 0')
   factory Product(
-      {@Default('') String id,
-      @Default('') String merchantId,
+      {@Default(0) int id,
+      @Default(0) int merchantId,
       @Default('') String title,
       @Default('') String category,
       @Default('') String description,
@@ -38,5 +37,5 @@ class Product with _$Product {
 }
 
 extension ProductExt on Product {
-  Order toOrder() => Order(productId: id, price: price, product: this);
+  Order toOrder() => Order(id, price: price, product: this);
 }

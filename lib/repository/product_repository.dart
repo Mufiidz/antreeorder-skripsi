@@ -1,7 +1,7 @@
 import 'package:antreeorder/config/api_client.dart';
 import 'package:antreeorder/models/api_response.dart';
 import 'package:antreeorder/models/product.dart';
-import 'package:antreeorder/utils/retrofit_ext.dart';
+import 'package:antreeorder/utils/retrofit_ext2.dart';
 import 'package:injectable/injectable.dart';
 
 abstract class ProductRepository {
@@ -31,5 +31,5 @@ class ProductRepositoryImpl implements ProductRepository {
 
   @override
   Future<ApiResponse<Product>> updateProduct(Product product) =>
-      _apiClient.product.updateProduct(product.id, product).awaitResult;
+      _apiClient.product.updateProduct(product.id.toString(), product).awaitResult;
 }

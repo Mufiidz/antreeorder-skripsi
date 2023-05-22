@@ -1,6 +1,6 @@
 import 'package:antreeorder/di/injection.dart';
-import 'package:antreeorder/models/base_state.dart';
-import 'package:antreeorder/models/merchant.dart';
+import 'package:antreeorder/models/base_state2.dart';
+import 'package:antreeorder/models/role.dart';
 import 'package:antreeorder/screens/login/login_screen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -26,11 +26,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
   late final RegisterBloc _registerBloc;
   late final AntreeLoadingDialog _dialog;
   var _password = '';
+  String? roleOption = null;
 
   @override
   void initState() {
     _registerBloc = getIt<RegisterBloc>();
     _dialog = getIt<AntreeLoadingDialog>();
+    _registerBloc.add(const RegisterEvent.initial());
     super.initState();
   }
 
@@ -50,6 +52,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
               context.snackbar.showSnackBar(AntreeSnackbar(state.message));
               _formKey.currentState?.reset();
               AppRoute.to(const LoginScreen());
+            }
+            if (state.status == StatusState.loading) {
+              _dialog.showLoadingDialog(context);
             }
             if (state.status == StatusState.failure) {
               _dialog.dismiss();
@@ -82,8 +87,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
             children: [
               AntreeDropdown(
                 'category',
-                items: const ['User', 'Merchant'],
-                onValueChange: (p0) => _registerBloc.add(ConvertUser(p0)),
+                initialValue: roleOption,
+                items: const ['Customer', 'Merchant'],
+                onValueChange: (p0) {
+                  roleOption = p0;
+                  _registerBloc.add(RegisterEvent.getRole(p0));
+                },
               ),
               const SizedBox(
                 height: 16,
@@ -92,6 +101,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 'name',
                 label: "Name",
                 textCapitalization: TextCapitalization.words,
+                initialValue: 'Merchant1',
               ),
               const SizedBox(
                 height: 16,
@@ -99,6 +109,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               const AntreeTextField(
                 'username',
                 label: "Username",
+                initialValue: 'merchant',
               ),
               const SizedBox(
                 height: 16,
@@ -111,6 +122,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     'password',
                     isObscureText: state,
                     label: "Password",
+                    initialValue: '12345678',
                     onChanged: (value) {
                       setState(() {
                         if (value != null) {
@@ -119,8 +131,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       });
                     },
                     suffixIcon: IconButton(
-                      onPressed: () =>
-                          _registerBloc.add(PassWordVisibility(!state)),
+                      onPressed: () => _registerBloc
+                          .add(RegisterEvent.passwordVisibility(!state)),
                       icon:
                           Icon(state ? Icons.visibility : Icons.visibility_off),
                     ),
@@ -138,10 +150,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   return AntreeTextField(
                     'confirm_password',
                     isObscureText: state,
+                    initialValue: '12345678',
                     label: "Confirm Password",
                     suffixIcon: IconButton(
-                        onPressed: () => _registerBloc
-                            .add(ConfirmPassWordVisibility(!state)),
+                        onPressed: () => _registerBloc.add(
+                            RegisterEvent.confrimPasswordVisibility(!state)),
                         icon: Icon(
                             state ? Icons.visibility : Icons.visibility_off)),
                     validators: [
@@ -155,9 +168,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ],
           ),
         ),
-        BlocSelector<RegisterBloc, RegisterState, bool>(
+        BlocSelector<RegisterBloc, RegisterState, Role>(
           bloc: _registerBloc,
-          selector: (state) => state.isUser,
+          selector: (state) => state.role,
           builder: (context, state) {
             return AntreeButton(
               "Register",
@@ -179,15 +192,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ]))
       ];
 
-  void onClickRegister(BuildContext context, bool isUser) {
+  void onClickRegister(BuildContext context, Role role) {
     final formKeyState = _formKey.currentState;
     if (formKeyState != null && formKeyState.validate()) {
-      _dialog.showLoadingDialog(context);
       formKeyState.save();
-      final user = User.fromJson(formKeyState.value);
-      final merchant = Merchant.fromJson(formKeyState.value);
-      _registerBloc
-          .add(isUser ? RegisterUser(user) : RegisterMerchant(merchant));
+      User user = User.fromJson(formKeyState.value);
+      if (role.id == 0) return;
+      user = user.copyWith(role: role, email: '${user.username}@email.com');
+      _registerBloc.add(RegisterEvent.registerUser(user));
     }
   }
 

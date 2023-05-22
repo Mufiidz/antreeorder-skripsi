@@ -36,7 +36,7 @@ class DetailAntreeScreen extends StatelessWidget {
 
   List<ContentDetail> get detailsAntree => [
         ContentDetail(title: "Status", value: antree.status.message),
-        ContentDetail(title: "Antree ID", value: antree.id),
+        ContentDetail(title: "Antree ID", value: antree.id.toString()),
         ContentDetail(
             title: "Tanggal Pembelian",
             value: antree.createdAt

@@ -6,7 +6,7 @@ import 'package:antreeorder/utils/export_utils.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
-import 'package:antreeorder/models/base_state.dart';
+import 'package:antreeorder/models/base_state2.dart';
 
 part 'confirm_order_event.dart';
 part 'confirm_order_state.dart';

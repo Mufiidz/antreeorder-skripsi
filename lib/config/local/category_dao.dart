@@ -1,5 +1,5 @@
 import 'package:antreeorder/config/antree_db.dart';
-import 'package:antreeorder/models/category.dart';
+import 'package:antreeorder/config/local/table/category.dart';
 import 'package:drift/drift.dart';
 
 part 'category_dao.g.dart';

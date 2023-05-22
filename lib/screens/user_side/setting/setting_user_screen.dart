@@ -1,6 +1,6 @@
 import 'package:antreeorder/components/export_components.dart';
 import 'package:antreeorder/di/injection.dart';
-import 'package:antreeorder/models/base_state.dart';
+import 'package:antreeorder/models/base_state2.dart';
 import 'package:antreeorder/res/export_res.dart';
 import 'package:antreeorder/screens/merchant_side/settings/section/logout_section.dart';
 import 'package:antreeorder/screens/merchant_side/settings/section/profile_section.dart';

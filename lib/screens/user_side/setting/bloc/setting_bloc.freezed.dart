@@ -298,6 +298,8 @@ abstract class $SettingStateCopyWith<$Res> {
       StatusState status,
       String message,
       List<ContentDetail> profiles});
+
+  $UserCopyWith<$Res> get user;
 }
 
 /// @nodoc
@@ -337,6 +339,14 @@ class _$SettingStateCopyWithImpl<$Res, $Val extends SettingState>
               as List<ContentDetail>,
     ) as $Val);
   }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $UserCopyWith<$Res> get user {
+    return $UserCopyWith<$Res>(_value.user, (value) {
+      return _then(_value.copyWith(user: value) as $Val);
+    });
+  }
 }
 
 /// @nodoc
@@ -352,6 +362,9 @@ abstract class _$$_SettingStateCopyWith<$Res>
       StatusState status,
       String message,
       List<ContentDetail> profiles});
+
+  @override
+  $UserCopyWith<$Res> get user;
 }
 
 /// @nodoc

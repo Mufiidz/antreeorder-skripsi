@@ -7,14 +7,13 @@ part 'order.g.dart';
 
 @JsonSerializable()
 class Order extends Equatable {
-  final String productId;
+  final int productId;
   final String note;
   int quantity;
   final int price;
   @JsonKey(includeFromJson: false, includeToJson: false)
   Product? product;
-  Order({
-    this.productId = '',
+  Order(this.productId, {
     this.note = '',
     this.quantity = 1,
     this.price = 0,
@@ -22,14 +21,14 @@ class Order extends Equatable {
   });
 
   Order copyWith({
-    String? productId,
+    int? productId,
     String? note,
     int? quantity,
     int? price,
     Product? product,
   }) {
     return Order(
-      productId: productId ?? this.productId,
+      productId ?? this.productId,
       note: note ?? this.note,
       quantity: quantity ?? this.quantity,
       price: price ?? this.price,

@@ -20,3 +20,9 @@ abstract class BaseState<Data> extends Equatable {
   String toString() =>
       'BaseState(status: $status, errorMessage: $message, data: $data)';
 }
+
+abstract class BaseState2<Data> {
+  StatusState get status;
+  String get message;
+  Data get data;
+}

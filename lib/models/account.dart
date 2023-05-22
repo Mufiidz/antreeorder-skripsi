@@ -1,38 +1,23 @@
 import 'dart:convert';
 
-import 'package:equatable/equatable.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-import 'merchant.dart';
 import 'user.dart';
 
+part 'account.freezed.dart';
 part 'account.g.dart';
 
-@JsonSerializable()
-class Account extends Equatable {
-  final bool isMerchant;
-  final User? user;
-  final Merchant? merchant;
+Account accountFromJson(String str) => Account.fromJson(json.decode(str));
 
-  const Account({
-    required this.isMerchant,
-    this.user,
-    this.merchant,
-  });
+String accountToJson(Account data) => json.encode(data.toJson());
 
-  factory Account.fromMap(Map<String, dynamic> data) => _$AccountFromJson(data);
+@freezed
+class Account with _$Account {
+  factory Account(
+      {@Default(false) bool isMerchant,
+      @Default(User()) User user,
+      @Default('') String token}) = _Account;
 
-  Map<String, dynamic> toJson() => _$AccountToJson(this);
-
-  String toEncode() => json.encode(toJson());
-
-  factory Account.fromJson(String source) =>
-      Account.fromMap(json.decode(source));
-
-  @override
-  List<Object> get props => [isMerchant, user as Object];
-
-  @override
-  String toString() =>
-      'Account(isMerchant: $isMerchant, user: $user, merchant: $merchant)';
+  factory Account.fromJson(Map<String, dynamic> json) =>
+      _$AccountFromJson(json);
 }

@@ -5,10 +5,14 @@ part 'login_dto.g.dart';
 
 @JsonSerializable()
 class LoginDto extends Equatable {
+  final String email;
   final String username;
   final String password;
+  final int roleId;
 
-  const LoginDto({
+  const LoginDto(
+    this.roleId, {
+    this.email = '',
     this.username = '',
     this.password = '',
   });
@@ -17,11 +21,11 @@ class LoginDto extends Equatable {
       _$LoginDtoFromJson(data);
 
   Map<String, dynamic> toJson() => _$LoginDtoToJson(this);
-  
 
   @override
-  List<Object?> get props => [username, password];
+  List<Object?> get props => [username, password, email, roleId];
 
   @override
-  String toString() => 'LoginDto(username: $username, password: $password)';
+  String toString() =>
+      'LoginDto(roleId: $roleId, username: $username, password: $password, email: $email)';
 }

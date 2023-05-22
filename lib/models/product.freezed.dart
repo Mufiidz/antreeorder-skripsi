@@ -20,8 +20,8 @@ Product _$ProductFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Product {
-  String get id => throw _privateConstructorUsedError;
-  String get merchantId => throw _privateConstructorUsedError;
+  int get id => throw _privateConstructorUsedError;
+  int get merchantId => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
   String get category => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
@@ -39,8 +39,8 @@ abstract class $ProductCopyWith<$Res> {
       _$ProductCopyWithImpl<$Res, Product>;
   @useResult
   $Res call(
-      {String id,
-      String merchantId,
+      {int id,
+      int merchantId,
       String title,
       String category,
       String description,
@@ -73,11 +73,11 @@ class _$ProductCopyWithImpl<$Res, $Val extends Product>
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       merchantId: null == merchantId
           ? _value.merchantId
           : merchantId // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -110,8 +110,8 @@ abstract class _$$_ProductCopyWith<$Res> implements $ProductCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {String id,
-      String merchantId,
+      {int id,
+      int merchantId,
       String title,
       String category,
       String description,
@@ -141,11 +141,11 @@ class __$$_ProductCopyWithImpl<$Res>
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       merchantId: null == merchantId
           ? _value.merchantId
           : merchantId // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -172,10 +172,10 @@ class __$$_ProductCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Product with DiagnosticableTreeMixin implements _Product {
+class _$_Product implements _Product {
   _$_Product(
-      {this.id = '',
-      this.merchantId = '',
+      {this.id = 0,
+      this.merchantId = 0,
       this.title = '',
       this.category = '',
       this.description = '',
@@ -189,10 +189,10 @@ class _$_Product with DiagnosticableTreeMixin implements _Product {
 
   @override
   @JsonKey()
-  final String id;
+  final int id;
   @override
   @JsonKey()
-  final String merchantId;
+  final int merchantId;
   @override
   @JsonKey()
   final String title;
@@ -210,22 +210,8 @@ class _$_Product with DiagnosticableTreeMixin implements _Product {
   final int price;
 
   @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+  String toString() {
     return 'Product(id: $id, merchantId: $merchantId, title: $title, category: $category, description: $description, quantity: $quantity, price: $price)';
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('type', 'Product'))
-      ..add(DiagnosticsProperty('id', id))
-      ..add(DiagnosticsProperty('merchantId', merchantId))
-      ..add(DiagnosticsProperty('title', title))
-      ..add(DiagnosticsProperty('category', category))
-      ..add(DiagnosticsProperty('description', description))
-      ..add(DiagnosticsProperty('quantity', quantity))
-      ..add(DiagnosticsProperty('price', price));
   }
 
   @override
@@ -267,8 +253,8 @@ class _$_Product with DiagnosticableTreeMixin implements _Product {
 
 abstract class _Product implements Product {
   factory _Product(
-      {final String id,
-      final String merchantId,
+      {final int id,
+      final int merchantId,
       final String title,
       final String category,
       final String description,
@@ -278,9 +264,9 @@ abstract class _Product implements Product {
   factory _Product.fromJson(Map<String, dynamic> json) = _$_Product.fromJson;
 
   @override
-  String get id;
+  int get id;
   @override
-  String get merchantId;
+  int get merchantId;
   @override
   String get title;
   @override

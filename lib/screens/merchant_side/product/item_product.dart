@@ -20,7 +20,7 @@ class ItemProduct extends StatelessWidget {
         product: product,
       )),
       trailing: IconButton(
-          onPressed: () => onDeleteItem!(product.id), icon: const Icon(Icons.delete)),
+          onPressed: () => onDeleteItem!(product.id.toString()), icon: const Icon(Icons.delete)),
     );
   }
 }

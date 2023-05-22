@@ -1,38 +1,49 @@
-import 'package:antreeorder/models/login_dto.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'role.dart';
+
+part 'user.freezed.dart';
 part 'user.g.dart';
 
-@JsonSerializable()
-class User extends LoginDto {
-  final String id;
-  final String name;
-  final String token;
-  final DateTime? createdAt;
-  final DateTime? updatedAt;
+@freezed
+class User with _$User {
+  const User._();
+  const factory User({
+    @Default(0) int id,
+    @Default('') String name,
+    @Default('') String username,
+    @Default('') String email,
+    @Default('') String password,
+    @Default('') String provider,
+    @Default(false) bool confirmed,
+    @Default(false) bool blocked,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    @Default('') String description,
+    @Default(Role()) Role role,
+    @Default(0) int merchantId,
+    @Default(0) int customerId,
+  }) = _User;
 
-  const User({
-    this.id = "",
-    this.name = "",
-    this.token = "",
-    super.username,
-    super.password,
-    this.createdAt,
-    this.updatedAt,
-  });
+  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
-  factory User.fromJson(Map<String, dynamic> data) => _$UserFromJson(data);
+  Map<String, dynamic> get toRegister => {
+        "name": name,
+        "email": email,
+        "username": username,
+        "password": password,
+        "role": role.id,
+        "merchantId": merchantId,
+        "customerId": customerId
+      };
+  Map<String, dynamic> get toRegisterUserId => {
+        "data": {"user": id}
+      };
+  Map<String, dynamic> get toUpdateMerchantorCustomerId =>
+      {"merchantId": merchantId, "customerId": customerId};
 
-  @override
-  Map<String, dynamic> toJson() => _$UserToJson(this);
-
-  @override
-  String toString() {
-    return 'User(id: $id, name: $name, username: $username, password: $password, token: $token,'
-        ' createdAt: $createdAt, updateAt: $updatedAt)';
-  }
-
-  @override
-  List<Object?> get props =>
-      [id, name, username, password, token, createdAt, updatedAt];
+  Map<String, String> get toLogin => {
+        "identifier": username,
+        "password": password,
+      };
 }

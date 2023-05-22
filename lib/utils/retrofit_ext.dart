@@ -1,40 +1,70 @@
 import 'package:antreeorder/config/remote/dio_exceptions.dart';
-import 'package:antreeorder/models/api_response.dart';
-import 'package:antreeorder/utils/export_utils.dart';
+import 'package:antreeorder/models/base_response.dart';
 import 'package:dio/dio.dart';
 
-extension AwaitResult<T> on Future<ApiResponse<T>> {
-  Future<ApiResponse<T>> get awaitResult async {
-    var apiResponse = ApiResponse<T>();
-    await then((value) {
-      apiResponse = value;
-    }).catchError((Object obj) {
-      switch (obj.runtimeType) {
-        case DioError:
-          final res = (obj as DioError);
-          apiResponse = onDioError(res, apiResponse);
-          break;
-        default:
-          apiResponse.copyWith(message: 'ERROR');
-          break;
-      }
-    });
-    return apiResponse;
-  }
+import 'logger.dart';
+import 'response_result.dart';
 
-  ApiResponse<T> onDioError(DioError error, ApiResponse<T> apiResponse) {
-    final res = error.response?.data;
-    logger.d(res);
-    var apires = apiResponse;
-
+extension AwaitResult<T> on Future<T> {
+  Future<ResponseResult<T>> get awaitResponse async {
+    ResponseResult<T> responseResult = const ResponseResult.error("EMPTY");
     try {
-      apires = ApiResponse.errorFromMap(res);
-      logger.d(apires);
+      await then((value) {
+        logger.d('SingleResponse -> $value');
+        responseResult = ResponseResult.data(value, null);
+      }).catchError((Object obj) {
+        if (obj.runtimeType != DioError) {
+          responseResult = ResponseResult.error(obj.toString());
+          return;
+        }
+        final errorMessage = getErrorMessage(obj as DioError);
+        logger.d(errorMessage);
+        responseResult = ResponseResult.error(errorMessage);
+      });
     } catch (e) {
-      final errorMessage = DioExceptions.fromDioError(error).toString();
-      apires = apires.copyWith(message: errorMessage);
-      logger.e(errorMessage);
+      responseResult = ResponseResult.error(e.toString());
     }
-    return apires;
+    return responseResult;
   }
+}
+
+extension AwaitResult2<T> on Future<BaseResponse<T>> {
+  Future<ResponseResult<T>> get awaitResponse async {
+    ResponseResult<T> responseResult = const ResponseResult.error("EMPTY");
+    try {
+      await then((value) {
+        logger.d('BaseResponse -> $value');
+        responseResult = ResponseResult.data(value.data, value.meta);
+      }).catchError((Object obj) {
+        if (obj.runtimeType != DioError) {
+          responseResult = ResponseResult.error(obj.toString());
+          return;
+        }
+        final errorMessage = getErrorMessage(obj as DioError);
+        logger.d(errorMessage);
+        responseResult = ResponseResult.error(errorMessage);
+      });
+    } catch (e) {
+      responseResult = ResponseResult.error(e.toString());
+    }
+    return responseResult;
+  }
+}
+
+String getErrorMessage(DioError dioError) {
+  String message = "ERROR";
+  try {
+    final res = dioError.response?.data;
+    final errorResponse = ErrorResponse.fromJson(res, (obj) => null);
+    final errors = errorResponse.error.details.errors;
+    String errorMessage = errorResponse.error.message;
+    if (errors != null) {
+      errorMessage =
+          errorResponse.error.details.errors?.first.message ?? errorMessage;
+    }
+    message = errorMessage;
+  } catch (e) {
+    message = DioExceptions.fromDioError(dioError).toString();
+  }
+  return message;
 }

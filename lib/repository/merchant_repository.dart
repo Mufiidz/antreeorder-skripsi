@@ -7,7 +7,7 @@ import 'package:antreeorder/models/product.dart';
 import 'package:antreeorder/models/seat.dart';
 import 'package:antreeorder/repository/product_repository.dart';
 import 'package:antreeorder/utils/export_utils.dart';
-import 'package:antreeorder/utils/retrofit_ext.dart';
+import 'package:antreeorder/utils/retrofit_ext2.dart';
 import 'package:injectable/injectable.dart';
 
 abstract class MerchantRepository {
@@ -56,7 +56,7 @@ class MerchantRepositoryImpl extends MerchantRepository {
         List<order.Order> newOrders = [];
         for (var order in antree.orders) {
           final productResponse =
-              await _productRepository.detailProduct(order.productId);
+              await _productRepository.detailProduct(order.productId.toString());
           order = order.copyWith(product: productResponse.data);
           newOrders.add(order);
         }

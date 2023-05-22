@@ -3,7 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
-import 'package:antreeorder/models/base_state.dart';
+import 'package:antreeorder/models/base_state2.dart';
 import 'package:antreeorder/models/order.dart';
 import 'package:antreeorder/models/page.dart';
 import 'package:antreeorder/models/product.dart';
@@ -83,7 +83,7 @@ class MerchantProductBloc
   List<Product> getDummyData() => List.generate(
       10,
       (index) => Product(
-          id: index.toString(),
+          id: index,
           title: "Product $index",
           price: index * 1000,
           description: "Ini contoh product $index"));

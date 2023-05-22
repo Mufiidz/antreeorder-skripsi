@@ -1,4 +1,4 @@
-import 'package:antreeorder/models/base_state.dart';
+import 'package:antreeorder/models/base_state2.dart';
 import 'package:antreeorder/models/merchant.dart';
 import 'package:antreeorder/repository/merchant_repository.dart';
 import 'package:antreeorder/repository/sharedprefs_repository.dart';

@@ -7,7 +7,7 @@ import 'remote/product_apiclient.dart';
 
 class ApiClient {
   final Dio dio;
-  static const String baseUrl = 'http://10.0.2.2:8080/antree-order';
+  static const String baseUrl = 'http://192.168.100.37:1337/api';
 
   ApiClient(this.dio);
 

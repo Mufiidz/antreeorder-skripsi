@@ -1,5 +1,5 @@
-import 'package:antreeorder/models/base_state.dart';
-import 'package:antreeorder/models/login_dto.dart';
+import 'package:antreeorder/models/base_state2.dart';
+import 'package:antreeorder/models/user.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,7 +31,6 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     _dialog = getIt<AntreeLoadingDialog>();
     _loginBloc = getIt<LoginBloc>();
-    _loginBloc.add(Initial());
     super.initState();
   }
 
@@ -41,16 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
       create: (context) => _loginBloc,
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: AntreeAppBar("", showBackButton: false, actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: BlocSelector<LoginBloc, LoginState, bool>(
-              bloc: _loginBloc,
-              selector: (state) => state.isUser,
-              builder: (context, state) => AntreeUserSwitcher(state,
-                  onUserSwitch: (value) => _loginBloc.add(UserSwitch(value))),
-            ),
-          )
+        appBar: AntreeAppBar("", showBackButton: false, actions: const [
         ]),
         body: SafeArea(
           child: BlocListener<LoginBloc, LoginState>(
@@ -66,6 +56,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   state.message,
                   status: SnackbarStatus.success,
                 ));
+              }
+              if (state.status == StatusState.loading) {
+                _dialog.showLoadingDialog(context);
               }
               if (state.status == StatusState.failure) {
                 _dialog.dismiss();
@@ -114,7 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   label: "Password",
                   suffixIcon: IconButton(
                       onPressed: () =>
-                          _loginBloc.add(PassWordVisibility(!state)),
+                          _loginBloc.add(LoginEvent.passwordVisibility(!state)),
                       icon: Icon(
                           state ? Icons.visibility : Icons.visibility_off)),
                 ),
@@ -122,18 +115,9 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
         ),
-        BlocSelector<LoginBloc, LoginState, bool>(
-          bloc: _loginBloc,
-          selector: (state) => state.isUser,
-          builder: (context, state) {
-            logger.d(state);
-            return AntreeButton(
-              "Login",
-              onclick: () {
-                onClickLogin(context, state);
-              },
-            );
-          },
+        AntreeButton(
+          "Login",
+          onclick: () => onClickLogin(context),
         ),
         RichText(
             textAlign: TextAlign.center,
@@ -149,13 +133,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 ]))
       ];
 
-  void onClickLogin(BuildContext context, bool isUser) {
+  void onClickLogin(BuildContext context) {
     final formKeyState = _formKey.currentState;
     if (formKeyState != null && formKeyState.validate()) {
-      _dialog.showLoadingDialog(context);
       formKeyState.save();
-      final user = LoginDto.fromJson(formKeyState.value);
-      _loginBloc.add(isUser ? LoginUser(user) : LoginMerchant(user));
+      final user = User.fromJson(formKeyState.value);
+      _loginBloc.add(LoginEvent.loginUser(user));
     }
   }
 

@@ -5,15 +5,14 @@ part 'seat.g.dart';
 
 @JsonSerializable()
 class Seat extends Equatable {
-  final String id;
+  final int id;
   final String title;
   final String description;
   final int quantity;
   final int capacity;
 
-  const Seat(
-      {this.id = '',
-      this.title = '',
+  const Seat(this.id,
+      {this.title = '',
       this.description = '',
       this.quantity = 0,
       this.capacity = 0});
@@ -23,14 +22,14 @@ class Seat extends Equatable {
   Map<String, dynamic> toJson() => _$SeatToJson(this);
 
   Seat copyWith({
-    String? id,
+    int? id,
     String? title,
     String? description,
     int? quantity,
     int? capacity,
   }) {
     return Seat(
-      id: id ?? this.id,
+      id ?? this.id,
       title: title ?? this.title,
       description: description ?? this.description,
       quantity: quantity ?? this.quantity,

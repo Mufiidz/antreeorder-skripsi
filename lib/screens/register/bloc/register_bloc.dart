@@ -1,55 +1,47 @@
-import 'package:antreeorder/models/base_state.dart';
-import 'package:antreeorder/models/merchant.dart';
+import 'package:antreeorder/models/base_state2.dart';
+import 'package:antreeorder/models/role.dart';
 import 'package:antreeorder/models/user.dart';
 import 'package:antreeorder/repository/auth_repository.dart';
 import 'package:antreeorder/utils/export_utils.dart';
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'register_event.dart';
 part 'register_state.dart';
+part 'register_bloc.freezed.dart';
 
 class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   final AuthRepository _authRepository;
-  RegisterBloc(this._authRepository) : super(const RegisterState('')) {
+  List<Role> _roles = [];
+  RegisterBloc(this._authRepository) : super(const RegisterState()) {
+    on<RegisterEventInitial>((event, emit) async {
+      final roles = await _authRepository.getRoles();
+      _roles = roles;
+      final newRole = _roles.singleWhere(
+          (element) => element.name.contain('customer', ignoreCase: true));
+      emit(state.copyWith(role: newRole));
+    });
     on<RegisterUser>((event, emit) async {
       emit(state.copyWith(status: StatusState.loading));
-      try {
-        final response = await _authRepository.registerUser(event.user);
-        final data = response.data;
-        emit(data != null
-            ? state.copyWith(
-                data: data, status: StatusState.success, message: data)
-            : state.copyWith(
-                status: StatusState.failure, message: response.message));
-      } catch (e) {
-        emit(state.copyWith(status: StatusState.failure, message: "ERROR"));
-      }
+      logger.d(event.user.toRegister);
+      final response = await _authRepository.register(event.user);
+      response.when(
+          data: (user, meta) {
+            emit(state.copyWith(
+                status: StatusState.success,
+                message: "Berhasil menambahkan ${user.name}"));
+          },
+          error: (errorMessage) => emit(state.copyWith(
+              status: StatusState.failure, message: errorMessage)));
     });
-
-    on<RegisterMerchant>((event, emit) async {
-      try {
-        final response = await _authRepository.registerMerchant(event.merchant);
-        final data = response.data;
-        emit(data != null
-            ? state.copyWith(
-                data: data, status: StatusState.success, message: data)
-            : state.copyWith(
-                status: StatusState.failure, message: response.message));
-      } catch (e) {
-        emit(state.copyWith(status: StatusState.failure, message: "ERROR"));
-      }
-    });
-
-    on<PassWordVisibility>((event, emit) => emit(state.copyWith(
+    on<RegisterPasswordVisibility>((event, emit) => emit(state.copyWith(
         isVisiblePassword: event.isVisible, status: StatusState.idle)));
-
-    on<ConfirmPassWordVisibility>((event, emit) => emit(state.copyWith(
+    on<RegisterConsfirmPasswordVisibility>((event, emit) => emit(state.copyWith(
         isVisibleConfirmPassword: event.isVisible, status: StatusState.idle)));
-
-    on<ConvertUser>((event, emit) {
-      final isUser = event.userValue.contain("user", ignoreCase: true);
-      emit(state.copyWith(isUser: isUser, status: StatusState.idle));
+    on<RegisterConvertOption>((event, emit) {
+      final role = _roles.singleWhere((element) =>
+          element.name.contain(event.type.toLowerCase(), ignoreCase: true));
+      emit(state.copyWith(role: role, status: StatusState.idle));
     });
   }
 }

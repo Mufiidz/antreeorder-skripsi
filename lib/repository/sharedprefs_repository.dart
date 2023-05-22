@@ -8,32 +8,26 @@ class SharedPrefsRepository {
 
   SharedPrefsRepository(@factoryMethod this._sharedPreferences);
 
-  final String _isUserKey = 'isUser';
   final String _accountKey = 'account';
   final String _isOpen = 'isOpen';
 
   Account? get account {
     final data = _sharedPreferences.getString(_accountKey);
-    return data != null ? Account.fromJson(data) : null;
+    return data != null ? accountFromJson(data) : null;
   }
 
   set account(Account? account) {
     if (account != null) {
-      _sharedPreferences.setString(_accountKey, account.toEncode());
+      _sharedPreferences.setString(_accountKey, accountToJson(account));
     }
   }
 
-  String get id {
-    if (account == null) return '';
-    final isMerchant = account?.isMerchant ?? true;
-    return (isMerchant ? account?.merchant?.id : account?.user?.id) ?? '';
+  int? get id {
+    if (account == null) return null;
+    return account?.user.id;
   }
 
-  set id(String id) => id;
-
-  bool get isUser => _sharedPreferences.getBool(_isUserKey) ?? true;
-
-  set isUser(bool isUser) => _sharedPreferences.setBool(_isUserKey, isUser);
+  set id(int? id) => id;
 
   bool get isOpen => _sharedPreferences.getBool(_isOpen) ?? false;
 
@@ -41,5 +35,8 @@ class SharedPrefsRepository {
 
   void onLogout() {
     _sharedPreferences.remove(_accountKey);
+    if (account != null) {
+      account = null;
+    }
   }
 }

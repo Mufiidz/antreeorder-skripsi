@@ -1,6 +1,6 @@
 import 'package:antreeorder/components/export_components.dart';
 import 'package:antreeorder/models/order.dart';
-import 'package:antreeorder/utils/int_ext.dart';
+import 'package:antreeorder/utils/export_utils.dart';
 import 'package:flutter/material.dart';
 
 class ItemOrderSection extends StatelessWidget {

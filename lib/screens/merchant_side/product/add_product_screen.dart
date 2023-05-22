@@ -1,6 +1,6 @@
 import 'package:antreeorder/components/export_components.dart';
 import 'package:antreeorder/di/injection.dart';
-import 'package:antreeorder/models/base_state.dart';
+import 'package:antreeorder/models/base_state2.dart';
 import 'package:antreeorder/models/product.dart';
 import 'package:antreeorder/repository/sharedprefs_repository.dart';
 import 'package:antreeorder/screens/merchant_side/product/bloc/product_bloc.dart';
@@ -120,16 +120,16 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
   void onAddProduct() {
     final sharedPrefRepo = getIt<SharedPrefsRepository>();
-    String? merchantId = sharedPrefRepo.account?.merchant?.id;
-    final id = widget.product?.id ?? '';
+    // String? merchantId = sharedPrefRepo.account?.user.id;
+    final id = widget.product?.id ?? 0;
     var product = Product();
     final formState = _formKey.currentState;
 
     if (formState == null) return;
-    if (merchantId == null || merchantId.isEmpty) return;
+    // if (merchantId == null || merchantId.isEmpty) return;
 
     product = Product.fromMap(formState.value)
-        .copyWith(merchantId: merchantId, id: id);
+        .copyWith(merchantId: 0, id: id);
 
     _dialog.showLoadingDialog(context);
     if (widget.product == null) {

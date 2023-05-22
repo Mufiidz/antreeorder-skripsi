@@ -36,4 +36,5 @@ class ConstEndpoints {
   static const String merchantProducts = '$merchants$products$id';
   // static const String merchantCategory = '$category$id';
   static const String merchantSeats = '$seats$id';
+  
 }

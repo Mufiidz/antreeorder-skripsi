@@ -1,6 +1,6 @@
 import 'package:antreeorder/components/export_components.dart';
 import 'package:antreeorder/di/injection.dart';
-import 'package:antreeorder/models/base_state.dart';
+import 'package:antreeorder/models/base_state2.dart';
 import 'package:antreeorder/screens/merchant_side/category/bloc/category_bloc.dart';
 import 'package:antreeorder/utils/app_context_ext.dart';
 import 'package:flutter/material.dart';

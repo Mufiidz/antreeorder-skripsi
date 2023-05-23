@@ -1,35 +1,69 @@
 import 'package:antreeorder/config/api_client.dart';
-import 'package:antreeorder/models/api_response.dart';
 import 'package:antreeorder/models/product.dart';
-import 'package:antreeorder/utils/retrofit_ext2.dart';
+import 'package:antreeorder/repository/sharedprefs_repository.dart';
+import 'package:antreeorder/utils/map_mapper.dart';
+import 'package:antreeorder/utils/response_result.dart';
+import 'package:antreeorder/utils/retrofit_ext.dart';
 import 'package:injectable/injectable.dart';
 
 abstract class ProductRepository {
-  Future<ApiResponse<Product>> addProduct(Product product);
-  Future<ApiResponse<Product>> updateProduct(Product product);
-  Future<ApiResponse<Product>> detailProduct(String productId);
-  Future<ApiResponse<String>> deleteProduct(String productId);
+  Future<ResponseResult<Product>> addProduct(Product product);
+  Future<ResponseResult<Product>> updateProduct(Product product);
+  Future<ResponseResult<Product>> detailProduct(int productId);
+  Future<ResponseResult<List<Product>>> deleteProduct(int productId);
+  Future<ResponseResult<List<Product>>> getMerchantProducts({int merchantId});
 }
 
 @Injectable(as: ProductRepository)
 class ProductRepositoryImpl implements ProductRepository {
   final ApiClient _apiClient;
+  final SharedPrefsRepository _sharedPrefsRepository;
 
-  ProductRepositoryImpl(@factoryMethod this._apiClient);
-
-  @override
-  Future<ApiResponse<Product>> addProduct(Product product) =>
-      _apiClient.product.addProduct(product).awaitResult;
+  @factoryMethod
+  ProductRepositoryImpl(this._apiClient, this._sharedPrefsRepository);
 
   @override
-  Future<ApiResponse<String>> deleteProduct(String productId) =>
-      _apiClient.product.deleteProduct(productId).awaitResult;
+  Future<ResponseResult<Product>> addProduct(Product product) async {
+    final int merchantId = _sharedPrefsRepository.user.merchantId;
+    if (merchantId == 0) return ResponseResult.error('Merchant Id is empty');
+    return _apiClient.product
+        .createProduct(product.toAddProduct(merchantId).wrapWithData)
+        .awaitResponse;
+  }
 
   @override
-  Future<ApiResponse<Product>> detailProduct(String productId) =>
-      _apiClient.product.detailProduct(productId).awaitResult;
+  Future<ResponseResult<List<Product>>> deleteProduct(int productId) async {
+    if (productId == 0) return ResponseResult.error('Product Id is empty');
+    final deleteResponse =
+        await _apiClient.product.deleteProduct(productId).awaitResponse;
+    if (deleteResponse is ResponseResultError<Product>) {
+      return ResponseResult.error(deleteResponse.message);
+    }
+    return getMerchantProducts();
+  }
 
   @override
-  Future<ApiResponse<Product>> updateProduct(Product product) =>
-      _apiClient.product.updateProduct(product.id.toString(), product).awaitResult;
+  Future<ResponseResult<Product>> detailProduct(int productId) async {
+    if (productId == 0) return ResponseResult.error('Product Id is empty');
+    return await _apiClient.product.getProduct(productId).awaitResponse;
+  }
+
+  @override
+  Future<ResponseResult<Product>> updateProduct(Product product) async {
+    if (product.id == 0) return ResponseResult.error('Product Id is empty');
+    return await _apiClient.product
+        .updateProduct(product.id, product.toUpdateProduct.wrapWithData)
+        .awaitResponse;
+  }
+
+  @override
+  Future<ResponseResult<List<Product>>> getMerchantProducts(
+      {int? merchantId}) async {
+    final int currentMerchantId = _sharedPrefsRepository.user.merchantId;
+    merchantId = merchantId ?? currentMerchantId;
+    if (merchantId == 0) return ResponseResult.error('Merchant Id is empty');
+    return await _apiClient.product
+        .getMerchantProducts(merchantId)
+        .awaitResponse;
+  }
 }

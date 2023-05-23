@@ -2,7 +2,6 @@ import 'package:antreeorder/components/export_components.dart';
 import 'package:antreeorder/di/injection.dart';
 import 'package:antreeorder/models/base_state2.dart';
 import 'package:antreeorder/models/product.dart';
-import 'package:antreeorder/repository/sharedprefs_repository.dart';
 import 'package:antreeorder/screens/merchant_side/product/add_product_screen.dart';
 import 'package:antreeorder/screens/merchant_side/product/item_product.dart';
 import 'package:antreeorder/utils/export_utils.dart';
@@ -20,19 +19,12 @@ class ProductScreen extends StatefulWidget {
 
 class _ProductScreenState extends State<ProductScreen> {
   late final ProductBloc _productBloc;
-  late final String merchantId;
 
   @override
   void initState() {
     super.initState();
     _productBloc = getIt<ProductBloc>();
-    final sharedPrefRepo = getIt<SharedPrefsRepository>();
-    merchantId = '';
-    if (merchantId.isNotEmpty) {
-      _productBloc.add(MerchantProducts(merchantId));
-    } else {
-      _productBloc.add(Initial());
-    }
+    _productBloc.add(MerchantProducts());
   }
 
   @override
@@ -43,14 +35,11 @@ class _ProductScreenState extends State<ProductScreen> {
         appBar: AntreeAppBar('My Product'),
         body: RefreshIndicator(
           onRefresh: () async {
-            if (merchantId.isNotEmpty) {
-              _productBloc.add(MerchantProducts(merchantId));
-            }
+            _productBloc.add(MerchantProducts());
           },
           child: BlocBuilder<ProductBloc, ProductState>(
             bloc: _productBloc,
             builder: (context, state) {
-              logger.d(state.products);
               if (state.status == StatusState.loading) {
                 return const AntreeLoading();
               }

@@ -2,9 +2,9 @@ import 'package:antreeorder/components/export_components.dart';
 import 'package:antreeorder/di/injection.dart';
 import 'package:antreeorder/models/base_state2.dart';
 import 'package:antreeorder/models/product.dart';
-import 'package:antreeorder/repository/sharedprefs_repository.dart';
 import 'package:antreeorder/screens/merchant_side/product/bloc/product_bloc.dart';
 import 'package:antreeorder/utils/export_utils.dart';
+import 'package:antreeorder/utils/map_mapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -119,23 +119,19 @@ class _AddProductScreenState extends State<AddProductScreen> {
       ];
 
   void onAddProduct() {
-    final sharedPrefRepo = getIt<SharedPrefsRepository>();
-    // String? merchantId = sharedPrefRepo.account?.user.id;
-    final id = widget.product?.id ?? 0;
-    var product = Product();
-    final formState = _formKey.currentState;
+    final initialProduct = widget.product;
+    final formKeyState = _formKey.currentState;
+    if (formKeyState == null) return;
+    formKeyState.save();
 
-    if (formState == null) return;
-    // if (merchantId == null || merchantId.isEmpty) return;
-
-    product = Product.fromMap(formState.value)
-        .copyWith(merchantId: 0, id: id);
+    var product = Product.fromMap(formKeyState.value);
 
     _dialog.showLoadingDialog(context);
-    if (widget.product == null) {
+
+    if (initialProduct == null) {
       _productBloc.add(AddProduct(product));
-    }
-    if (product != widget.product) {
+    } else {
+      product = product.copyWith(id: initialProduct.id);
       _productBloc.add(UpdateProduct(product));
     }
   }

@@ -1,6 +1,5 @@
 import 'package:antreeorder/components/export_components.dart';
 import 'package:antreeorder/di/injection.dart';
-import 'package:antreeorder/models/merchant.dart';
 import 'package:antreeorder/repository/sharedprefs_repository.dart';
 import 'package:antreeorder/res/export_res.dart';
 import 'package:antreeorder/screens/splash_screen.dart';
@@ -24,10 +23,9 @@ class SettingMerchantScreen extends StatefulWidget {
 class _SettingMerchantScreenState extends State<SettingMerchantScreen>
     with WidgetsBindingObserver {
   late final SettingsBloc _settingsBloc;
-  final Merchant? merchant= Merchant();
   late final AntreeLoadingDialog _loading;
   late final SharedPrefsRepository _sharedPrefsRepository;
-  SettingsState state = const SettingsState([]);
+  String _name = '';
 
   @override
   void initState() {
@@ -36,7 +34,9 @@ class _SettingMerchantScreenState extends State<SettingMerchantScreen>
     _settingsBloc = getIt<SettingsBloc>();
     _loading = getIt<AntreeLoadingDialog>();
     _sharedPrefsRepository = getIt<SharedPrefsRepository>();
-    _settingsBloc.add(GetSettings());
+    _name = _sharedPrefsRepository.user.name;
+    _name = _name.isNotEmpty ? _name : 'NO NAME';
+    _settingsBloc.add(Initial());
   }
 
   @override
@@ -58,41 +58,28 @@ class _SettingMerchantScreenState extends State<SettingMerchantScreen>
               status: SnackbarStatus.success,
             ));
           },
-          child: (state, context) {
-            this.state = state;
-            return AntreeList(
-              _section,
-              isSeparated: true,
-              itemBuilder: (context, section, index) => section,
-              separatorBuilder: (context, section, index) => const Divider(
-                height: 30,
-                thickness: 5,
-                color: AntreeColors.separator,
-              ),
-            );
-          },
+          child: (state, context) => AntreeList(
+            _section(state),
+            isSeparated: true,
+            itemBuilder: (context, section, index) => section,
+            separatorBuilder: (context, section, index) => const Divider(
+              height: 30,
+              thickness: 5,
+              color: AntreeColors.separator,
+            ),
+          ),
         ),
       ),
     );
   }
 
-  List<Widget> get _section => [
-        ProfileSection(merchant?.user.name ?? '-'),
-        BlocSelector<SettingsBloc, SettingsState, Merchant?>(
-          bloc: _settingsBloc,
-          selector: (state) => state.merchant,
-          builder: (context, state) => MerchantStatusSection(
-              value: state?.isOpen ?? _sharedPrefsRepository.isOpen,
-              onChanged: (newValue) {
-                final merchantId = merchant?.id;
-                _sharedPrefsRepository.isOpen = newValue;
-                if (merchantId != null && merchantId != 0) {
-                  _settingsBloc.add(
-                      UpdateStatusMerchant(merchantId.toString(), newValue));
-                }
-              }),
-        ),
-        ConfigMerchantSection(state.data),
+  List<Widget> _section(SettingsState state) => [
+        ProfileSection(_name),
+        MerchantStatusSection(
+            value: state.data.isOpen,
+            onChanged: (newValue) =>
+                _settingsBloc.add(UpdateStatusMerchant(newValue))),
+        ConfigMerchantSection(state.configs),
         LogoutSection(
           onTapLogout: () {
             _loading.showLoadingDialog(context);

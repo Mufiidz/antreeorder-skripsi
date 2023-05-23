@@ -10,8 +10,7 @@ class ProductState extends BaseState<Product> {
       this.categories = const []});
 
   @override
-  List<Object> get props =>
-      [products, message, data, status, categories];
+  List<Object> get props => [products, message, data, status, categories];
 
   ProductState copyWith(
       {Product? data,

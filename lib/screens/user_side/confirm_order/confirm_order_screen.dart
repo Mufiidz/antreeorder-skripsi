@@ -139,7 +139,7 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
     final userId = _sharedPrefsRepository.id;
     if (widget.orders.isEmpty) return;
     if (userId == null) return;
-    final merchantId = widget.orders.first.product?.merchantId;
+    final merchantId = widget.orders.first.product?.merchant.id;
     if (merchantId == null) return;
     _dialog.showLoadingDialog(context);
     setState(() {

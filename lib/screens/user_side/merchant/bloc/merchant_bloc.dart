@@ -1,6 +1,6 @@
 import 'package:antreeorder/models/base_state2.dart';
 import 'package:antreeorder/models/merchant.dart';
-import 'package:antreeorder/repository/merchant_repository.dart';
+import 'package:antreeorder/repository/merchant_repository2.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -8,7 +8,7 @@ part 'merchant_event.dart';
 part 'merchant_state.dart';
 
 class MerchantBloc extends Bloc<MerchantEvent, MerchantState> {
-  final MerchantRepository _merchantRepository;
+  final MerchantRepository2 _merchantRepository;
 
   MerchantBloc(this._merchantRepository) : super(const MerchantState([])) {
     on<GetMerchants>((event, emit) async {

@@ -15,48 +15,35 @@ part 'settings_state.dart';
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   final MerchantRepository _merchantRepository;
   final SharedPrefsRepository _sharedPrefsRepository;
-  SettingsBloc(this._merchantRepository, this._sharedPrefsRepository)
-      : super(const SettingsState([])) {
-    on<GetSettings>((event, emit) {
-      final settings = [
-        ConfigMerch(
-            'Manage Product', 'Manage your product', const ProductScreen()),
-        ConfigMerch('Add Category', 'Add your category for product',
-            const CategoryScreen()),
-        ConfigMerch("Add Seat", "Add seat for customer", const AddSeatScreen())
-      ];
-      emit(state.copyWith(data: settings, status: StatusState.idle));
-    });
-    on<DetailMerchant>((event, emit) async {
-      emit(state.copyWith(status: StatusState.loading));
-      try {
-        final response =
-            await _merchantRepository.detailMerchant(event.merchantId);
-        final data = response.data;
-        emit(data != null
-            ? state.copyWith(
-                status: StatusState.idle, merchant: data, isLogout: false)
-            : state.copyWith(
-                status: StatusState.failure, message: response.message));
-      } catch (e) {
-        emit(state.copyWith(status: StatusState.failure, message: 'ERROR'));
-      }
-    });
+  SettingsBloc(this._sharedPrefsRepository, this._merchantRepository)
+      : super(const SettingsState(Merchant())) {
+    on<Initial>(
+      (event, emit) async {
+        emit(state.copyWith(status: StatusState.loading));
+        final response = await _merchantRepository.detailMerchant();
+        var newState = response.when(
+          data: (data, meta) =>
+              state.copyWith(data: data, status: StatusState.idle),
+          error: (message) =>
+              state.copyWith(status: StatusState.failure, message: message),
+        );
+        newState = newState.copyWith(configs: getSettings);
+        emit(newState);
+      },
+    );
     on<UpdateStatusMerchant>((event, emit) async {
-      try {
-        final response = await _merchantRepository.updateStatusMerchant(
-            event.merchantId, event.isOpen);
-        final data = response.data;
-        emit(data != null
-            ? state.copyWith(
-                status: StatusState.success,
-                merchant: data,
-                message: response.message)
-            : state.copyWith(
-                status: StatusState.failure, message: response.message));
-      } catch (e) {
-        emit(state.copyWith(status: StatusState.failure, message: 'ERROR'));
-      }
+      emit(state.copyWith(status: StatusState.loading));
+      final response = await _merchantRepository.updateStatusMerchant(event.isOpen);
+      final newState = response.when(
+        data: (data, meta) {
+          final message = 'Merchant now is ${data.isOpen ? 'Open' : 'Close'}';
+          return state.copyWith(
+              status: StatusState.idle, data: data, message: message);
+        },
+        error: (message) =>
+            state.copyWith(status: StatusState.failure, message: message),
+      );
+      emit(newState);
     });
     on<LogOut>((event, emit) {
       emit(state.copyWith(status: StatusState.loading));
@@ -72,4 +59,12 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       }
     });
   }
+
+  List<ConfigMerch> get getSettings => [
+        ConfigMerch(
+            'Manage Product', 'Manage your product', const ProductScreen()),
+        ConfigMerch('Add Category', 'Add your category for product',
+            const CategoryScreen()),
+        ConfigMerch("Add Seat", "Add seat for customer", const AddSeatScreen())
+      ];
 }

@@ -1,9 +1,10 @@
-import 'package:antreeorder/models/antree.dart';
+import 'package:antreeorder/config/api_client.dart';
 import 'package:antreeorder/models/api_response.dart';
+import 'package:antreeorder/models/base_response.dart';
 import 'package:antreeorder/models/merchant.dart';
 import 'package:antreeorder/models/product.dart';
 import 'package:antreeorder/models/seat.dart';
-import 'package:antreeorder/utils/export_utils.dart';
+import 'package:antreeorder/utils/const.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/http.dart';
 
@@ -16,6 +17,29 @@ abstract class MerchantApiClient {
   static const String id = 'id';
   static const String page = 'page';
   static const String isOpen = 'isOpen';
+  static const String merchantsPath = '/merchants';
+  static const String idPath = '/{id}';
+  static const String populate = 'populate';
+  static const String merchantWithIdPath = '$merchantsPath$idPath';
+
+  @POST(merchantsPath)
+  Future<BaseResponse<Merchant>> createMerchant(@Body() BaseBody data);
+
+  @PUT(merchantWithIdPath)
+  Future<BaseResponse<Merchant>> updateMerchant(
+      @Path(id) int id, @Body() BaseBody data);
+
+  @GET(merchantWithIdPath)
+  Future<BaseResponse<Merchant>> getMerchant(@Path(id) int id,
+      {@Query(populate) String query = "*"});
+
+  @GET(merchantsPath)
+  Future<BaseResponse<List<Merchant>>> getMerchants();
+
+  @DELETE(merchantWithIdPath)
+  Future<BaseResponse<Merchant>> deleteMerchant(@Path(id) int id);
+
+  // VVV DEPRECATED VVV
 
   @GET(ConstEndpoints.merchants)
   Future<ApiResponse<List<Merchant>>> merchants({@Query(page) int page = 1});
@@ -26,11 +50,12 @@ abstract class MerchantApiClient {
       {@Query(page) int page = 1});
 
   @GET(ConstEndpoints.antrianMerchants)
-  Future<ApiResponse<List<Antree>>> antrianMerchant(@Path(id) String merchantId,
+  Future<ApiResponse<List<Merchant>>> antrianMerchant(
+      @Path(id) String merchantId,
       {@Query('date') int? date});
 
   @GET(ConstEndpoints.antrianMerchants)
-  Stream<ApiResponse<List<Antree>>> streamAntrianMerchant(
+  Stream<ApiResponse<List<Merchant>>> streamAntrianMerchant(
       @Path(id) String merchantId);
 
   @GET(ConstEndpoints.detailMerchant)

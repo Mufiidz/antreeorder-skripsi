@@ -1,6 +1,8 @@
+import 'package:antreeorder/config/api_client.dart';
+import 'package:antreeorder/utils/export_utils.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:antreeorder/utils/string_ext.dart';
 
+import 'merchant.dart';
 import 'order.dart';
 
 part 'product.freezed.dart';
@@ -8,25 +10,26 @@ part 'product.g.dart';
 
 @freezed
 class Product with _$Product {
+  const Product._();
 
   @Assert('quantity >= 0')
   @Assert('price >= 0')
   factory Product(
       {@Default(0) int id,
-      @Default(0) int merchantId,
       @Default('') String title,
       @Default('') String category,
       @Default('') String description,
       @Default(0) int quantity,
-      @Default(0) int price}) = _Product;
+      @Default(0) int price,
+      @Default(true) bool isAvailable,
+      @Default(Merchant()) Merchant merchant}) = _Product;
 
   factory Product.fromJson(Map<String, dynamic> data) =>
       _$ProductFromJson(data);
 
   factory Product.fromMap(Map<String, dynamic> map) {
     return Product(
-      id: map['id'] ?? '',
-      merchantId: map['merchantId'] ?? '',
+      id: map['id'].toString().toInt(),
       title: map['title'] ?? '',
       category: map['category'] ?? '',
       description: map['desc'] ?? '',
@@ -38,4 +41,21 @@ class Product with _$Product {
 
 extension ProductExt on Product {
   Order toOrder() => Order(id, price: price, product: this);
+
+  BaseBody toAddProduct(int merchantId) => {
+        "title": title,
+        "price": price,
+        "description": description,
+        "category": category,
+        "quantity": quantity,
+        "merchant": merchantId
+      };
+
+  BaseBody get toUpdateProduct => {
+        "title": title,
+        "price": price,
+        "description": description,
+        "category": category,
+        "quantity": quantity,
+      };
 }

@@ -1,30 +1,33 @@
 part of 'settings_bloc.dart';
 
-class SettingsState extends BaseState<List<ConfigMerch>> {
-  final Merchant? merchant;
+class SettingsState extends BaseState<Merchant> {
+  final List<ConfigMerch> configs;
   final bool isLogout;
   const SettingsState(super.data,
-      {super.message, super.status, this.merchant, this.isLogout = false});
+      {super.message,
+      super.status,
+      this.configs = const [],
+      this.isLogout = false});
 
   @override
-  List<Object?> get props => [data, message, status, merchant];
+  List<Object?> get props => [data, message, status, configs];
 
   SettingsState copyWith(
-      {List<ConfigMerch>? data,
+      {Merchant? data,
       String? message,
       StatusState? status,
-      Merchant? merchant,
+      List<ConfigMerch>? configs,
       bool? isLogout}) {
     return SettingsState(data ?? this.data,
         message: message ?? this.message,
         status: status ?? this.status,
-        merchant: merchant ?? this.merchant,
+        configs: configs ?? this.configs,
         isLogout: isLogout ?? this.isLogout);
   }
 
   @override
   String toString() =>
-      'SettingsState(merchant: $merchant, data: $data, message: $message, status: $status, isLogout: $isLogout)';
+      'SettingsState(configs: $configs, data: $data, message: $message, status: $status, isLogout: $isLogout)';
 }
 
 class ConfigMerch {

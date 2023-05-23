@@ -3,6 +3,7 @@ import 'package:antreeorder/di/injection.dart';
 import 'package:antreeorder/models/base_state2.dart';
 import 'package:antreeorder/screens/merchant_side/category/bloc/category_bloc.dart';
 import 'package:antreeorder/utils/app_context_ext.dart';
+import 'package:antreeorder/utils/map_mapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -103,6 +104,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                             'category',
                             label: 'Category',
                             hint: 'Input category here',
+                            initialValue: '',
                           ),
                         ),
                       ),
@@ -127,15 +129,17 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   void addCategory() {
     var category = '';
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      category = _formKey.currentState?.value["category"];
-    }
+    final formKeyState = _formKey.currentState;
+    if (formKeyState == null) return;
+    if (!formKeyState.validate()) return;
+    formKeyState.save();
+
+    category = formKeyState.value["category"];
 
     if (category.isNotEmpty) {
       _categoryBloc.add(AddCategory(category));
     }
-    _formKey.currentState!.fields["category"]?.reset();
+    formKeyState.fields.resetForms();
   }
 
   @override

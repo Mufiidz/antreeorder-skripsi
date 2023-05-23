@@ -2,6 +2,7 @@ import 'package:antreeorder/config/antree_db.dart';
 import 'package:antreeorder/repository/antree_repository.dart';
 import 'package:antreeorder/repository/auth_repository.dart';
 import 'package:antreeorder/repository/merchant_repository.dart';
+import 'package:antreeorder/repository/merchant_repository2.dart';
 import 'package:antreeorder/repository/product_repository.dart';
 import 'package:antreeorder/repository/sharedprefs_repository.dart';
 import 'package:antreeorder/screens/login/bloc/login_bloc.dart';
@@ -27,12 +28,12 @@ abstract class BlocModule {
   @singleton
   @factoryMethod
   MerchantProductBloc merchantProductBloc(
-          MerchantRepository merchantRepository) =>
+          MerchantRepository2 merchantRepository) =>
       MerchantProductBloc(merchantRepository);
 
   @singleton
   @factoryMethod
-  MerchantBloc merchantBloc(MerchantRepository merchantRepository) =>
+  MerchantBloc merchantBloc(MerchantRepository2 merchantRepository) =>
       MerchantBloc(merchantRepository);
 
   @singleton
@@ -45,7 +46,7 @@ abstract class BlocModule {
 
   @singleton
   @factoryMethod
-  merchant_home.HomeBloc homeBloc(MerchantRepository merchantRepository,
+  merchant_home.HomeBloc homeBloc(MerchantRepository2 merchantRepository,
           AntreeRepository antreeRepository) =>
       merchant_home.HomeBloc(merchantRepository, antreeRepository);
 
@@ -53,13 +54,13 @@ abstract class BlocModule {
   @factoryMethod
   ProductBloc productBloc(
           ProductRepository productRepository,
-          MerchantRepository merchantRepository,
           AntreeDatabase antreeDatabase) =>
-      ProductBloc(productRepository, merchantRepository, antreeDatabase);
+      ProductBloc(productRepository, antreeDatabase);
 
   @singleton
   @factoryMethod
-  LoginBloc loginBloc(AuthRepository authRepository) => LoginBloc(authRepository);
+  LoginBloc loginBloc(AuthRepository authRepository) =>
+      LoginBloc(authRepository);
 
   @singleton
   @factoryMethod
@@ -79,9 +80,9 @@ abstract class BlocModule {
   @singleton
   @factoryMethod
   merchant_setting.SettingsBloc merchantSettingsBloc(
-          MerchantRepository merchantRepository,
-          SharedPrefsRepository sharedPrefsRepository) =>
-      merchant_setting.SettingsBloc(merchantRepository, sharedPrefsRepository);
+          SharedPrefsRepository sharedPrefsRepository,
+          MerchantRepository merchantRepository) =>
+      merchant_setting.SettingsBloc(sharedPrefsRepository, merchantRepository);
 
   @singleton
   @factoryMethod

@@ -7,25 +7,15 @@ abstract class SettingsEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class DetailMerchant extends SettingsEvent {
-  final String merchantId;
-
-  const DetailMerchant(this.merchantId);
-
-  @override
-  List<Object?> get props => [merchantId];
-}
-
-class GetSettings extends SettingsEvent {}
+class Initial extends SettingsEvent {}
 
 class UpdateStatusMerchant extends SettingsEvent {
-  final String merchantId;
   final bool isOpen;
 
-  const UpdateStatusMerchant(this.merchantId, this.isOpen);
+  const UpdateStatusMerchant(this.isOpen);
 
   @override
-  List<Object?> get props => [merchantId, isOpen];
+  List<Object?> get props => [isOpen];
 }
 
 class LogOut extends SettingsEvent {}

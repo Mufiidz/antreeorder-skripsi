@@ -40,8 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
       create: (context) => _loginBloc,
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: AntreeAppBar("", showBackButton: false, actions: const [
-        ]),
+        appBar: AntreeAppBar("", showBackButton: false, actions: const []),
         body: SafeArea(
           child: BlocListener<LoginBloc, LoginState>(
             bloc: _loginBloc,
@@ -89,6 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         FormBuilder(
           key: _formKey,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Column(
             children: [
               const AntreeTextField(

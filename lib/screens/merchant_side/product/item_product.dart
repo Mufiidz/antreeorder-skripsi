@@ -3,24 +3,26 @@ import 'package:antreeorder/screens/merchant_side/product/add_product_screen.dar
 import 'package:antreeorder/utils/export_utils.dart';
 import 'package:flutter/material.dart';
 
-typedef OnDeleteItem = void Function(String)?;
+typedef OnDeleteItem = void Function(int)?;
 
 class ItemProduct extends StatelessWidget {
   final Product product;
-  final OnDeleteItem? onDeleteItem;
+  final OnDeleteItem onDeleteItem;
   const ItemProduct(this.product, {Key? key, this.onDeleteItem})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(product.title),
-      subtitle: Text(product.description),
+      title: Text(product.title.isNotEmpty ? product.title : 'NO TITLE'),
+      subtitle:
+          Text(product.description.isNotEmpty ? product.description : '-'),
       onTap: () => AppRoute.to(AddProductScreen(
         product: product,
       )),
       trailing: IconButton(
-          onPressed: () => onDeleteItem!(product.id.toString()), icon: const Icon(Icons.delete)),
+          onPressed: () => onDeleteItem!(product.id),
+          icon: const Icon(Icons.delete)),
     );
   }
 }

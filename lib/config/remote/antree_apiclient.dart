@@ -1,5 +1,7 @@
+import 'package:antreeorder/config/api_client.dart';
 import 'package:antreeorder/models/antree.dart';
 import 'package:antreeorder/models/api_response.dart';
+import 'package:antreeorder/models/base_response.dart';
 import 'package:antreeorder/utils/export_utils.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
@@ -10,11 +12,31 @@ part 'antree_apiclient.g.dart';
 abstract class AntreeApiClient {
   factory AntreeApiClient(Dio dio, {String baseUrl}) = _AntreeApiClient;
 
+  static const String antreesPath = '/antrees';
+  static const String idPath = '/{id}';
+  static const String antreeWithIdPath = '$antreesPath$idPath';
   static const String id = 'id';
   static const String isVerify = 'isVerify';
   static const String statusId = 'statusId';
 
-  // Antree
+  @POST(antreesPath)
+  Future<BaseResponse<Antree>> createAntree(@Body() BaseBody data);
+
+  @PUT(antreeWithIdPath)
+  Future<BaseResponse<Antree>> updateAntree(
+      @Path(id) int id, @Body() BaseBody data);
+
+  @GET(antreeWithIdPath)
+  Future<BaseResponse<Antree>> getAntree(@Path(id) int id);
+
+  @GET(antreesPath)
+  Future<BaseResponse<List<Antree>>> getAntrees();
+
+  @DELETE(antreeWithIdPath)
+  Future<BaseResponse<Antree>> deleteAntree(@Path(id) int id);
+
+  // VVVV DEPRECATED VVVV
+
   @POST(ConstEndpoints.antree)
   Future<ApiResponse<Antree>> addAntree(@Body() Antree antree);
 

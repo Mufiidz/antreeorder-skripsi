@@ -4,7 +4,7 @@ import 'package:antreeorder/models/base_response.dart';
 import 'package:antreeorder/models/customer.dart';
 import 'package:antreeorder/models/merchant.dart';
 import 'package:antreeorder/models/user.dart';
-import 'package:antreeorder/utils/export_utils.dart';
+import 'package:antreeorder/utils/const.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/http.dart';
 
@@ -14,53 +14,52 @@ part 'auth_apiclient.g.dart';
 abstract class AuthApiClient {
   factory AuthApiClient(Dio dio, {String baseUrl}) = _AuthApiClient;
 
-  static const String _local = '/auth/local';
-  static const String _roles = '/users-permissions/roles';
-  static const String _users = '/users';
-  static const String _merchants = '/merchants';
-  static const String _customers = '/customers';
-  static const String _me = '$_users/me';
-  static const String _login = _local;
-  static const String _pathId = '/{id}';
-  static const String _userId = '$_users$_pathId';
-  static const String _merchantId = '$_merchants$_pathId';
-  static const String _customerId = '$_customers$_pathId';
+  static const String roles = '/users-permissions/roles';
+  static const String users = '/users';
+  static const String merchants = '/merchants';
+  static const String customers = '/customers';
+  static const String mePath = '$users/me';
+  static const String loginPath = '/auth/local';
+  static const String pathId = '/{id}';
+  static const String userId = '$users$pathId';
+  static const String merchantId = '$merchants$pathId';
+  static const String customerId = '$customers$pathId';
+  static const String id = 'id';
+  static const String populate = 'populate';
 
-  static const String _id = 'id';
-  static const String _populate = 'populate';
-
-  @POST(_users)
+  @POST(users)
   Future<User> register(@Body() Map<String, dynamic> register);
 
-  @POST(_login)
+  @POST(loginPath)
   Future<LoginResponse> login(@Body() Map<String, String> login);
 
-  @GET(_roles)
+  @GET(roles)
   Future<RoleResponse> getRoles();
 
-  @GET(_me)
+  @GET(mePath)
   Future<User> me();
 
-  @GET(_userId)
-  Future<User> detailUser(@Path(_id) int userId,
-      {@Query(_populate) String query = "*"});
+  @GET(userId)
+  Future<User> detailUser(@Path(id) int userId,
+      {@Query(populate) String query = "*"});
 
-  @POST(_merchants)
+  @POST(merchants)
   Future<BaseResponse<Merchant>> addMerchant(
       {@Body() Map<String, dynamic> data = const {"data": {}}});
 
-  @POST(_customers)
+  @POST(customers)
   Future<BaseResponse<Customer>> addCustomer(
       {@Body() Map<String, dynamic> data = const {"data": {}}});
 
-  @PUT(_merchantId)
+  @PUT(merchantId)
   Future<BaseResponse<Merchant>> updateMerchant(
-      @Path(_id) int merchantId, @Body() Map<String, dynamic> mapUserDetail);
+      @Path(id) int merchantId, @Body() Map<String, dynamic> mapUserDetail);
 
-  @PUT(_customerId)
+  @PUT(customerId)
   Future<BaseResponse<Customer>> updateCustomer(
-      @Path(_id) int customerId, @Body() Map<String, dynamic> mapUserDetail);
+      @Path(id) int customerId, @Body() Map<String, dynamic> mapUserDetail);
 
-  @PUT(_userId)
-  Future<User> updateUser(@Path(_id) int userId, @Body() Map<String, dynamic> user);
+  @PUT(userId)
+  Future<User> updateUser(
+      @Path(id) int userId, @Body() Map<String, dynamic> user);
 }

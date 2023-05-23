@@ -1,4 +1,5 @@
-import 'package:antreeorder/models/api_response.dart';
+import 'package:antreeorder/config/api_client.dart';
+import 'package:antreeorder/models/base_response.dart';
 import 'package:antreeorder/models/product.dart';
 import 'package:antreeorder/utils/export_utils.dart';
 import 'package:dio/dio.dart';
@@ -10,19 +11,28 @@ part 'product_apiclient.g.dart';
 abstract class ProductApiClient {
   factory ProductApiClient(Dio dio, {String baseUrl}) = _ProductApiClient;
 
+  static const String productsPath = '/products';
+  static const String idPath = '/{id}';
+  static const String productWithIdPath = '$productsPath$idPath';
   static const String id = 'id';
-  static const String page = 'page';
 
-  @POST(ConstEndpoints.products)
-  Future<ApiResponse<Product>> addProduct(@Body() Product product);
+  @POST(productsPath)
+  Future<BaseResponse<Product>> createProduct(@Body() BaseBody data);
 
-  @PUT(ConstEndpoints.productId)
-  Future<ApiResponse<Product>> updateProduct(
-      @Path(id) String productId, @Body() Product product);
+  @PUT(productWithIdPath)
+  Future<BaseResponse<Product>> updateProduct(
+      @Path(id) int id, @Body() BaseBody data);
 
-  @GET(ConstEndpoints.productId)
-  Future<ApiResponse<Product>> detailProduct(@Path(id) String productId);
+  @GET(productWithIdPath)
+  Future<BaseResponse<Product>> getProduct(@Path(id) int id);
 
-  @DELETE(ConstEndpoints.productId)
-  Future<ApiResponse<String>> deleteProduct(@Path(id) String productId);
+  @GET(productsPath)
+  Future<BaseResponse<List<Product>>> getProducts();
+
+  @GET(productsPath)
+  Future<BaseResponse<List<Product>>> getMerchantProducts(
+      @Query('filters[merchant]') int merchantId);
+
+  @DELETE(productWithIdPath)
+  Future<BaseResponse<Product>> deleteProduct(@Path(id) int id);
 }

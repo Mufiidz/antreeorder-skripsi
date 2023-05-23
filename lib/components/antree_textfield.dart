@@ -31,7 +31,6 @@ class AntreeTextField extends StatelessWidget {
     return FormBuilderTextField(
       name: name,
       initialValue: initialValue,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
       textCapitalization: textCapitalization,
       keyboardType: keyboardType,
       textInputAction: TextInputAction.next,

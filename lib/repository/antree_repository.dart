@@ -3,10 +3,11 @@ import 'package:antreeorder/models/antree.dart';
 import 'package:antreeorder/models/order.dart' as order;
 import 'package:antreeorder/models/api_response.dart';
 import 'package:antreeorder/utils/export_utils.dart';
+import 'package:antreeorder/utils/response_result.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
-import 'merchant_repository.dart';
+import 'merchant_repository2.dart';
 import 'product_repository.dart';
 
 abstract class AntreeRepository {
@@ -22,7 +23,7 @@ abstract class AntreeRepository {
 class AntreeRepositoryImpl implements AntreeRepository {
   final ApiClient _apiClient;
   final ProductRepository _productRepository;
-  final MerchantRepository _merchantRepository;
+  final MerchantRepository2 _merchantRepository;
   final CancelToken _cancelToken;
 
   @factoryMethod
@@ -59,9 +60,10 @@ class AntreeRepositoryImpl implements AntreeRepository {
             .detailMerchant(antree.merchantId.toString());
 
         for (var order in antree.orders) {
-          final productResponse = await _productRepository
-              .detailProduct(order.productId.toString());
-          order = order.copyWith(product: productResponse.data);
+          final productResponse =
+              await _productRepository.detailProduct(order.productId);
+          order = order.copyWith(
+              product: (productResponse as ResponseResultData).data);
           newOrders.add(order);
         }
         data = data

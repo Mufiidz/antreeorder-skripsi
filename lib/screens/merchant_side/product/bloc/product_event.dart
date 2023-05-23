@@ -14,11 +14,9 @@ class AddProduct extends ProductEvent {
 }
 
 class MerchantProducts extends ProductEvent {
-  final String merchantId;
-
-  const MerchantProducts(this.merchantId);
+  const MerchantProducts();
   @override
-  List<Object?> get props => [merchantId];
+  List<Object?> get props => [];
 }
 
 class UpdateProduct extends ProductEvent {
@@ -31,7 +29,7 @@ class UpdateProduct extends ProductEvent {
 }
 
 class DeleteProduct extends ProductEvent {
-  final String productId;
+  final int productId;
 
   const DeleteProduct(this.productId);
   @override

@@ -1,4 +1,5 @@
 import 'package:antreeorder/models/account.dart';
+import 'package:antreeorder/models/user.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -9,7 +10,6 @@ class SharedPrefsRepository {
   SharedPrefsRepository(@factoryMethod this._sharedPreferences);
 
   final String _accountKey = 'account';
-  final String _isOpen = 'isOpen';
 
   Account? get account {
     final data = _sharedPreferences.getString(_accountKey);
@@ -22,16 +22,8 @@ class SharedPrefsRepository {
     }
   }
 
-  int? get id {
-    if (account == null) return null;
-    return account?.user.id;
-  }
-
-  set id(int? id) => id;
-
-  bool get isOpen => _sharedPreferences.getBool(_isOpen) ?? false;
-
-  set isOpen(bool isOpen) => _sharedPreferences.setBool(_isOpen, isOpen);
+  int get id => user.id;
+  User get user => account?.user ?? User();
 
   void onLogout() {
     _sharedPreferences.remove(_accountKey);

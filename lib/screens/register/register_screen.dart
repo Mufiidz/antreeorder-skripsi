@@ -83,6 +83,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
         FormBuilder(
           key: _formKey,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Column(
             children: [
               AntreeDropdown(

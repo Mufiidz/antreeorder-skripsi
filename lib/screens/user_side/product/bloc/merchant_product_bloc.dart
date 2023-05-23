@@ -7,14 +7,14 @@ import 'package:antreeorder/models/base_state2.dart';
 import 'package:antreeorder/models/order.dart';
 import 'package:antreeorder/models/page.dart';
 import 'package:antreeorder/models/product.dart';
-import 'package:antreeorder/repository/merchant_repository.dart';
+import 'package:antreeorder/repository/merchant_repository2.dart';
 
 part 'merchant_product_event.dart';
 part 'merchant_product_state.dart';
 
 class MerchantProductBloc
     extends Bloc<MerchantProductEvent, MerchantProductState> {
-  final MerchantRepository _merchantRepository;
+  final MerchantRepository2 _merchantRepository;
   var products = <Product>[];
   int tempPrice = 0;
 

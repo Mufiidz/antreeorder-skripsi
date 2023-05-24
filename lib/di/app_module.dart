@@ -1,8 +1,8 @@
 import 'package:antreeorder/components/antree_loading_dialog.dart';
 import 'package:antreeorder/config/antree_db.dart';
 import 'package:antreeorder/config/api_client.dart';
-import 'package:antreeorder/config/local/category_dao.dart';
-import 'package:antreeorder/config/local/role_dao.dart';
+import 'package:antreeorder/config/local/dao/category_dao.dart';
+import 'package:antreeorder/config/local/dao/role_dao.dart';
 import 'package:antreeorder/repository/sharedprefs_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
@@ -51,6 +51,7 @@ abstract class AppModule {
   ApiClient apiClient(Dio dio) => ApiClient(dio);
 
   @preResolve
+  @singleton
   Future<SharedPreferences> get prefs => SharedPreferences.getInstance();
 
   @singleton

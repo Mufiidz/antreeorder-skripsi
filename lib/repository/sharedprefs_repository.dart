@@ -1,13 +1,16 @@
+import 'package:antreeorder/config/local/dao/category_dao.dart';
 import 'package:antreeorder/models/account.dart';
 import 'package:antreeorder/models/user.dart';
+import 'package:antreeorder/utils/export_utils.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 @injectable
 class SharedPrefsRepository {
   final SharedPreferences _sharedPreferences;
+  final CategoryDao _categoryDao;
 
-  SharedPrefsRepository(@factoryMethod this._sharedPreferences);
+  SharedPrefsRepository(this._sharedPreferences, this._categoryDao);
 
   final String _accountKey = 'account';
 
@@ -26,7 +29,12 @@ class SharedPrefsRepository {
   User get user => account?.user ?? User();
 
   void onLogout() {
-    _sharedPreferences.remove(_accountKey);
+    try {
+      _categoryDao.deleteAll();
+      _sharedPreferences.remove(_accountKey);
+    } catch (e) {
+      logger.e(e);
+    }
     if (account != null) {
       account = null;
     }

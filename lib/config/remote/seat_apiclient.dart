@@ -27,7 +27,8 @@ abstract class SeatApiClient {
   Future<BaseResponse<Seat>> getSeat(@Path(id) int id);
 
   @GET(seatsPath)
-  Future<BaseResponse<List<Seat>>> getSeats();
+  Future<BaseResponse<List<Seat>>> getSeats(
+      @Query('filters[merchant]') int merchantId);
 
   @DELETE(seatWithIdPath)
   Future<BaseResponse<Seat>> deleteSeat(@Path(id) int id);

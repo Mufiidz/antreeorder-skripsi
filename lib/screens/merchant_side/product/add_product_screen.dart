@@ -4,7 +4,6 @@ import 'package:antreeorder/models/base_state2.dart';
 import 'package:antreeorder/models/product.dart';
 import 'package:antreeorder/screens/merchant_side/product/bloc/product_bloc.dart';
 import 'package:antreeorder/utils/export_utils.dart';
-import 'package:antreeorder/utils/map_mapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';

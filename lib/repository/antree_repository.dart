@@ -1,83 +1,67 @@
+import 'package:antreeorder/config/antree_db.dart';
 import 'package:antreeorder/config/api_client.dart';
 import 'package:antreeorder/models/antree.dart';
-import 'package:antreeorder/models/order.dart' as order;
-import 'package:antreeorder/models/api_response.dart';
-import 'package:antreeorder/utils/export_utils.dart';
+import 'package:antreeorder/models/status_antree.dart';
+import 'package:antreeorder/repository/sharedprefs_repository.dart';
+import 'package:antreeorder/utils/map_mapper.dart';
 import 'package:antreeorder/utils/response_result.dart';
-import 'package:dio/dio.dart';
+import 'package:antreeorder/utils/retrofit_ext.dart';
 import 'package:injectable/injectable.dart';
 
-import 'merchant_repository2.dart';
-import 'product_repository.dart';
-
 abstract class AntreeRepository {
-  Future<ApiResponse<Antree>> add(Antree antree);
-  Future<ApiResponse<Antree>> detail(String antreeId);
-  Future<ApiResponse<Antree>> pickup(String antreeId, bool isVerify);
-  Future<ApiResponse<List<Antree>>> listAntree(String userId);
-  Future<ApiResponse<Antree>> updateStatusAntree(String antreeId, int statusId);
-  void cancelRequest({String? reason});
+  Future<ResponseResult<List<Antree>>> getMerchantAntrees();
+  Future<ResponseResult<List<Antree>>> getCustomerAntrees();
+  Future<ResponseResult<List<StatusAntree>>> getStatusAntree();
+  Future<ResponseResult<Antree>> updateStatusAntree(Antree antree);
 }
 
 @Injectable(as: AntreeRepository)
 class AntreeRepositoryImpl implements AntreeRepository {
   final ApiClient _apiClient;
-  final ProductRepository _productRepository;
-  final MerchantRepository2 _merchantRepository;
-  final CancelToken _cancelToken;
+  final SharedPrefsRepository _sharedPrefsRepository;
+  final AntreeDatabase _antreeDatabase;
 
   @factoryMethod
-  AntreeRepositoryImpl(this._apiClient, this._cancelToken,
-      this._productRepository, this._merchantRepository);
+  AntreeRepositoryImpl(
+      this._apiClient, this._sharedPrefsRepository, this._antreeDatabase);
 
   @override
-  Future<ApiResponse<Antree>> add(Antree antree) =>
-      _apiClient.antree.addAntree(antree).awaitResult;
-
-  @override
-  Future<ApiResponse<Antree>> detail(String antreeId) =>
-      _apiClient.antree.detailAntree(antreeId).awaitResult;
-
-  @override
-  Future<ApiResponse<Antree>> pickup(String antreeId, bool isVerify) =>
-      _apiClient.antree.pickupAntree(antreeId, isVerify);
-
-  @override
-  Future<ApiResponse<Antree>> updateStatusAntree(
-          String antreeId, int statusId) =>
-      _apiClient.antree.updateStatusAntree(antreeId, statusId).awaitResult;
-
-  @override
-  Future<ApiResponse<List<Antree>>> listAntree(String userId) async {
-    var response = await _apiClient.antree
-        .listAntree(userId, _cancelToken, date: 5)
-        .awaitResult;
-    List<Antree> data = response.data ?? [];
-    if (response.code == 200 && data.isNotEmpty) {
-      for (var antree in data) {
-        List<order.Order> newOrders = [];
-        final merchantResponse = await _merchantRepository
-            .detailMerchant(antree.merchantId.toString());
-
-        for (var order in antree.orders) {
-          final productResponse =
-              await _productRepository.detailProduct(order.productId);
-          order = order.copyWith(
-              product: (productResponse as ResponseResultData).data);
-          newOrders.add(order);
-        }
-        data = data
-            .map((antree) => antree.copyWith(
-                merchant: merchantResponse.data ?? antree.merchant,
-                orders: newOrders))
-            .toList();
-        logger.d(data);
-        response = response.copyWith(data: data);
-      }
-    }
-    return response;
+  Future<ResponseResult<List<Antree>>> getCustomerAntrees() async {
+    final int customerId = _sharedPrefsRepository.user.customerId;
+    if (customerId == 0) return ResponseResult.error('Customer Id is empty');
+    return _apiClient.antree.getCustomerAntrees(customerId).awaitResponse;
   }
 
   @override
-  void cancelRequest({String? reason}) => _cancelToken.cancel(reason);
+  Future<ResponseResult<List<Antree>>> getMerchantAntrees() async {
+    final int merchantId = _sharedPrefsRepository.user.merchantId;
+    if (merchantId == 0) return ResponseResult.error('Merchant Id is empty');
+    return _apiClient.antree.getMerchantAntrees(merchantId).awaitResponse;
+  }
+
+  @override
+  Future<ResponseResult<Antree>> updateStatusAntree(Antree antree) async {
+    if (antree.id == 0) return ResponseResult.error('Antree Id is empty');
+    return _apiClient.antree
+        .updateAntree(antree.id, antree.toUpdateStatus.wrapWithData)
+        .awaitResponse;
+  }
+
+  @override
+  Future<ResponseResult<List<StatusAntree>>> getStatusAntree() async {
+    List<StatusAntree> statusAntree =
+        await _antreeDatabase.statusAntreeDao.statusesAntree();
+    if (statusAntree.isNotEmpty) return ResponseResult.data(statusAntree, null);
+    ResponseResult<List<StatusAntree>> response =
+        await _apiClient.antree.getStatuses().awaitResponse;
+    response = response.when(
+      data: (data, meta) {
+        data.forEach((element) =>
+            _antreeDatabase.statusAntreeDao.addStatusAntree(element));
+        return ResponseResult.data(data, meta);
+      },
+      error: (message) => ResponseResult.error(message),
+    );
+    return response;
+  }
 }

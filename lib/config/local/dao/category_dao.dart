@@ -18,4 +18,6 @@ class CategoryDao extends DatabaseAccessor<AntreeDatabase>
   Future<int> deleteCategory(String category) async =>
       await (delete(this.category)..where((tbl) => tbl.title.equals(category)))
           .go();
+
+  void deleteAll() async => await delete(this.category).go();
 }

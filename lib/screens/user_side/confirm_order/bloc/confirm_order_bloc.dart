@@ -1,7 +1,7 @@
 import 'package:antreeorder/models/antree.dart';
 import 'package:antreeorder/models/order.dart';
 import 'package:antreeorder/models/summary.dart';
-import 'package:antreeorder/repository/antree_repository.dart';
+import 'package:antreeorder/repository/antree_repository2.dart';
 import 'package:antreeorder/utils/export_utils.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -15,7 +15,7 @@ class ConfirmOrderBloc extends Bloc<ConfirmOrderEvent, ConfirmOrderState> {
   final List<Summary> _summaries = [];
   int _total = 0;
   int _subTotal = 0;
-  final AntreeRepository _antreeRepository;
+  final AntreeRepository2 _antreeRepository;
   ConfirmOrderBloc(this._antreeRepository) : super(const ConfirmOrderState(0)) {
     on<GetInitialConfirm>((event, emit) {
       if (_subTotal != 0 || _summaries.isNotEmpty || _total != 0) {

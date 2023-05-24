@@ -1,5 +1,6 @@
 import 'package:antreeorder/config/antree_db.dart';
 import 'package:antreeorder/repository/antree_repository.dart';
+import 'package:antreeorder/repository/antree_repository2.dart';
 import 'package:antreeorder/repository/auth_repository.dart';
 import 'package:antreeorder/repository/merchant_repository.dart';
 import 'package:antreeorder/repository/merchant_repository2.dart';
@@ -38,7 +39,7 @@ abstract class BlocModule {
 
   @singleton
   @factoryMethod
-  ConfirmOrderBloc confirmOrderBloc(AntreeRepository antreeRepository) =>
+  ConfirmOrderBloc confirmOrderBloc(AntreeRepository2 antreeRepository) =>
       ConfirmOrderBloc(antreeRepository);
 
   @lazySingleton
@@ -46,15 +47,14 @@ abstract class BlocModule {
 
   @singleton
   @factoryMethod
-  merchant_home.HomeBloc homeBloc(MerchantRepository2 merchantRepository,
-          AntreeRepository antreeRepository) =>
-      merchant_home.HomeBloc(merchantRepository, antreeRepository);
+  merchant_home.HomeBloc homeBloc(AntreeRepository antreeRepository,
+          AntreeRepository2 antreeRepository2) =>
+      merchant_home.HomeBloc(antreeRepository, antreeRepository2);
 
   @singleton
   @factoryMethod
   ProductBloc productBloc(
-          ProductRepository productRepository,
-          AntreeDatabase antreeDatabase) =>
+          ProductRepository productRepository, AntreeDatabase antreeDatabase) =>
       ProductBloc(productRepository, antreeDatabase);
 
   @singleton
@@ -69,7 +69,7 @@ abstract class BlocModule {
 
   @singleton
   @factoryMethod
-  HomeBloc userHomeBloc(AntreeRepository antreeRepository) =>
+  HomeBloc userHomeBloc(AntreeRepository2 antreeRepository) =>
       HomeBloc(antreeRepository);
 
   @singleton

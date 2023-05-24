@@ -5,11 +5,10 @@ abstract class HomeEvent extends Equatable {
 }
 
 class GetAntrians extends HomeEvent {
-  final String merchantId;
 
-  const GetAntrians(this.merchantId);
+  const GetAntrians();
   @override
-  List<Object?> get props => [merchantId];
+  List<Object?> get props => [];
 }
 
 class GetAntrians2 extends HomeEvent {

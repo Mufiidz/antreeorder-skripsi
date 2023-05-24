@@ -1,55 +1,47 @@
-import 'package:equatable/equatable.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:antreeorder/config/api_client.dart';
+import 'package:antreeorder/utils/export_utils.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'merchant.dart';
+
+part 'seat.freezed.dart';
 part 'seat.g.dart';
 
-@JsonSerializable()
-class Seat extends Equatable {
-  final int id;
-  final String title;
-  final String description;
-  final int quantity;
-  final int capacity;
+@freezed
+class Seat with _$Seat {
+  const Seat._();
+  const factory Seat(
+      {@Default(0) int id,
+      @Default('') String title,
+      @Default('') String description,
+      @Default(0) int quantity,
+      @Default(0) int capacity,
+      @Default(Merchant()) Merchant merchant}) = _Seat;
 
-  const Seat(this.id,
-      {this.title = '',
-      this.description = '',
-      this.quantity = 0,
-      this.capacity = 0});
+  factory Seat.fromJson(Map<String, dynamic> json) => _$SeatFromJson(json);
 
-  factory Seat.fromJson(Map<String, dynamic> data) => _$SeatFromJson(data);
+  factory Seat.fromMap(Map<String, dynamic> map) => _$_Seat(
+        id: map['id'].toString().toInt(),
+        title: map['title'] as String? ?? '',
+        description: map['description'] as String? ?? '',
+        quantity: map['quantity'].toString().toInt(),
+        capacity: map['capacity'].toString().toInt(),
+        merchant: map['merchant'] == null
+            ? const Merchant()
+            : Merchant.fromJson(map['merchant'] as Map<String, dynamic>),
+      );
 
-  Map<String, dynamic> toJson() => _$SeatToJson(this);
-
-  Seat copyWith({
-    int? id,
-    String? title,
-    String? description,
-    int? quantity,
-    int? capacity,
-  }) {
-    return Seat(
-      id ?? this.id,
-      title: title ?? this.title,
-      description: description ?? this.description,
-      quantity: quantity ?? this.quantity,
-      capacity: capacity ?? this.capacity,
-    );
-  }
-
-  @override
-  String toString() {
-    return 'Seat(id: $id, title: $title, description: $description, quantity: $quantity, capacity: $capacity)';
-  }
-
-  @override
-  List<Object> get props {
-    return [
-      id,
-      title,
-      description,
-      quantity,
-      capacity,
-    ];
-  }
+  BaseBody toAddSeat(int merchantId) => {
+        "title": title,
+        "description": description,
+        "quantity": quantity,
+        "capacity": capacity,
+        "merchant": merchantId
+      };
+  BaseBody get toUpdateSeat => {
+        "title": title,
+        "description": description,
+        "quantity": quantity,
+        "capacity": capacity,
+      };
 }

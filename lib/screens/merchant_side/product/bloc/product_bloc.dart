@@ -1,5 +1,5 @@
 import 'package:antreeorder/config/antree_db.dart';
-import 'package:antreeorder/config/local/category_dao.dart';
+import 'package:antreeorder/config/local/dao/category_dao.dart';
 import 'package:antreeorder/models/base_state2.dart';
 import 'package:antreeorder/models/product.dart';
 import 'package:antreeorder/repository/product_repository.dart';

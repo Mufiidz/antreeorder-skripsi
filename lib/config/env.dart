@@ -7,4 +7,7 @@ abstract class Env {
   
   @EnviedField(varName: 'BASE_URL')
   static const String baseUrl = _Env.baseUrl;
+
+  @EnviedField(varName: 'DB_FILENAME')
+  static const String dbFileName = _Env.dbFileName;
 }

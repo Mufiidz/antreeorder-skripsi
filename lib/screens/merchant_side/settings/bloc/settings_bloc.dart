@@ -15,6 +15,7 @@ part 'settings_state.dart';
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   final MerchantRepository _merchantRepository;
   final SharedPrefsRepository _sharedPrefsRepository;
+  
   SettingsBloc(this._sharedPrefsRepository, this._merchantRepository)
       : super(const SettingsState(Merchant())) {
     on<Initial>(

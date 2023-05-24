@@ -17,15 +17,10 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late final HomeBloc _homeBloc;
-  late final String merchantId;
   @override
   void initState() {
     _homeBloc = getIt<HomeBloc>();
-    // final merchant = getIt<SharedPrefsRepository>().account?.merchant;
-    merchantId = '';
-    if (merchantId.isNotEmpty) {
-      _homeBloc.add(GetAntrians(merchantId));
-    }
+    _homeBloc.add(GetAntrians());
     super.initState();
   }
 
@@ -44,24 +39,16 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         body: RefreshIndicator(
-          onRefresh: () async {
-            if (merchantId.isNotEmpty) {
-              _homeBloc.add(GetAntrians(merchantId));
-            }
-          },
+          onRefresh: () async => _homeBloc.add(GetAntrians()),
           child: AntreeState<HomeBloc, HomeState>(
             _homeBloc,
-            onRetry: () {
-              if (merchantId.isNotEmpty) {
-                _homeBloc.add(GetAntrians(merchantId));
-              }
-            },
+            onRetry: () => _homeBloc.add(GetAntrians()),
             child: (state, context) => ListView.builder(
               itemBuilder: (context, index) {
                 final antree = state.data[index];
                 return ItemHome(antree,
-                    onSwipeChange: (statusId) => _homeBloc
-                        .add(UpadateStatusAntree(antree.id.toString(), statusId)));
+                    onSwipeChange: (statusId) => _homeBloc.add(
+                        UpadateStatusAntree(antree.id.toString(), statusId)));
               },
               itemCount: state.data.length,
             ),

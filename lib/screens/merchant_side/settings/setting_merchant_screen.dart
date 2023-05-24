@@ -48,6 +48,7 @@ class _SettingMerchantScreenState extends State<SettingMerchantScreen>
         body: AntreeState<SettingsBloc, SettingsState>(
           _settingsBloc,
           loadingDialog: _loading,
+          onRetry: () => _settingsBloc.add(Initial()),
           onSuccess: (context, state) {
             if (state.isLogout) {
               context.snackbar.showSnackBar(AntreeSnackbar(state.message));

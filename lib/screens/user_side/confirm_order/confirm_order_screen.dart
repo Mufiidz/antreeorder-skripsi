@@ -4,7 +4,6 @@ import 'package:antreeorder/models/antree.dart';
 import 'package:antreeorder/models/base_state2.dart';
 import 'package:antreeorder/models/order.dart';
 import 'package:antreeorder/models/summary.dart';
-import 'package:antreeorder/repository/sharedprefs_repository.dart';
 import 'package:antreeorder/res/custom_color.dart';
 import 'package:antreeorder/screens/user_side/home/home_screen.dart';
 import 'package:antreeorder/utils/export_utils.dart';
@@ -27,7 +26,6 @@ class ConfirmOrderScreen extends StatefulWidget {
 class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
   late final ConfirmOrderBloc _confirmOrderBloc;
   late final AntreeLoadingDialog _dialog;
-  late final SharedPrefsRepository _sharedPrefsRepository;
   bool _isEnabledBack = true;
   bool _isSuccess = false;
 
@@ -37,7 +35,6 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
       ..add(GetInitialConfirm(
           widget.orders, Summary(title: 'Biaya Layanan', price: 1000)));
     _dialog = getIt<AntreeLoadingDialog>();
-    _sharedPrefsRepository = getIt<SharedPrefsRepository>();
     super.initState();
   }
 
@@ -136,9 +133,7 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
   }
 
   void _antree(ConfirmOrderState state) {
-    final userId = _sharedPrefsRepository.id;
     if (widget.orders.isEmpty) return;
-    if (userId == null) return;
     final merchantId = widget.orders.first.product?.merchant.id;
     if (merchantId == null) return;
     _dialog.showLoadingDialog(context);
@@ -148,9 +143,7 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
 
     final antree = Antree(
         totalPrice: state.data,
-        orders: widget.orders,
-        merchantId: merchantId,
-        userId: userId);
+        orders: widget.orders,);
     _confirmOrderBloc.add(AddAntree(antree));
   }
 

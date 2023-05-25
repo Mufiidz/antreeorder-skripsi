@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-typedef OnItemBuilder<Item> = Widget Function(BuildContext context, Item item, int index);
+typedef OnItemBuilder<Item> = Widget Function(
+    BuildContext context, Item item, int index);
 
 class AntreeList<T> extends StatelessWidget {
   final bool isSeparated;
@@ -11,6 +12,7 @@ class AntreeList<T> extends StatelessWidget {
   final ScrollPhysics? scrollPhysics;
   final ScrollController? controller;
   final EdgeInsetsGeometry? padding;
+  final Axis scrollDirection;
   const AntreeList(this.list,
       {super.key,
       required this.itemBuilder,
@@ -19,12 +21,14 @@ class AntreeList<T> extends StatelessWidget {
       this.shrinkWrap = false,
       this.scrollPhysics,
       this.controller,
-      this.padding});
+      this.padding,
+      this.scrollDirection = Axis.vertical});
 
   @override
   Widget build(BuildContext context) {
     return !isSeparated
         ? ListView.builder(
+            scrollDirection: scrollDirection,
             padding: padding,
             shrinkWrap: shrinkWrap,
             physics: scrollPhysics,
@@ -35,6 +39,7 @@ class AntreeList<T> extends StatelessWidget {
           )
         : ListView.separated(
             padding: padding,
+            scrollDirection: scrollDirection,
             shrinkWrap: shrinkWrap,
             physics: scrollPhysics,
             controller: controller,

@@ -1,6 +1,5 @@
 import 'package:antreeorder/components/export_components.dart';
 import 'package:antreeorder/di/injection.dart';
-import 'package:antreeorder/repository/sharedprefs_repository.dart';
 import 'package:antreeorder/screens/user_side/home/bloc/home_bloc.dart';
 import 'package:antreeorder/screens/user_side/merchant/choose_merchant_screen.dart';
 import 'package:antreeorder/screens/user_side/setting/setting_user_screen.dart';
@@ -19,16 +18,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late final HomeBloc _homeBloc;
-  late final String userId;
 
   @override
   void initState() {
     _homeBloc = getIt<HomeBloc>();
-    final sharedPrefs = getIt<SharedPrefsRepository>();
-    userId = sharedPrefs.id.toString();
-    if (userId.isNotEmpty) {
-      _homeBloc.add(GetAntrians(userId));
-    }
+    _homeBloc.add(GetAntrians());
     super.initState();
   }
 
@@ -50,10 +44,10 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         body: RefreshIndicator(
-          onRefresh: () async => _homeBloc.add(GetAntrians(userId)),
+          onRefresh: () async => _homeBloc.add(GetAntrians()),
           child: AntreeState<HomeBloc, HomeState>(
             _homeBloc,
-            onRetry: () => _homeBloc.add(GetAntrians(userId)),
+            onRetry: () => _homeBloc.add(GetAntrians()),
             child: (state, context) => GridView.builder(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

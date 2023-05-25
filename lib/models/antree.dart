@@ -4,6 +4,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'customer.dart';
 import 'merchant.dart';
 import 'order.dart';
+import 'seat.dart';
 import 'status_antree.dart';
 
 part 'antree.freezed.dart';
@@ -19,8 +20,9 @@ class Antree with _$Antree {
     @Default([]) List<Order> orders,
     @Default(StatusAntree()) StatusAntree status,
     @Default(false) bool isVerify,
-    @Default(0) @JsonKey(name: 'nomor_antri') int antreeNum,
-    @Default(0) int remaining,
+    @JsonKey(name: 'nomorAntree') int? antreeNum,
+    int? remaining,
+    @Default(Seat()) Seat seat,
     DateTime? createdAt,
     DateTime? updatedAt,
     @Default(Merchant()) Merchant merchant,

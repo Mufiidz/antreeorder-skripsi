@@ -47,7 +47,7 @@ class AntreeScreen extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
                   child: AntreeButton(
                     "Home",
-                    onclick: () {},
+                    onclick: () => AppRoute.back(),
                   ),
                 ),
               )

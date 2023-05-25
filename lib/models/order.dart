@@ -1,3 +1,4 @@
+import 'package:antreeorder/config/api_client.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -7,13 +8,18 @@ part 'order.g.dart';
 
 @JsonSerializable()
 class Order extends Equatable {
+  final int id;
   final int productId;
   final String note;
   int quantity;
   final int price;
+  final String title;
   @JsonKey(includeFromJson: false, includeToJson: false)
   Product? product;
-  Order(this.productId, {
+  Order({
+    this.productId = 0,
+    this.id = 0,
+    this.title = '',
     this.note = '',
     this.quantity = 1,
     this.price = 0,
@@ -21,15 +27,19 @@ class Order extends Equatable {
   });
 
   Order copyWith({
+    int? id,
     int? productId,
     String? note,
+    String? title,
     int? quantity,
     int? price,
     Product? product,
   }) {
     return Order(
-      productId ?? this.productId,
+      id: id ?? this.id,
+      productId: productId ?? this.productId,
       note: note ?? this.note,
+      title: title ?? this.title,
       quantity: quantity ?? this.quantity,
       price: price ?? this.price,
       product: product ?? this.product,
@@ -40,10 +50,19 @@ class Order extends Equatable {
 
   Map<String, dynamic> toJson() => _$OrderToJson(this);
 
+  BaseBody get toAddOrder => {
+        'product': productId,
+        'price': price,
+        'quantity': quantity,
+        "title": product?.title
+      };
+
   @override
   List<Object?> get props {
     return [
+      id,
       productId,
+      title,
       note,
       quantity,
       price,
@@ -53,6 +72,6 @@ class Order extends Equatable {
 
   @override
   String toString() {
-    return 'Order(productId: $productId, note: $note, quantity: $quantity, price: $price, product: $product)';
+    return 'Order(id: $id, productId: $productId, note: $note, title: $title, quantity: $quantity, price: $price, product: $product)';
   }
 }

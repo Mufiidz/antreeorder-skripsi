@@ -1,5 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'page.dart';
+
 part 'base_response.freezed.dart';
 part 'base_response.g.dart';
 
@@ -71,6 +73,7 @@ class Meta with _$Meta {
 
 @freezed
 class Pagination with _$Pagination {
+  const Pagination._();
   const factory Pagination({
     @Default(0) int page,
     @Default(0) int pageSize,
@@ -80,4 +83,11 @@ class Pagination with _$Pagination {
 
   factory Pagination.fromJson(Map<String, dynamic> json) =>
       _$PaginationFromJson(json);
+
+      Page get toPage => Page(
+        size: pageSize,
+        total: total,
+        currentPage: page,
+        totalPage: pageCount
+      );
 }

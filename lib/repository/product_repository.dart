@@ -11,7 +11,8 @@ abstract class ProductRepository {
   Future<ResponseResult<Product>> updateProduct(Product product);
   Future<ResponseResult<Product>> detailProduct(int productId);
   Future<ResponseResult<List<Product>>> deleteProduct(int productId);
-  Future<ResponseResult<List<Product>>> getMerchantProducts({int merchantId});
+  Future<ResponseResult<List<Product>>> getMerchantProducts(
+      {int merchantId, int page, int size});
 }
 
 @Injectable(as: ProductRepository)
@@ -58,7 +59,7 @@ class ProductRepositoryImpl implements ProductRepository {
 
   @override
   Future<ResponseResult<List<Product>>> getMerchantProducts(
-      {int? merchantId}) async {
+      {int? merchantId, int page = 1, int size = 10}) async {
     final int currentMerchantId = _sharedPrefsRepository.user.merchantId;
     merchantId = merchantId ?? currentMerchantId;
     if (merchantId == 0) return ResponseResult.error('Merchant Id is empty');

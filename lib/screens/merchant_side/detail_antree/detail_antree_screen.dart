@@ -31,7 +31,7 @@ class DetailAntreeScreen extends StatelessWidget {
   List<Widget> get _section => [
         DetailAntreeSection(detailsAntree),
         DetailProductsSection(antree.orders),
-        DetailPembayaranSection(summaries: summaries)
+        DetailPembayaranSection(summaries: summaries, total: antree.totalPrice)
       ];
 
   List<ContentDetail> get detailsAntree => [

@@ -7,7 +7,8 @@ import 'package:flutter/material.dart';
 
 class DetailPembayaranSection extends StatelessWidget {
   final List<Summary> summaries;
-  const DetailPembayaranSection({Key? key, required this.summaries})
+  final int total;
+  const DetailPembayaranSection({Key? key, required this.summaries, required this.total})
       : super(key: key);
 
   @override
@@ -43,7 +44,4 @@ class DetailPembayaranSection extends StatelessWidget {
       ],
     );
   }
-
-  int get total => summaries.fold(
-      0, (previousValue, element) => previousValue + element.price);
 }

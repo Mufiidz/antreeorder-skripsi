@@ -5,13 +5,15 @@ abstract class MerchantProductEvent extends Equatable {
 }
 
 class GetMerchantProductEvent extends MerchantProductEvent {
-  final String merchantId;
+  final int merchantId;
   final int page;
+  final int size;
 
-  const GetMerchantProductEvent(this.merchantId, {this.page = 1});
+  const GetMerchantProductEvent(this.merchantId,
+      {this.page = 1, this.size = 10});
 
   @override
-  List<Object> get props => [merchantId, page];
+  List<Object> get props => [merchantId, page, size];
 }
 
 class AddOrder extends MerchantProductEvent {

@@ -33,8 +33,7 @@ class _MerchantProductScreenState extends State<MerchantProductScreen> {
   void initState() {
     _merchantProductBloc = getIt<MerchantProductBloc>();
     _pagingController.addPageRequestListener((pageKey) => _merchantProductBloc
-        .add(GetMerchantProductEvent(widget.merchant.user.id.toString(),
-            page: 1)));
+        .add(GetMerchantProductEvent(widget.merchant.id, page: pageKey)));
     super.initState();
   }
 
@@ -48,8 +47,7 @@ class _MerchantProductScreenState extends State<MerchantProductScreen> {
           bloc: _merchantProductBloc,
           listenWhen: ((previous, current) => previous.data != current.data),
           listener: (context, state) {
-            final page = state.page;
-            var currentPage = page.currentPage;
+            var currentPage = state.page.currentPage;
             if (state.status == StatusState.idle) {
               if (state.isLastPage) {
                 _pagingController.appendLastPage(state.data);
@@ -122,7 +120,10 @@ class _MerchantProductScreenState extends State<MerchantProductScreen> {
                                   onclick: () {
                                     final List<Order> orders = state.orders;
                                     _merchantProductBloc.add(ResetOrder());
-                                    AppRoute.to(CartScreen(orders: orders));
+                                    AppRoute.to(CartScreen(
+                                      orders: orders,
+                                      merchantId: widget.merchant.id,
+                                    ));
                                   },
                                 )
                               ],

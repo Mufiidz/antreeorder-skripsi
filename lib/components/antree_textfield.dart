@@ -13,6 +13,7 @@ class AntreeTextField extends StatelessWidget {
   final Function(String?)? onChanged;
   final Widget? suffixIcon;
   final String? initialValue;
+  final AutovalidateMode? validateMode;
   const AntreeTextField(this.name,
       {Key? key,
       this.label,
@@ -23,13 +24,14 @@ class AntreeTextField extends StatelessWidget {
       this.validators,
       this.onChanged,
       this.suffixIcon,
-      this.initialValue})
+      this.initialValue, this.validateMode})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return FormBuilderTextField(
       name: name,
+      autovalidateMode: validateMode,
       initialValue: initialValue,
       textCapitalization: textCapitalization,
       keyboardType: keyboardType,

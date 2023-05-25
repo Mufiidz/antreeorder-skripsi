@@ -23,7 +23,7 @@ class ItemHome extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             AntreeText(
-              antree.remaining.toString(),
+              antree.remaining == null ? '-' : antree.remaining.toString(),
               style: AntreeTextStyle.title,
               fontSize: 40,
             ),

@@ -88,7 +88,6 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         FormBuilder(
           key: _formKey,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Column(
             children: [
               const AntreeTextField(

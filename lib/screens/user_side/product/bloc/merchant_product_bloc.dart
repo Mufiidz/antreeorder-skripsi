@@ -1,51 +1,48 @@
+import 'package:antreeorder/models/base_response.dart';
 import 'package:antreeorder/models/group_product.dart';
+import 'package:antreeorder/models/order.dart';
+import 'package:antreeorder/repository/product_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
 import 'package:antreeorder/models/base_state2.dart';
-import 'package:antreeorder/models/order.dart';
 import 'package:antreeorder/models/page.dart';
 import 'package:antreeorder/models/product.dart';
-import 'package:antreeorder/repository/merchant_repository2.dart';
+import 'package:injectable/injectable.dart' as inject;
 
 part 'merchant_product_event.dart';
 part 'merchant_product_state.dart';
 
+@inject.singleton
+@inject.injectable
 class MerchantProductBloc
     extends Bloc<MerchantProductEvent, MerchantProductState> {
-  final MerchantRepository2 _merchantRepository;
+  final ProductRepository _productRepository;
   var products = <Product>[];
   int tempPrice = 0;
 
-  MerchantProductBloc(this._merchantRepository)
+  MerchantProductBloc(this._productRepository)
       : super(const MerchantProductState([])) {
     on<GetMerchantProductEvent>((event, emit) async {
       emit(state.copyWith(status: StatusState.loading));
-      try {
-        if (event.merchantId.isEmpty) {
-          emit(
-              state.copyWith(status: StatusState.failure, message: 'Empty Id'));
-        }
-        final response = await _merchantRepository
-            .getMerchantProduct(event.merchantId, page: event.page);
-        final data = response.data;
-        final page = response.page;
-        final products = data ?? [];
-        final isLastPage = page?.currentPage == page?.totalPage;
-        products.sort(((a, b) => a.category.compareTo(b.category)));
-        final groups = groupedList2(products);
-        emit(data != null
-            ? state.copyWith(
-                data: groups,
-                status: StatusState.idle,
-                page: response.page,
-                isLastPage: isLastPage)
-            : state.copyWith(
-                status: StatusState.failure, message: response.message));
-      } catch (e) {
-        emit(state.copyWith(status: StatusState.failure, message: "Error"));
-      }
+      final response = await _productRepository.getMerchantProducts(
+          merchantId: event.merchantId, page: event.page);
+      final newState = response.when(
+        data: (data, meta) {
+          final page = meta?.pagination ?? Pagination();
+          final isLastPage = page.page == page.pageCount;
+          data.sort(((a, b) => a.category.compareTo(b.category)));
+          return state.copyWith(
+              status: StatusState.idle,
+              page: meta?.pagination.toPage,
+              isLastPage: isLastPage,
+              data: groupedList2(data));
+        },
+        error: (message) =>
+            state.copyWith(status: StatusState.failure, message: message),
+      );
+      emit(newState);
     });
 
     on<AddOrder>((event, emit) {
@@ -79,14 +76,6 @@ class MerchantProductBloc
           status: StatusState.idle));
     });
   }
-
-  List<Product> getDummyData() => List.generate(
-      10,
-      (index) => Product(
-          id: index,
-          title: "Product $index",
-          price: index * 1000,
-          description: "Ini contoh product $index"));
 
   List<GroupProduct> groupedList2(List<Product> products) {
     List<GroupProduct> newList = [];

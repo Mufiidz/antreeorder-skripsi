@@ -1,7 +1,7 @@
 import 'package:antreeorder/config/api_client.dart';
 import 'package:antreeorder/models/antree.dart';
-import 'package:antreeorder/models/api_response.dart';
 import 'package:antreeorder/models/base_response.dart';
+import 'package:antreeorder/models/order.dart';
 import 'package:antreeorder/models/status_antree.dart';
 import 'package:antreeorder/utils/export_utils.dart';
 import 'package:dio/dio.dart';
@@ -15,6 +15,7 @@ abstract class AntreeApiClient {
 
   static const String antreesPath = '/antrees';
   static const String statusAntreePath = '/statuses';
+  static const String ordersPath = '/orders';
   static const String idPath = '/{id}';
   static const String antreeWithIdPath = '$antreesPath$idPath';
   static const String id = 'id';
@@ -38,8 +39,7 @@ abstract class AntreeApiClient {
       @Query(filterMerchant) int merchantId);
 
   @GET(antreesPath)
-  Future<BaseResponse<List<Antree>>> getCustomerAntrees(
-      @Query(filterCustomer) int customerId);
+  Future<BaseResponse<List<Antree>>> getCustomerAntrees(@Queries() BaseBody queries);
 
   @DELETE(antreeWithIdPath)
   Future<BaseResponse<Antree>> deleteAntree(@Path(id) int id);
@@ -47,24 +47,6 @@ abstract class AntreeApiClient {
   @GET(statusAntreePath)
   Future<BaseResponse<List<StatusAntree>>> getStatuses();
 
-  // VVVV DEPRECATED VVVV
-
-  @POST(ConstEndpoints.antree)
-  Future<ApiResponse<Antree>> addAntree(@Body() Antree antree);
-
-  @GET(ConstEndpoints.listAntreeUser)
-  Future<ApiResponse<List<Antree>>> listAntree(
-      @Path(id) String userId, @CancelRequest() CancelToken cancelToken,
-      {@Query('date') int? date});
-
-  @GET(ConstEndpoints.detailAntree)
-  Future<ApiResponse<Antree>> detailAntree(@Path(id) String antreeId);
-
-  @PATCH(ConstEndpoints.antreePickup)
-  Future<ApiResponse<Antree>> pickupAntree(
-      @Path(id) String antreeId, @Query(isVerify) bool isVerify);
-
-  @PATCH(ConstEndpoints.updateAntree)
-  Future<ApiResponse<Antree>> updateStatusAntree(
-      @Path(id) String antreeId, @Query(statusId) int statusId);
+  @POST(ordersPath)
+  Future<BaseResponse<Order>> createOrder(@Body() BaseBody data);
 }

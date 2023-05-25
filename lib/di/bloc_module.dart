@@ -1,10 +1,9 @@
 import 'package:antreeorder/config/antree_db.dart';
 import 'package:antreeorder/repository/antree_repository.dart';
-import 'package:antreeorder/repository/antree_repository2.dart';
 import 'package:antreeorder/repository/auth_repository.dart';
 import 'package:antreeorder/repository/merchant_repository.dart';
-import 'package:antreeorder/repository/merchant_repository2.dart';
 import 'package:antreeorder/repository/product_repository.dart';
+import 'package:antreeorder/repository/seat_repository.dart';
 import 'package:antreeorder/repository/sharedprefs_repository.dart';
 import 'package:antreeorder/screens/login/bloc/login_bloc.dart';
 import 'package:antreeorder/screens/merchant_side/category/bloc/category_bloc.dart';
@@ -19,7 +18,6 @@ import 'package:antreeorder/screens/user_side/cart/bloc/cart_bloc.dart';
 import 'package:antreeorder/screens/user_side/confirm_order/bloc/confirm_order_bloc.dart';
 import 'package:antreeorder/screens/user_side/home/bloc/home_bloc.dart';
 import 'package:antreeorder/screens/user_side/merchant/bloc/merchant_bloc.dart';
-import 'package:antreeorder/screens/user_side/product/bloc/merchant_product_bloc.dart';
 import 'package:antreeorder/screens/user_side/setting/bloc/setting_bloc.dart';
 import 'package:injectable/injectable.dart';
 
@@ -28,28 +26,22 @@ import 'package:injectable/injectable.dart';
 abstract class BlocModule {
   @singleton
   @factoryMethod
-  MerchantProductBloc merchantProductBloc(
-          MerchantRepository2 merchantRepository) =>
-      MerchantProductBloc(merchantRepository);
-
-  @singleton
-  @factoryMethod
-  MerchantBloc merchantBloc(MerchantRepository2 merchantRepository) =>
+  MerchantBloc merchantBloc(MerchantRepository merchantRepository) =>
       MerchantBloc(merchantRepository);
 
   @singleton
   @factoryMethod
-  ConfirmOrderBloc confirmOrderBloc(AntreeRepository2 antreeRepository) =>
-      ConfirmOrderBloc(antreeRepository);
+  ConfirmOrderBloc confirmOrderBloc(
+          AntreeRepository antreeRepository, SeatRepository seatRepository) =>
+      ConfirmOrderBloc(antreeRepository, seatRepository);
 
   @lazySingleton
   CartBloc cartBloc() => CartBloc();
 
   @singleton
   @factoryMethod
-  merchant_home.HomeBloc homeBloc(AntreeRepository antreeRepository,
-          AntreeRepository2 antreeRepository2) =>
-      merchant_home.HomeBloc(antreeRepository, antreeRepository2);
+  merchant_home.HomeBloc homeBloc(AntreeRepository antreeRepository) =>
+      merchant_home.HomeBloc(antreeRepository);
 
   @singleton
   @factoryMethod
@@ -69,7 +61,7 @@ abstract class BlocModule {
 
   @singleton
   @factoryMethod
-  HomeBloc userHomeBloc(AntreeRepository2 antreeRepository) =>
+  HomeBloc userHomeBloc(AntreeRepository antreeRepository) =>
       HomeBloc(antreeRepository);
 
   @singleton

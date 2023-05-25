@@ -40,7 +40,7 @@ class Product with _$Product {
 }
 
 extension ProductExt on Product {
-  Order toOrder() => Order(id, price: price, product: this);
+  Order toOrder() => Order(productId: id, price: price, product: this);
 
   BaseBody toAddProduct(int merchantId) => {
         "title": title,

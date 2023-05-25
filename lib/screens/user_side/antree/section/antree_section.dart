@@ -4,12 +4,12 @@ import 'package:antreeorder/components/export_components.dart';
 import 'package:antreeorder/res/export_res.dart';
 
 class AntreeSection extends StatelessWidget {
-  final int antreeNumber;
-  final int remaining;
+  final int? antreeNumber;
+  final int? remaining;
   const AntreeSection({
     Key? key,
-    required this.antreeNumber,
-    required this.remaining,
+    this.antreeNumber,
+    this.remaining,
   }) : super(key: key);
 
   @override
@@ -28,7 +28,7 @@ class AntreeSection extends StatelessWidget {
                 size: 30,
               ),
               AntreeText(
-                antreeNumber.toString(),
+                '${antreeNumber ?? '-'}',
                 style: AntreeTextStyle.title,
                 fontSize: 70,
               ),
@@ -36,7 +36,7 @@ class AntreeSection extends StatelessWidget {
                 size: 30,
               ),
               AntreeText(
-                "Please wait until $remaining more people again to reach your order. Thank you.",
+                "Please wait until ${remaining ?? '-'} more people again to reach your order. Thank you.",
                 textAlign: TextAlign.center,
               ),
             ],

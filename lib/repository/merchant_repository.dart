@@ -9,6 +9,7 @@ import 'package:injectable/injectable.dart';
 abstract class MerchantRepository {
   Future<ResponseResult<Merchant>> updateStatusMerchant(bool isOpen);
   Future<ResponseResult<Merchant>> detailMerchant({bool isAllDetail});
+  Future<ResponseResult<List<Merchant>>> getMerchants();
 }
 
 @Injectable(as: MerchantRepository)
@@ -42,4 +43,8 @@ class MerchantRepositoryImpl extends MerchantRepository {
         .getMerchant(merchantId, query: isAllDetail ? '*' : '')
         .awaitResponse;
   }
+
+  @override
+  Future<ResponseResult<List<Merchant>>> getMerchants() async =>
+      await _apiClient.merchant.getMerchants().awaitResponse;
 }

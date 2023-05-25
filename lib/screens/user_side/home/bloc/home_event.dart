@@ -5,12 +5,11 @@ abstract class HomeEvent extends Equatable {
 }
 
 class GetAntrians extends HomeEvent {
-  final String userId;
 
-  const GetAntrians(this.userId);
+  const GetAntrians();
 
   @override
-  List<Object?> get props => [userId];
+  List<Object?> get props => [];
 }
 
 class Dispose extends HomeEvent {

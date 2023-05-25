@@ -11,7 +11,9 @@ class ItemOrderSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(flex: 2, child: AntreeText(order.product?.title ?? 'TITLE')),
+        Expanded(
+            flex: 2,
+            child: AntreeText(order.title.isNotEmpty ? order.title : 'TITLE')),
         Expanded(
             child: AntreeText(
           "${order.quantity} x",
@@ -20,7 +22,7 @@ class ItemOrderSection extends StatelessWidget {
         Expanded(
             flex: 2,
             child: AntreeText(
-              (order.quantity * (order.product?.price ?? 0)).toIdr(),
+              (order.quantity * order.price).toIdr(),
               textAlign: TextAlign.right,
             )),
       ],

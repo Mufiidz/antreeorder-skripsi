@@ -31,7 +31,10 @@ abstract class ProductApiClient {
 
   @GET(productsPath)
   Future<BaseResponse<List<Product>>> getMerchantProducts(
-      @Query('filters[merchant]') int merchantId);
+    @Query('filters[merchant]') int merchantId, {
+    @Query('pagination[page]') int page = 1,
+    @Query('pagination[pageSize]') int size = 10,
+  });
 
   @DELETE(productWithIdPath)
   Future<BaseResponse<Product>> deleteProduct(@Path(id) int id);

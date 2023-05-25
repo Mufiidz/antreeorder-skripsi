@@ -6,19 +6,28 @@ abstract class ConfirmOrderEvent extends Equatable {
 
 class GetInitialConfirm extends ConfirmOrderEvent {
   final List<Order> orders;
-  final Summary summary;
+  final int merchantId;
 
-  const GetInitialConfirm(this.orders, this.summary);
+  const GetInitialConfirm(this.orders, this.merchantId);
 
   @override
-  List<Object> get props => [orders, summary];
+  List<Object> get props => [orders, merchantId];
 }
 
 class AddAntree extends ConfirmOrderEvent {
   final Antree antree;
+  final int merchantId;
 
-  const AddAntree(this.antree);
+  const AddAntree(this.antree, this.merchantId);
 
   @override
-  List<Object?> get props => [antree];
+  List<Object?> get props => [antree, merchantId];
+}
+
+class SelectedSeat extends ConfirmOrderEvent {
+  final Seat seat;
+
+  SelectedSeat(this.seat);
+  @override
+  List<Object?> get props => [seat];
 }

@@ -21,7 +21,8 @@ class AntreeBloc extends Bloc<AntreeEvent, AntreeState> {
         List<Widget> listSection = [
           DetailAntreeSection(detailsAntree(antree)),
           DetailProductsSection(antree.orders),
-          DetailPembayaranSection(summaries: summaries(antree))
+          DetailPembayaranSection(
+              summaries: summaries(antree), total: antree.totalPrice)
         ];
         if (antree.status.id < 5) {
           listSection.insert(
@@ -50,6 +51,8 @@ class AntreeBloc extends Bloc<AntreeEvent, AntreeState> {
         Summary(title: 'Biaya layanan', price: 1000)
       ];
 
-  int subTotal(Antree antree) => antree.orders
-      .fold(0, (previousValue, element) => previousValue + element.price);
+  int subTotal(Antree antree) => antree.orders.fold(
+      0,
+      (previousValue, element) =>
+          previousValue + (element.quantity * element.price));
 }

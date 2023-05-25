@@ -12,7 +12,8 @@ import 'item_cart.dart';
 
 class CartScreen extends StatefulWidget {
   final List<Order> orders;
-  const CartScreen({Key? key, required this.orders}) : super(key: key);
+  final int merchantId;
+  const CartScreen({Key? key, required this.orders, required this.merchantId}) : super(key: key);
 
   @override
   State<CartScreen> createState() => _CartScreenState();
@@ -91,6 +92,7 @@ class _CartScreenState extends State<CartScreen> {
     if (data.isNotEmpty) {
       AppRoute.to(ConfirmOrderScreen(
         orders: data,
+        merchantId: widget.merchantId,
       ));
     }
   }

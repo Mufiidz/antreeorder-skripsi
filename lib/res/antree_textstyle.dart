@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 class AntreeTextStyle {
-  static const TextStyle normal =
-      TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Colors.black);
+  /// TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Colors.black)
+  static const TextStyle normal = TextStyle(
+      fontSize: 14, fontWeight: FontWeight.normal, color: Colors.black);
 
   /// TextStyle(fontSize: 30, fontWeight: FontWeight.w800)
   static TextStyle title = normal.copyWith(

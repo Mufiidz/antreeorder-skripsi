@@ -28,21 +28,22 @@ abstract class AntreeApiClient {
   Future<BaseResponse<Antree>> createAntree(@Body() BaseBody data);
 
   @PUT(antreeWithIdPath)
-  Future<BaseResponse<Antree>> updateAntree(
-      @Path(id) int id, @Body() BaseBody data);
+  Future<BaseResponse<Antree>> updateAntree(@Path(id) int antreeId,
+      @Body() BaseBody data, @Queries() BaseBody queries);
 
   @GET(antreeWithIdPath)
-  Future<BaseResponse<Antree>> getAntree(@Path(id) int id);
+  Future<BaseResponse<Antree>> getAntree(@Path(id) int antreeId);
 
   @GET(antreesPath)
   Future<BaseResponse<List<Antree>>> getMerchantAntrees(
-      @Query(filterMerchant) int merchantId);
+      @Queries() BaseBody queries);
 
   @GET(antreesPath)
-  Future<BaseResponse<List<Antree>>> getCustomerAntrees(@Queries() BaseBody queries);
+  Future<BaseResponse<List<Antree>>> getCustomerAntrees(
+      @Queries() BaseBody queries);
 
   @DELETE(antreeWithIdPath)
-  Future<BaseResponse<Antree>> deleteAntree(@Path(id) int id);
+  Future<BaseResponse<Antree>> deleteAntree(@Path(id) int antreeId);
 
   @GET(statusAntreePath)
   Future<BaseResponse<List<StatusAntree>>> getStatuses();

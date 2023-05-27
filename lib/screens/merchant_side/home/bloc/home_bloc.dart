@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:antreeorder/models/antree.dart';
 import 'package:antreeorder/models/base_state2.dart';
 import 'package:antreeorder/repository/antree_repository.dart';
+import 'package:antreeorder/repository/status_antree_repository.dart';
 import 'package:antreeorder/utils/export_utils.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -12,8 +13,10 @@ part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final AntreeRepository _antreeRepository;
-  final StreamController<List<Antree>> streamController = StreamController();
-  HomeBloc(this._antreeRepository) : super(const HomeState([])) {
+  // final StreamController<List<Antree>> streamController = StreamController();
+  final StatusAntreeRepository _statusAntreeRepository;
+  HomeBloc(this._antreeRepository, this._statusAntreeRepository)
+      : super(const HomeState([])) {
     on<GetAntrians>((event, emit) async {
       emit(state.copyWith(status: StatusState.loading));
       final response = await _antreeRepository.getMerchantAntrees();
@@ -37,17 +40,23 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     on<UpadateStatusAntree>((event, emit) async {
       emit(state.copyWith(status: StatusState.loading));
-      // try {
-      //   final response = await _antreeRepository2.updateStatusAntree(
-      //       event.antreeId, event.statusId);
-      //   final data = response.data;
-      //   emit(data != null
-      //       ? state.copyWith(antree: data, status: StatusState.success)
-      //       : state.copyWith(
-      //           status: StatusState.failure, message: response.message));
-      // } catch (e) {
-      //   emit(state.copyWith(status: StatusState.failure, message: "ERROR"));
-      // }
+      final updateResponse = event.isConfirm
+          ? await _statusAntreeRepository.confirmAntree(event.antree)
+          : await _statusAntreeRepository.updateStatusAntree(event.antree);
+      HomeState newState = updateResponse.when(
+        data: (data, meta) => state.copyWith(
+            message: 'Berhasil diperbarui', status: StatusState.success),
+        error: (message) =>
+            state.copyWith(message: message, status: StatusState.failure),
+      );
+      final response = await _antreeRepository.getMerchantAntrees();
+      newState = response.when(
+        data: (data, meta) =>
+            state.copyWith(status: StatusState.idle, data: data),
+        error: (message) =>
+            state.copyWith(status: StatusState.failure, message: message),
+      );
+      emit(newState);
     });
   }
 }

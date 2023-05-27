@@ -26,11 +26,14 @@ import '../repository/merchant_repository.dart' as _i18;
 import '../repository/product_repository.dart' as _i19;
 import '../repository/seat_repository.dart' as _i21;
 import '../repository/sharedprefs_repository.dart' as _i12;
+import '../repository/status_antree_repository.dart' as _i30;
 import '../screens/login/bloc/login_bloc.dart' as _i17;
 import '../screens/merchant_side/category/bloc/category_bloc.dart' as _i8;
-import '../screens/merchant_side/home/bloc/home_bloc.dart' as _i26;
-import '../screens/merchant_side/product/bloc/product_bloc.dart' as _i29;
-import '../screens/merchant_side/seat/bloc/seat_bloc.dart' as _i30;
+import '../screens/merchant_side/detail_antree/bloc/detail_antree_merchant_bloc.dart'
+    as _i31;
+import '../screens/merchant_side/home/bloc/home_bloc.dart' as _i32;
+import '../screens/merchant_side/product/bloc/product_bloc.dart' as _i28;
+import '../screens/merchant_side/seat/bloc/seat_bloc.dart' as _i29;
 import '../screens/merchant_side/settings/bloc/settings_bloc.dart' as _i22;
 import '../screens/register/bloc/register_bloc.dart' as _i20;
 import '../screens/user_side/antree/bloc/antree_bloc.dart' as _i3;
@@ -38,11 +41,11 @@ import '../screens/user_side/cart/bloc/cart_bloc.dart' as _i7;
 import '../screens/user_side/confirm_order/bloc/confirm_order_bloc.dart'
     as _i24;
 import '../screens/user_side/home/bloc/home_bloc.dart' as _i25;
-import '../screens/user_side/merchant/bloc/merchant_bloc.dart' as _i27;
-import '../screens/user_side/product/bloc/merchant_product_bloc.dart' as _i28;
+import '../screens/user_side/merchant/bloc/merchant_bloc.dart' as _i26;
+import '../screens/user_side/product/bloc/merchant_product_bloc.dart' as _i27;
 import '../screens/user_side/setting/bloc/setting_bloc.dart' as _i14;
-import 'app_module.dart' as _i31;
-import 'bloc_module.dart' as _i32;
+import 'app_module.dart' as _i33;
+import 'bloc_module.dart' as _i34;
 
 extension GetItInjectableX on _i1.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -119,21 +122,31 @@ extension GetItInjectableX on _i1.GetIt {
     ));
     gh.singleton<_i25.HomeBloc>(
         blocModule.userHomeBloc(gh<_i23.AntreeRepository>()));
-    gh.singleton<_i26.HomeBloc>(
-        blocModule.homeBloc(gh<_i23.AntreeRepository>()));
-    gh.singleton<_i27.MerchantBloc>(
+    gh.singleton<_i26.MerchantBloc>(
         blocModule.merchantBloc(gh<_i18.MerchantRepository>()));
-    gh.singleton<_i28.MerchantProductBloc>(
-        _i28.MerchantProductBloc(gh<_i19.ProductRepository>()));
-    gh.singleton<_i29.ProductBloc>(blocModule.productBloc(
+    gh.singleton<_i27.MerchantProductBloc>(
+        _i27.MerchantProductBloc(gh<_i19.ProductRepository>()));
+    gh.singleton<_i28.ProductBloc>(blocModule.productBloc(
       gh<_i19.ProductRepository>(),
       gh<_i4.AntreeDatabase>(),
     ));
-    gh.factory<_i30.SeatBloc>(() => _i30.SeatBloc(gh<_i21.SeatRepository>()));
+    gh.factory<_i29.SeatBloc>(() => _i29.SeatBloc(gh<_i21.SeatRepository>()));
+    gh.factory<_i30.StatusAntreeRepository>(
+        () => _i30.StatusAntreeRepositoryImpl(
+              gh<_i15.ApiClient>(),
+              gh<_i23.AntreeRepository>(),
+              gh<_i12.SharedPrefsRepository>(),
+            ));
+    gh.factory<_i31.DetailAntreeMerchantBloc>(
+        () => _i31.DetailAntreeMerchantBloc(gh<_i30.StatusAntreeRepository>()));
+    gh.singleton<_i32.HomeBloc>(blocModule.homeBloc(
+      gh<_i23.AntreeRepository>(),
+      gh<_i30.StatusAntreeRepository>(),
+    ));
     return this;
   }
 }
 
-class _$AppModule extends _i31.AppModule {}
+class _$AppModule extends _i33.AppModule {}
 
-class _$BlocModule extends _i32.BlocModule {}
+class _$BlocModule extends _i34.BlocModule {}

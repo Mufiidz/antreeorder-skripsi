@@ -33,7 +33,7 @@ class AntreeState<Bloc extends StateStreamable<State>, State extends BaseState>
     return BlocConsumer<Bloc, State>(
       bloc: bloc,
       listener: (context, state) {
-        logger.d('baseState -> $state');
+        // logger.d('baseState -> $state');
         if (state.status == StatusState.failure) {
           loadingDialog?.dismiss();
           if (onError != null) {

@@ -5,7 +5,6 @@ abstract class HomeEvent extends Equatable {
 }
 
 class GetAntrians extends HomeEvent {
-
   const GetAntrians();
   @override
   List<Object?> get props => [];
@@ -20,10 +19,10 @@ class GetAntrians2 extends HomeEvent {
 }
 
 class UpadateStatusAntree extends HomeEvent {
-  final String antreeId;
-  final int statusId;
+  final Antree antree;
+  final bool isConfirm;
 
-  const UpadateStatusAntree(this.antreeId, this.statusId);
+  const UpadateStatusAntree(this.antree, this.isConfirm);
   @override
-  List<Object?> get props => [antreeId, statusId];
+  List<Object?> get props => [antree, isConfirm];
 }

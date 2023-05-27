@@ -25,7 +25,7 @@ class HomeOrdersSection extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  AntreeText(item.product?.title ?? '-'),
+                  AntreeText(item.title.isNotEmpty ? item.title : '-'),
                   AntreeText('Jumlah : ${item.quantity}')
                 ],
               ),

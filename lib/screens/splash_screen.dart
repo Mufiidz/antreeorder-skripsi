@@ -51,7 +51,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void _initialize() async {
     final account = getIt<SharedPrefsRepository>().account;
-    logger.d(account);
     Timer(const Duration(seconds: 3), () {
       if (account == null) {
         AppRoute.clearTopTo(const LoginScreen());

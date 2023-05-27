@@ -19,10 +19,11 @@ class AntreeBloc extends Bloc<AntreeEvent, AntreeState> {
     on<AntreeEvent>((event, emit) {
       event.when(initial: (antree) {
         List<Widget> listSection = [
-          DetailAntreeSection(detailsAntree(antree)),
+          DetailAntreeSection(antree),
           DetailProductsSection(antree.orders),
           DetailPembayaranSection(
-              summaries: summaries(antree), total: antree.totalPrice)
+            antree: antree,
+          )
         ];
         if (antree.status.id < 5) {
           listSection.insert(

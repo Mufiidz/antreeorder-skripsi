@@ -5,6 +5,7 @@ import 'package:antreeorder/repository/merchant_repository.dart';
 import 'package:antreeorder/repository/product_repository.dart';
 import 'package:antreeorder/repository/seat_repository.dart';
 import 'package:antreeorder/repository/sharedprefs_repository.dart';
+import 'package:antreeorder/repository/status_antree_repository.dart';
 import 'package:antreeorder/screens/login/bloc/login_bloc.dart';
 import 'package:antreeorder/screens/merchant_side/category/bloc/category_bloc.dart';
 import 'package:antreeorder/screens/merchant_side/home/bloc/home_bloc.dart'
@@ -40,8 +41,9 @@ abstract class BlocModule {
 
   @singleton
   @factoryMethod
-  merchant_home.HomeBloc homeBloc(AntreeRepository antreeRepository) =>
-      merchant_home.HomeBloc(antreeRepository);
+  merchant_home.HomeBloc homeBloc(AntreeRepository antreeRepository,
+          StatusAntreeRepository statusAntreeRepository) =>
+      merchant_home.HomeBloc(antreeRepository, statusAntreeRepository);
 
   @singleton
   @factoryMethod

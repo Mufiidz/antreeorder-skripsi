@@ -11,8 +11,8 @@ typedef OnSwipeChange = void Function(int);
 
 class ItemHome extends StatelessWidget {
   final Antree antree;
-  final OnSwipeChange? onSwipeChange;
-  const ItemHome(this.antree, {Key? key, this.onSwipeChange}) : super(key: key);
+  final OnSwipeChange onSwipeChange;
+  const ItemHome(this.antree, this.onSwipeChange, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,12 +25,20 @@ class ItemHome extends StatelessWidget {
         color: Colors.red,
       ),
       confirmDismiss: (direction) async {
-        if (direction == DismissDirection.startToEnd) {
-          onSwipeChange!(antree.status.id + 1);
-        } else {
-          onSwipeChange!(antree.status.id - 1);
+        final statusId = antree.status.id;
+        if (statusId == 7 || statusId == 6 || statusId == 4 || statusId == 5) {
+          onSwipeChange(statusId);
+          return false;
         }
-        return false;
+        if (direction == DismissDirection.startToEnd) {
+          onSwipeChange(antree.status.id + 1);
+          return false;
+        }
+        if (direction == DismissDirection.endToStart) {
+          onSwipeChange(antree.status.id - 1);
+          return false;
+        }
+        return null;
       },
       child: SizedBox(
         width: context.mediaSize.width,
@@ -71,7 +79,9 @@ class ItemHome extends StatelessWidget {
                 const TextSpan(
                     text: 'No. Antree : ', style: AntreeTextStyle.normal),
                 TextSpan(
-                    text: antree.antreeNum.toString(),
+                    text: antree.antreeNum != null
+                        ? antree.antreeNum.toString()
+                        : '-',
                     style: AntreeTextStyle.bold.copyWith(fontSize: 16)),
               ]))),
               Expanded(

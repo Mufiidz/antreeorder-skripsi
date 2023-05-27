@@ -12,10 +12,9 @@ import 'package:injectable/injectable.dart' as inject;
 
 abstract class AntreeRepository {
   Future<ResponseResult<Antree>> addAntree(Antree antree, int merchantId);
-  Future<ResponseResult<List<Antree>>> getMerchantAntrees();
+  Future<ResponseResult<List<Antree>>> getMerchantAntrees({BaseBody? query});
   Future<ResponseResult<List<Antree>>> getCustomerAntrees();
   Future<ResponseResult<List<StatusAntree>>> getStatusAntree();
-  Future<ResponseResult<Antree>> updateStatusAntree(Antree antree);
 }
 
 @inject.Injectable(as: AntreeRepository)
@@ -44,18 +43,22 @@ class AntreeRepositoryImpl implements AntreeRepository {
   }
 
   @override
-  Future<ResponseResult<List<Antree>>> getMerchantAntrees() async {
+  Future<ResponseResult<List<Antree>>> getMerchantAntrees(
+      {BaseBody? query}) async {
     final int merchantId = _sharedPrefsRepository.user.merchantId;
     if (merchantId == 0) return ResponseResult.error('Merchant Id is empty');
-    return _apiClient.antree.getMerchantAntrees(merchantId).awaitResponse;
-  }
-
-  @override
-  Future<ResponseResult<Antree>> updateStatusAntree(Antree antree) async {
-    if (antree.id == 0) return ResponseResult.error('Antree Id is empty');
-    return _apiClient.antree
-        .updateAntree(antree.id, antree.toUpdateStatus.wrapWithData)
-        .awaitResponse;
+    final BaseBody queries = query ??
+        {
+          'filters[merchant]': merchantId,
+          'populate[customer][populate][0]': 'user',
+          'filters[isVerify][\$eq]': false,
+          'populate[orders]': '*',
+          'populate[status]': '*',
+          'pagination[pageSize]': 10,
+          'sort[0]': 'nomorAntree',
+          'sort[1]': 'createdAt:desc',
+        };
+    return await _apiClient.antree.getMerchantAntrees(queries).awaitResponse;
   }
 
   @override

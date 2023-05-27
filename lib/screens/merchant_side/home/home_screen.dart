@@ -1,5 +1,7 @@
 import 'package:antreeorder/components/export_components.dart';
 import 'package:antreeorder/di/injection.dart';
+import 'package:antreeorder/models/antree.dart';
+import 'package:antreeorder/models/status_antree.dart';
 import 'package:antreeorder/screens/merchant_side/home/item_home.dart';
 import 'package:antreeorder/screens/merchant_side/settings/setting_merchant_screen.dart';
 import 'package:antreeorder/utils/export_utils.dart';
@@ -43,14 +45,10 @@ class _HomeScreenState extends State<HomeScreen> {
           child: AntreeState<HomeBloc, HomeState>(
             _homeBloc,
             onRetry: () => _homeBloc.add(GetAntrians()),
-            child: (state, context) => ListView.builder(
-              itemBuilder: (context, index) {
-                final antree = state.data[index];
-                return ItemHome(antree,
-                    onSwipeChange: (statusId) => _homeBloc.add(
-                        UpadateStatusAntree(antree.id.toString(), statusId)));
-              },
-              itemCount: state.data.length,
+            child: (state, context) => AntreeList(
+              state.data,
+              itemBuilder: (context, item, index) => ItemHome(
+                  item, (newStatusId) => onSwipeUpdate(item, newStatusId)),
             ),
           ),
         ),
@@ -58,9 +56,20 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  onSwipeUpdate(Antree antree, int newStatusId) {
+    if (newStatusId == 0) return;
+    if (antree.status.id == newStatusId) return;
+    StatusAntree statusAntree = antree.status;
+    statusAntree = statusAntree.copyWith(id: newStatusId);
+    if (antree.status.id != 1) {
+      antree = antree.copyWith(status: statusAntree);
+    }
+    _homeBloc.add(UpadateStatusAntree(antree, antree.status.id == 1));
+  }
+
   @override
   void dispose() {
-    _homeBloc.streamController.close();
+    // _homeBloc.streamController.close();
     _homeBloc.close();
     super.dispose();
   }

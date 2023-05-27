@@ -33,7 +33,7 @@ extension AwaitResult2<T> on Future<BaseResponse<T>> {
     ResponseResult<T> responseResult = const ResponseResult.error("EMPTY");
     try {
       await then((value) {
-        logger.d('BaseResponse -> $value');
+        // logger.d('BaseResponse -> $value');
         responseResult = ResponseResult.data(value.data, value.meta);
       }).catchError((Object obj) {
         if (obj.runtimeType != DioError) {

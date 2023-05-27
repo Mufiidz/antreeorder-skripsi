@@ -1,4 +1,5 @@
 import 'package:antreeorder/components/export_components.dart';
+import 'package:antreeorder/models/antree.dart';
 import 'package:antreeorder/models/summary.dart';
 import 'package:antreeorder/res/export_res.dart';
 import 'package:antreeorder/screens/user_side/confirm_order/section/summary_section.dart';
@@ -6,9 +7,8 @@ import 'package:antreeorder/utils/export_utils.dart';
 import 'package:flutter/material.dart';
 
 class DetailPembayaranSection extends StatelessWidget {
-  final List<Summary> summaries;
-  final int total;
-  const DetailPembayaranSection({Key? key, required this.summaries, required this.total})
+  final Antree antree;
+  const DetailPembayaranSection({Key? key, required this.antree})
       : super(key: key);
 
   @override
@@ -33,7 +33,7 @@ class DetailPembayaranSection extends StatelessWidget {
                 )),
                 Expanded(
                     child: AntreeText(
-                  total.toIdr(),
+                  antree.totalPrice.toIdr(),
                   textAlign: TextAlign.end,
                   style: AntreeTextStyle.medium,
                 )),
@@ -44,4 +44,12 @@ class DetailPembayaranSection extends StatelessWidget {
       ],
     );
   }
+
+  List<Summary> get summaries => [
+        Summary(title: 'Subtotal pesanan', price: subTotal),
+        Summary(title: 'Biaya layanan', price: 1000)
+      ];
+
+  int get subTotal => antree.orders
+      .fold(0, (previousValue, element) => previousValue + element.price);
 }

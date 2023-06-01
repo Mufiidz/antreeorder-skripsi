@@ -1,10 +1,10 @@
 import 'package:antreeorder/components/antree_text.dart';
 import 'package:antreeorder/models/antree.dart';
 import 'package:antreeorder/res/export_res.dart';
+import 'package:antreeorder/screens/user_side/antree/antree_screen.dart';
+import 'package:antreeorder/screens/user_side/scan/scan_verify_screen.dart';
 import 'package:antreeorder/utils/export_utils.dart';
 import 'package:flutter/material.dart';
-
-import '../antree/antree_screen.dart';
 
 class ItemHome extends StatelessWidget {
   final Antree antree;
@@ -18,10 +18,17 @@ class ItemHome extends StatelessWidget {
       margin: const EdgeInsets.all(8),
       child: InkWell(
         borderRadius: BorderRadius.circular(10),
-        onTap: () => AppRoute.to(AntreeScreen(antree)),
+        onTap: () async {
+          final status = antree.status;
+          if (status.id == 4) {
+            AppRoute.to(ScanVerifyScreen(antree));
+          }
+          AppRoute.to(AntreeScreen(antree));
+        },
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
+            AntreeText(antree.status.message),
             AntreeText(
               antree.remaining == null ? '-' : antree.remaining.toString(),
               style: AntreeTextStyle.title,

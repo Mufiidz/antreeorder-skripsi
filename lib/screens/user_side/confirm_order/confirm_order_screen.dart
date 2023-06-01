@@ -102,7 +102,7 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
                               AntreeButton(
                                 "Antree",
                                 width: context.mediaSize.width,
-                                onclick: () => _antree(state),
+                                onClick: () => _antree(state),
                               )
                             ],
                           ),

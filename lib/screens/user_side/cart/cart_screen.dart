@@ -13,7 +13,8 @@ import 'item_cart.dart';
 class CartScreen extends StatefulWidget {
   final List<Order> orders;
   final int merchantId;
-  const CartScreen({Key? key, required this.orders, required this.merchantId}) : super(key: key);
+  const CartScreen({Key? key, required this.orders, required this.merchantId})
+      : super(key: key);
 
   @override
   State<CartScreen> createState() => _CartScreenState();
@@ -77,7 +78,7 @@ class _CartScreenState extends State<CartScreen> {
                   child: AntreeButton(
                     "Next",
                     isChecked: state.data.isNotEmpty,
-                    onclick: () => onClickNext(state.data),
+                    onClick: () => onClickNext(state.data),
                   ),
                 ),
               )

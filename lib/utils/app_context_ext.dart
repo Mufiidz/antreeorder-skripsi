@@ -4,4 +4,5 @@ extension AppContext on BuildContext {
   Size get mediaSize => MediaQuery.of(this).size;
   ScaffoldMessengerState get snackbar => ScaffoldMessenger.of(this);
   TextTheme get textTheme => Theme.of(this).textTheme;
+  TargetPlatform get platform => Theme.of(this).platform;
 }

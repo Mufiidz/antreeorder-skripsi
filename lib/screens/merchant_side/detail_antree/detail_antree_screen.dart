@@ -3,6 +3,7 @@ import 'package:antreeorder/di/injection.dart';
 import 'package:antreeorder/models/antree.dart';
 import 'package:antreeorder/models/base_state2.dart';
 import 'package:antreeorder/res/export_res.dart';
+import 'package:antreeorder/screens/merchant_side/verify/verify_screen.dart';
 import 'package:antreeorder/utils/export_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -144,7 +145,7 @@ class _DetailAntreeScreenState extends State<DetailAntreeScreen> {
                               padding: const EdgeInsets.only(left: 8),
                               child: AntreeButton(
                                   detailAntreeButton.positiveButtonText,
-                                  onclick: () {
+                                  onClick: () {
                                 final positiveBtn =
                                     detailAntreeButton.positiveActionButton;
                                 if (positiveBtn ==
@@ -165,7 +166,8 @@ class _DetailAntreeScreenState extends State<DetailAntreeScreen> {
                                 }
                                 if (positiveBtn ==
                                     DetailAntreeBtnAction.diambil) {
-                                  // TODO: go to qrcode page to verify
+                                  AppRoute.to(
+                                      VerifyScreen(antree: state.antree));
                                 }
                               }),
                             )),

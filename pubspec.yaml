@@ -59,6 +59,8 @@ dependencies:
   sqlite3_flutter_libs: ^0.5.13
   freezed_annotation: ^2.2.0
   envied: ^0.3.0+3
+  ai_barcode: ^3.2.4
+  permission_handler: ^10.2.0
 
 dependency_overrides:
   intl: ^0.18.0

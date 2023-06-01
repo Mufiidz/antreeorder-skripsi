@@ -43,9 +43,10 @@ import '../screens/user_side/confirm_order/bloc/confirm_order_bloc.dart'
 import '../screens/user_side/home/bloc/home_bloc.dart' as _i25;
 import '../screens/user_side/merchant/bloc/merchant_bloc.dart' as _i26;
 import '../screens/user_side/product/bloc/merchant_product_bloc.dart' as _i27;
+import '../screens/user_side/scan/bloc/scan_verify_bloc.dart' as _i33;
 import '../screens/user_side/setting/bloc/setting_bloc.dart' as _i14;
-import 'app_module.dart' as _i33;
-import 'bloc_module.dart' as _i34;
+import 'app_module.dart' as _i34;
+import 'bloc_module.dart' as _i35;
 
 extension GetItInjectableX on _i1.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -143,10 +144,12 @@ extension GetItInjectableX on _i1.GetIt {
       gh<_i23.AntreeRepository>(),
       gh<_i30.StatusAntreeRepository>(),
     ));
+    gh.factory<_i33.ScanVerifyBloc>(
+        () => _i33.ScanVerifyBloc(gh<_i30.StatusAntreeRepository>()));
     return this;
   }
 }
 
-class _$AppModule extends _i33.AppModule {}
+class _$AppModule extends _i34.AppModule {}
 
-class _$BlocModule extends _i34.BlocModule {}
+class _$BlocModule extends _i35.BlocModule {}

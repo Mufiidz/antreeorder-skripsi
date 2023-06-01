@@ -25,10 +25,17 @@ class Antree with _$Antree {
     @Default(Seat()) Seat seat,
     DateTime? createdAt,
     DateTime? updatedAt,
+    DateTime? takenAt,
     @Default(Merchant()) Merchant merchant,
   }) = _Antree;
 
   factory Antree.fromJson(Map<String, dynamic> data) => _$AntreeFromJson(data);
 
   BaseBody get toUpdateStatus => {"status": status.id};
+
+  BaseBody toTakeOrder(DateTime takenAt) => {
+    "status": 5,
+    "isVerify": true,
+    "takenAt": takenAt
+  };
 }

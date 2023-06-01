@@ -12,6 +12,7 @@ import 'package:intl/intl.dart';
 abstract class StatusAntreeRepository {
   Future<ResponseResult<Antree>> updateStatusAntree(Antree antree);
   Future<ResponseResult<Antree>> confirmAntree(Antree antree);
+  Future<ResponseResult<Antree>> takeOrder(Antree antree);
 }
 
 @Injectable(as: StatusAntreeRepository)
@@ -128,6 +129,21 @@ class StatusAntreeRepositoryImpl implements StatusAntreeRepository {
         });
       },
     );
+  }
+
+  @override
+  Future<ResponseResult<Antree>> takeOrder(Antree antree) async {
+    final takenAt = DateTime.now();
+    BaseBody queries = {
+      'populate[customer][populate][0]': 'user',
+      'populate[orders]': '*',
+      'populate[status]': '*',
+    };
+
+    return _apiClient.antree
+        .updateAntree(
+            antree.id, antree.toTakeOrder(takenAt).wrapWithData, queries)
+        .awaitResponse;
   }
 
   // Future<int?> getRemaining(Antree antree) async {

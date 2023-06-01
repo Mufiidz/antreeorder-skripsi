@@ -112,7 +112,7 @@ class _AddSeatScreenState extends State<AddSeatScreen> {
                         AntreeButton(
                           'Add Seat',
                           width: context.mediaSize.width,
-                          onclick: onClickAdd,
+                          onClick: onClickAdd,
                         )
                       ],
                     ),

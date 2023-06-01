@@ -116,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         AntreeButton(
           "Login",
-          onclick: () => onClickLogin(context),
+          onClick: () => onClickLogin(context),
         ),
         RichText(
             textAlign: TextAlign.center,

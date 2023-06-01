@@ -175,7 +175,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           builder: (context, state) {
             return AntreeButton(
               "Register",
-              onclick: () => onClickRegister(context, state),
+              onClick: () => onClickRegister(context, state),
             );
           },
         ),

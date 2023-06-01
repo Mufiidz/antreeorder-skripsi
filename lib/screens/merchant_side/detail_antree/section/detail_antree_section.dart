@@ -4,9 +4,37 @@ import 'package:antreeorder/models/content_detail.dart';
 import 'package:antreeorder/utils/datetime_ext.dart';
 import 'package:flutter/material.dart';
 
-class DetailAntreeSection extends StatelessWidget {
+class DetailAntreeSection extends StatefulWidget {
   final Antree antree;
   const DetailAntreeSection(this.antree, {Key? key}) : super(key: key);
+
+  @override
+  State<DetailAntreeSection> createState() => _DetailAntreeSectionState();
+}
+
+class _DetailAntreeSectionState extends State<DetailAntreeSection> {
+  late List<ContentDetail> detailsAntree;
+
+  @override
+  void initState() {
+    super.initState();
+    detailsAntree = [
+      ContentDetail(title: "Status", value: widget.antree.status.message),
+      ContentDetail(title: "Antree ID", value: widget.antree.id.toString()),
+      ContentDetail(
+          title: "Tanggal Pembelian",
+          value: widget.antree.createdAt
+                  ?.toStringDate(pattern: 'EEEE, dd MMMM yyyy HH:mm') ??
+              '-'),
+    ];
+    if (widget.antree.takenAt != null) {
+      detailsAntree.add(ContentDetail(
+          title: "Tanggal Pengambilan",
+          value: widget.antree.takenAt
+                  ?.toStringDate(pattern: 'EEEE, dd MMMM yyyy HH:mm') ??
+              '-'));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,14 +63,4 @@ class DetailAntreeSection extends StatelessWidget {
       ),
     );
   }
-
-  List<ContentDetail> get detailsAntree => [
-        ContentDetail(title: "Status", value: antree.status.message),
-        ContentDetail(title: "Antree ID", value: antree.id.toString()),
-        ContentDetail(
-            title: "Tanggal Pembelian",
-            value: antree.createdAt
-                    ?.toStringDate(pattern: 'EEEE, dd MMMM yyyy HH:mm') ??
-                '-'),
-      ];
 }

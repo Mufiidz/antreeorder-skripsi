@@ -113,7 +113,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
         const AntreeSpacer(),
         AntreeButton(
           widget.product == null ? 'Add' : 'Update',
-          onclick: onAddProduct,
+          onClick: onAddProduct,
         )
       ];
 

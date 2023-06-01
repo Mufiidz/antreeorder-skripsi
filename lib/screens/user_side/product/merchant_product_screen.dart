@@ -117,7 +117,7 @@ class _MerchantProductScreenState extends State<MerchantProductScreen> {
                                   "Order",
                                   height: 40,
                                   isChecked: state.orders.isNotEmpty,
-                                  onclick: () {
+                                  onClick: () {
                                     final List<Order> orders = state.orders;
                                     _merchantProductBloc.add(ResetOrder());
                                     AppRoute.to(CartScreen(

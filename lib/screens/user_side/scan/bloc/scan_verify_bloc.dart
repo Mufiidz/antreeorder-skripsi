@@ -20,13 +20,13 @@ class ScanVerifyBloc extends Bloc<ScanVerifyEvent, ScanVerifyState> {
         initial: () async {
           final permissionStatus = await Permission.camera.request();
           final cameraStatus = getCameraStatus(permissionStatus);
-          return state.copyWith(cameraStatus: cameraStatus);
+          return state.copyWith(cameraStatus: cameraStatus, isReadyScan: true);
         },
         takenAntree: (String qrcode, Antree currentAntree) async {
-          var newState = state.copyWith(status: StatusState.loading);
+          var newState = state.copyWith(status: StatusState.loading, isReadyScan: false);
           if (qrcode.isEmpty)
             return state.copyWith(
-                message: "Empty QrCode result", status: StatusState.failure);
+                message: "Empty QrCode result", status: StatusState.failure, isReadyScan: true);
           final isVerified = qrcode.contain("AntreeOrder${currentAntree.id}");
           if (isVerified) {
             final response =
@@ -35,14 +35,14 @@ class ScanVerifyBloc extends Bloc<ScanVerifyEvent, ScanVerifyState> {
               data: (data, meta) => state.copyWith(
                   status: StatusState.success,
                   antree: data,
-                  message: 'Pesanan berhasil diambil'),
+                  message: 'Pesanan berhasil diambil', isReadyScan: true),
               error: (message) =>
-                  state.copyWith(message: message, status: StatusState.failure),
+                  state.copyWith(message: message, status: StatusState.failure, isReadyScan: true),
             );
           } else {
             newState = state.copyWith(
                 message: "Sorry you're not verified",
-                status: StatusState.failure);
+                status: StatusState.failure, isReadyScan: true);
           }
           return newState;
         },

@@ -33,7 +33,7 @@ class _MerchantProductScreenState extends State<MerchantProductScreen> {
   void initState() {
     _merchantProductBloc = getIt<MerchantProductBloc>();
     _pagingController.addPageRequestListener((pageKey) => _merchantProductBloc
-        .add(GetMerchantProductEvent(widget.merchant.id, page: pageKey)));
+        .add(GetMerchantProductEvent(widget.merchant, page: pageKey)));
     super.initState();
   }
 
@@ -71,11 +71,17 @@ class _MerchantProductScreenState extends State<MerchantProductScreen> {
                   newPageProgressIndicatorBuilder: (context) => const Center(
                     child: CircularProgressIndicator(),
                   ),
-                  newPageErrorIndicatorBuilder: (context) => const Center(
+                  firstPageProgressIndicatorBuilder: (context) => const Center(
                     child: CircularProgressIndicator(),
+                  ),
+                  newPageErrorIndicatorBuilder: (context) => Center(
+                    child: Text(_pagingController.error.toString()),
                   ),
                   firstPageErrorIndicatorBuilder: (context) => Center(
                     child: Text(_pagingController.error.toString()),
+                  ),
+                  noItemsFoundIndicatorBuilder: (context) => const Center(
+                    child: AntreeText('Empty data'),
                   ),
                 ),
                 separatorBuilder: (context, index) => const Divider(
@@ -122,7 +128,7 @@ class _MerchantProductScreenState extends State<MerchantProductScreen> {
                                     _merchantProductBloc.add(ResetOrder());
                                     AppRoute.to(CartScreen(
                                       orders: orders,
-                                      merchantId: widget.merchant.id,
+                                      merchant: widget.merchant,
                                     ));
                                   },
                                 )

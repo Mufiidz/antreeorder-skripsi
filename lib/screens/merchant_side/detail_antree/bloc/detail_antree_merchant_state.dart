@@ -6,7 +6,8 @@ class DetailAntreeMerchantState with _$DetailAntreeMerchantState {
       {@Default(StatusState.idle) StatusState status,
       @Default('') String message,
       @Default(Antree()) Antree antree,
-      DetailAntreeButton? detailAntreeButton}) = _DetailAntreeMerchantState;
+      DetailAntreeButton? detailAntreeButton,
+      @Default([]) List<Widget> sections}) = _DetailAntreeMerchantState;
 }
 
 class DetailAntreeButton {

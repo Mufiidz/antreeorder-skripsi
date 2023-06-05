@@ -1,5 +1,6 @@
 import 'package:antreeorder/components/export_components.dart';
 import 'package:antreeorder/di/injection.dart';
+import 'package:antreeorder/models/merchant.dart';
 import 'package:antreeorder/models/order.dart';
 import 'package:antreeorder/res/custom_color.dart';
 import 'package:antreeorder/utils/export_utils.dart';
@@ -12,8 +13,8 @@ import 'item_cart.dart';
 
 class CartScreen extends StatefulWidget {
   final List<Order> orders;
-  final int merchantId;
-  const CartScreen({Key? key, required this.orders, required this.merchantId})
+  final Merchant merchant;
+  const CartScreen({Key? key, required this.orders, required this.merchant})
       : super(key: key);
 
   @override
@@ -93,7 +94,7 @@ class _CartScreenState extends State<CartScreen> {
     if (data.isNotEmpty) {
       AppRoute.to(ConfirmOrderScreen(
         orders: data,
-        merchantId: widget.merchantId,
+        merchant: widget.merchant,
       ));
     }
   }

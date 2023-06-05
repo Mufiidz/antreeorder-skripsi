@@ -44,7 +44,7 @@ class ItemHome extends StatelessWidget {
         width: context.mediaSize.width,
         child: InkWell(
           onTap: () => AppRoute.to(DetailAntreeScreen(
-            antree: antree,
+            antreeId: antree.id,
           )),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),

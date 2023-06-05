@@ -2,6 +2,7 @@ import 'package:antreeorder/components/export_components.dart';
 import 'package:antreeorder/di/injection.dart';
 import 'package:antreeorder/models/antree.dart';
 import 'package:antreeorder/models/base_state2.dart';
+import 'package:antreeorder/models/merchant.dart';
 import 'package:antreeorder/models/order.dart';
 import 'package:antreeorder/res/custom_color.dart';
 import 'package:antreeorder/screens/user_side/confirm_order/section/seats_section.dart';
@@ -16,9 +17,8 @@ import 'section/summary_section.dart';
 
 class ConfirmOrderScreen extends StatefulWidget {
   final List<Order> orders;
-  final int merchantId;
-  ConfirmOrderScreen(
-      {super.key, required this.orders, required this.merchantId})
+  final Merchant merchant;
+  ConfirmOrderScreen({super.key, required this.orders, required this.merchant})
       : assert(orders.isNotEmpty);
 
   @override
@@ -34,7 +34,7 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
   @override
   void initState() {
     _confirmOrderBloc = getIt<ConfirmOrderBloc>()
-      ..add(GetInitialConfirm(widget.orders, widget.merchantId));
+      ..add(GetInitialConfirm(widget.orders, widget.merchant.id));
     _dialog = getIt<AntreeLoadingDialog>();
     super.initState();
   }
@@ -135,15 +135,15 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
 
   void _antree(ConfirmOrderState state) {
     if (widget.orders.isEmpty) return;
-    if (widget.merchantId == 0) return;
-    _dialog.showLoadingDialog(context);
+    if (widget.merchant.id == 0) return;
+    // _dialog.showLoadingDialog(context);
     setState(() {
       _isEnabledBack = false;
     });
 
     final antree =
         Antree(totalPrice: state.data, orders: widget.orders, seat: state.seat);
-    _confirmOrderBloc.add(AddAntree(antree, widget.merchantId));
+    _confirmOrderBloc.add(AddAntree(antree, widget.merchant));
   }
 
   List<Widget> _sections(ConfirmOrderState state) => [

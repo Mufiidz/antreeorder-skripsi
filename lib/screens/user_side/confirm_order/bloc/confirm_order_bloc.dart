@@ -1,4 +1,5 @@
 import 'package:antreeorder/models/antree.dart';
+import 'package:antreeorder/models/merchant.dart';
 import 'package:antreeorder/models/order.dart';
 import 'package:antreeorder/models/seat.dart';
 import 'package:antreeorder/models/summary.dart';
@@ -65,7 +66,7 @@ class ConfirmOrderBloc extends Bloc<ConfirmOrderEvent, ConfirmOrderState> {
     on<AddAntree>((event, emit) async {
       emit(state.copyWith(status: StatusState.loading));
       final response =
-          await _antreeRepository.addAntree(event.antree, event.merchantId);
+          await _antreeRepository.addAntree(event.antree, event.merchant);
       final newState = response.when(
         data: (data, meta) => state.copyWith(
             status: StatusState.success,

@@ -32,7 +32,7 @@ abstract class AntreeApiClient {
       @Body() BaseBody data, @Queries() BaseBody queries);
 
   @GET(antreeWithIdPath)
-  Future<BaseResponse<Antree>> getAntree(@Path(id) int antreeId);
+  Future<BaseResponse<Antree>> getAntree(@Path(id) int antreeId, @Queries() BaseBody queries);
 
   @GET(antreesPath)
   Future<BaseResponse<List<Antree>>> getMerchantAntrees(

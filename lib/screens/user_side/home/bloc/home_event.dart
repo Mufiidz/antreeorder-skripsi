@@ -4,9 +4,9 @@ abstract class HomeEvent extends Equatable {
   const HomeEvent();
 }
 
-class GetAntrians extends HomeEvent {
+class GetAllData extends HomeEvent {
 
-  const GetAntrians();
+  const GetAllData();
 
   @override
   List<Object?> get props => [];

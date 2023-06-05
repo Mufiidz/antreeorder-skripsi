@@ -15,6 +15,10 @@ class AntreeTextStyle {
   static TextStyle medium =
       normal.copyWith(fontSize: 20, fontWeight: FontWeight.w400);
 
+  /// TextStyle(fontSize: 10, fontWeight: FontWeight.normal)
+  static const TextStyle small = TextStyle(
+      fontSize: 10, fontWeight: FontWeight.normal, color: Colors.black);
+
   /// TextStyle(fontSize: 14, fontWeight: FontWeight.light)
   static TextStyle light = normal.light;
 

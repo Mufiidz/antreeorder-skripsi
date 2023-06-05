@@ -24,6 +24,7 @@ class _ScanVerifyScreenState extends State<ScanVerifyScreen> {
   late final ScanVerifyBloc _scanVerifyBloc;
   late final AntreeLoadingDialog _loading;
   late final ScannerController _scannerController;
+  bool _isReadyScan = true;
 
   @override
   void initState() {
@@ -43,6 +44,11 @@ class _ScanVerifyScreenState extends State<ScanVerifyScreen> {
             _scannerController.startCamera();
             _scannerController.startCameraPreview();
           }
+
+          if (!_isReadyScan) {
+            _scannerController.stopCamera();
+            _scannerController.stopCameraPreview();
+          }
         });
     super.initState();
   }
@@ -54,6 +60,7 @@ class _ScanVerifyScreenState extends State<ScanVerifyScreen> {
       body: BlocConsumer<ScanVerifyBloc, ScanVerifyState>(
         bloc: _scanVerifyBloc,
         listener: (context, state) {
+          _isReadyScan = state.isReadyScan;
           if (state.status == StatusState.loading) {
             _loading.showLoadingDialog(context);
           }

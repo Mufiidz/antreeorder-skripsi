@@ -16,12 +16,12 @@ class GetInitialConfirm extends ConfirmOrderEvent {
 
 class AddAntree extends ConfirmOrderEvent {
   final Antree antree;
-  final int merchantId;
+  final Merchant merchant;
 
-  const AddAntree(this.antree, this.merchantId);
+  const AddAntree(this.antree, this.merchant);
 
   @override
-  List<Object?> get props => [antree, merchantId];
+  List<Object?> get props => [antree, merchant];
 }
 
 class SelectedSeat extends ConfirmOrderEvent {

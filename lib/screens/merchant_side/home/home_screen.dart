@@ -1,3 +1,7 @@
+import 'package:antreeorder/screens/notification/notification_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:antreeorder/components/export_components.dart';
 import 'package:antreeorder/di/injection.dart';
 import 'package:antreeorder/models/antree.dart';
@@ -5,8 +9,6 @@ import 'package:antreeorder/models/status_antree.dart';
 import 'package:antreeorder/screens/merchant_side/home/item_home.dart';
 import 'package:antreeorder/screens/merchant_side/settings/setting_merchant_screen.dart';
 import 'package:antreeorder/utils/export_utils.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'bloc/home_bloc.dart';
 
@@ -22,7 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     _homeBloc = getIt<HomeBloc>();
-    _homeBloc.add(GetAntrians());
+    _homeBloc.add(GetAllData());
     super.initState();
   }
 
@@ -35,16 +37,24 @@ class _HomeScreenState extends State<HomeScreen> {
           "Merchant AntreeOrder",
           showBackButton: false,
           actions: [
+            BlocSelector<HomeBloc, HomeState, int>(
+              selector: (state) => state.notificationCounter,
+              builder: (context, state) => AntreeBadge(
+                state,
+                icon: Icons.notifications,
+                onClick: () => AppRoute.to(NotificationScreen()),
+              ),
+            ),
             IconButton(
                 onPressed: () => AppRoute.to(const SettingMerchantScreen()),
                 icon: const Icon(Icons.account_circle))
           ],
         ),
         body: RefreshIndicator(
-          onRefresh: () async => _homeBloc.add(GetAntrians()),
+          onRefresh: () async => _homeBloc.add(GetAllData()),
           child: AntreeState<HomeBloc, HomeState>(
             _homeBloc,
-            onRetry: () => _homeBloc.add(GetAntrians()),
+            onRetry: () => _homeBloc.add(GetAllData()),
             child: (state, context) => AntreeList(
               state.data,
               itemBuilder: (context, item, index) => ItemHome(

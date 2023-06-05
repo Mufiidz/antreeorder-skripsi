@@ -64,7 +64,7 @@ class ProductRepositoryImpl implements ProductRepository {
     merchantId = merchantId ?? currentMerchantId;
     if (merchantId == 0) return ResponseResult.error('Merchant Id is empty');
     return await _apiClient.product
-        .getMerchantProducts(merchantId)
+        .getMerchantProducts(merchantId, page: page)
         .awaitResponse;
   }
 }

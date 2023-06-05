@@ -1,11 +1,12 @@
-import 'package:antreeorder/config/remote/seat_apiclient.dart';
 import 'package:dio/dio.dart';
 
 import 'env.dart';
 import 'remote/antree_apiclient.dart';
 import 'remote/auth_apiclient.dart';
 import 'remote/merchant_apiclient.dart';
+import 'remote/notification_apiclient.dart';
 import 'remote/product_apiclient.dart';
+import 'remote/seat_apiclient.dart';
 
 typedef BaseBody = Map<String, dynamic>;
 
@@ -24,4 +25,7 @@ class ApiClient {
   AntreeApiClient get antree => AntreeApiClient(dio, baseUrl: baseUrl);
 
   SeatApiClient get seat => SeatApiClient(dio, baseUrl: baseUrl);
+
+  NotificationApiClient get notification =>
+      NotificationApiClient(dio, baseUrl: baseUrl);
 }

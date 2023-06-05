@@ -1,5 +1,6 @@
 import 'package:antreeorder/components/export_components.dart';
 import 'package:antreeorder/models/antree.dart';
+import 'package:antreeorder/models/content_detail.dart';
 import 'package:antreeorder/res/antree_textstyle.dart';
 import 'package:antreeorder/screens/merchant_side/detail_antree/section/detail_antree_section.dart';
 import 'package:antreeorder/screens/user_side/home/home_screen.dart';
@@ -27,11 +28,15 @@ class SuccessTakenScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    AntreeText(
-                      'Pesanan berhasil diambil',
-                      style: AntreeTextStyle.title,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: AntreeText(
+                        'Pesanan berhasil\ndiambil',
+                        style: AntreeTextStyle.title,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
-                    DetailAntreeSection(antree),
+                    DetailAntreeSection(detailsAntree: detailsAntree(antree)),
                   ],
                 )),
             Container(
@@ -61,5 +66,25 @@ class SuccessTakenScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  List<ContentDetail> detailsAntree(Antree antree) {
+    List<ContentDetail> detailsAntree = [
+      ContentDetail(title: "Status", value: antree.status.message),
+      ContentDetail(title: "Antree ID", value: antree.id.toString()),
+      ContentDetail(
+          title: "Tanggal Pembelian",
+          value: antree.createdAt
+                  ?.toStringDate(pattern: 'EEEE, dd MMMM yyyy HH:mm') ??
+              '-'),
+    ];
+    if (antree.takenAt != null) {
+      detailsAntree.add(ContentDetail(
+          title: "Tanggal Pengambilan",
+          value: antree.takenAt
+                  ?.toStringDate(pattern: 'EEEE, dd MMMM yyyy HH:mm') ??
+              '-'));
+    }
+    return detailsAntree;
   }
 }

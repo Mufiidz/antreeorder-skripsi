@@ -14,6 +14,7 @@ extension AwaitResult<T> on Future<T> {
         responseResult = ResponseResult.data(value, null);
       }).catchError((Object obj) {
         if (obj.runtimeType != DioError) {
+          logger.e(obj);
           responseResult = ResponseResult.error(obj.toString());
           return;
         }
@@ -22,6 +23,7 @@ extension AwaitResult<T> on Future<T> {
         responseResult = ResponseResult.error(errorMessage);
       });
     } catch (e) {
+      logger.e(e);
       responseResult = ResponseResult.error(e.toString());
     }
     return responseResult;
@@ -37,6 +39,7 @@ extension AwaitResult2<T> on Future<BaseResponse<T>> {
         responseResult = ResponseResult.data(value.data, value.meta);
       }).catchError((Object obj) {
         if (obj.runtimeType != DioError) {
+          logger.e(obj.runtimeType);
           responseResult = ResponseResult.error(obj.toString());
           return;
         }
@@ -45,6 +48,7 @@ extension AwaitResult2<T> on Future<BaseResponse<T>> {
         responseResult = ResponseResult.error(errorMessage);
       });
     } catch (e) {
+      logger.e(e);
       responseResult = ResponseResult.error(e.toString());
     }
     return responseResult;
@@ -64,6 +68,7 @@ String getErrorMessage(DioError dioError) {
     }
     message = errorMessage;
   } catch (e) {
+    logger.e(e);
     message = DioExceptions.fromDioError(dioError).toString();
   }
   return message;

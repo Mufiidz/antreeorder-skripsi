@@ -7,6 +7,7 @@ class ScanVerifyState with _$ScanVerifyState {
       @Default(Antree()) Antree antree,
       @Default(StatusState.idle) StatusState status,
       @Default('') String message,
+      @Default(true) bool isReadyScan,
       }) = _ScanVerifyState;
 }
 

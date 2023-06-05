@@ -50,6 +50,8 @@ class DetailPembayaranSection extends StatelessWidget {
         Summary(title: 'Biaya layanan', price: 1000)
       ];
 
-  int get subTotal => antree.orders
-      .fold(0, (previousValue, element) => previousValue + element.price);
+  int get subTotal => antree.orders.fold(
+      0,
+      (previousValue, element) =>
+          previousValue + (element.price * element.quantity));
 }

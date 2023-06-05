@@ -34,8 +34,8 @@ class Antree with _$Antree {
   BaseBody get toUpdateStatus => {"status": status.id};
 
   BaseBody toTakeOrder(DateTime takenAt) => {
-    "status": 5,
+    "status": 6,
     "isVerify": true,
-    "takenAt": takenAt
+    "takenAt": takenAt.toIso8601String()
   };
 }

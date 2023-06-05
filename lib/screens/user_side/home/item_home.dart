@@ -20,22 +20,30 @@ class ItemHome extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         onTap: () async {
           final status = antree.status;
-          if (status.id == 4) {
-            AppRoute.to(ScanVerifyScreen(antree));
-          }
-          AppRoute.to(AntreeScreen(antree));
+          if (status.id == 4) return AppRoute.to(ScanVerifyScreen(antree));
+          return AppRoute.to(AntreeScreen(antree.id));
         },
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            AntreeText(antree.status.message),
-            AntreeText(
-              antree.remaining == null ? '-' : antree.remaining.toString(),
-              style: AntreeTextStyle.title,
-              fontSize: 40,
-            ),
-            AntreeText(antree.merchant.user.name)
-          ],
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              AntreeText(
+                antree.status.message,
+                textAlign: TextAlign.center,
+              ),
+              AntreeText(
+                antree.remaining == null ? '-' : antree.remaining.toString(),
+                style: AntreeTextStyle.title,
+                fontSize: 40,
+                textAlign: TextAlign.center,
+              ),
+              AntreeText(
+                antree.merchant.user.name,
+                textAlign: TextAlign.center,
+              )
+            ],
+          ),
         ),
       ),
     );

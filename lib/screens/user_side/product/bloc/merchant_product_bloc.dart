@@ -1,5 +1,6 @@
 import 'package:antreeorder/models/base_response.dart';
 import 'package:antreeorder/models/group_product.dart';
+import 'package:antreeorder/models/merchant.dart';
 import 'package:antreeorder/models/order.dart';
 import 'package:antreeorder/repository/product_repository.dart';
 import 'package:bloc/bloc.dart';
@@ -27,12 +28,13 @@ class MerchantProductBloc
     on<GetMerchantProductEvent>((event, emit) async {
       emit(state.copyWith(status: StatusState.loading));
       final response = await _productRepository.getMerchantProducts(
-          merchantId: event.merchantId, page: event.page);
+          merchantId: event.merchant.id, page: event.page);
       final newState = response.when(
         data: (data, meta) {
           final page = meta?.pagination ?? Pagination();
           final isLastPage = page.page == page.pageCount;
           data.sort(((a, b) => a.category.compareTo(b.category)));
+          data.map((e) => e.copyWith(merchant: event.merchant));
           return state.copyWith(
               status: StatusState.idle,
               page: meta?.pagination.toPage,

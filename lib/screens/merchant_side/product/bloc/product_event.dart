@@ -6,34 +6,40 @@ abstract class ProductEvent extends Equatable {
 
 class AddProduct extends ProductEvent {
   final Product product;
+  final XFile? file;
 
-  const AddProduct(this.product);
+  const AddProduct(this.product, this.file);
 
   @override
-  List<Object?> get props => [product];
+  List<Object?> get props => [product, file];
 }
 
 class MerchantProducts extends ProductEvent {
-  const MerchantProducts();
+  final int page;
+  const MerchantProducts(this.page);
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [page];
 }
 
 class UpdateProduct extends ProductEvent {
   final Product product;
+  final XFile? file;
 
-  const UpdateProduct(this.product);
+  const UpdateProduct(
+    this.product,
+    this.file,
+  );
 
   @override
-  List<Object?> get props => [product];
+  List<Object?> get props => [product, file];
 }
 
 class DeleteProduct extends ProductEvent {
-  final int productId;
+  final Product product;
 
-  const DeleteProduct(this.productId);
+  const DeleteProduct(this.product);
   @override
-  List<Object?> get props => [productId];
+  List<Object?> get props => [product];
 }
 
 class GetCategory extends ProductEvent {
@@ -41,7 +47,10 @@ class GetCategory extends ProductEvent {
   List<Object?> get props => [];
 }
 
-class Initial extends ProductEvent {
+class AddImage extends ProductEvent {
+  final XFile? image;
+
+  AddImage(this.image);
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [image];
 }

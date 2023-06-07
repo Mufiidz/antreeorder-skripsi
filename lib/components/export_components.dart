@@ -13,3 +13,4 @@ export 'package:antreeorder/components/antree_list.dart';
 export 'package:antreeorder/components/antree_data.dart';
 export 'package:antreeorder/components/antree_loading.dart';
 export 'package:antreeorder/components/antree_badge.dart';
+export 'package:antreeorder/components/antree_image.dart';

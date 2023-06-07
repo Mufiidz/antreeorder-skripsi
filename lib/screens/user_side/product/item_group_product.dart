@@ -23,7 +23,7 @@ class ItemGroupProduct extends StatelessWidget {
           child: AntreeText(
             groupProduct.title,
             style: AntreeTextStyle.title,
-            fontSize: 22,
+            fontSize: 20,
           ),
         ),
         AntreeList(

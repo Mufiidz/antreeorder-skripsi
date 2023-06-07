@@ -69,7 +69,7 @@ class _DetailAntreeScreenState extends State<DetailAntreeScreen> {
               children: [
                 Expanded(
                     flex: 2,
-                    child: AntreeList<Widget>(state.sections,
+                    child: AntreeList(state.sections,
                         isSeparated: true,
                         itemBuilder: (context, item, index) => item,
                         separatorBuilder: (context, item, index) =>

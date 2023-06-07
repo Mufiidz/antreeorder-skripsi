@@ -1,5 +1,6 @@
 import 'package:antreeorder/config/api_client.dart';
 import 'package:antreeorder/models/base_response.dart';
+import 'package:antreeorder/models/image.dart';
 import 'package:antreeorder/models/product.dart';
 import 'package:antreeorder/utils/export_utils.dart';
 import 'package:dio/dio.dart';
@@ -12,8 +13,11 @@ abstract class ProductApiClient {
   factory ProductApiClient(Dio dio, {String baseUrl}) = _ProductApiClient;
 
   static const String productsPath = '/products';
+  static const String uploud = '/upload';
+  static const String files = '/files';
   static const String idPath = '/{id}';
   static const String productWithIdPath = '$productsPath$idPath';
+  static const String deleteImagePath = '$uploud$files$idPath';
   static const String id = 'id';
 
   @POST(productsPath)
@@ -31,11 +35,15 @@ abstract class ProductApiClient {
 
   @GET(productsPath)
   Future<BaseResponse<List<Product>>> getMerchantProducts(
-    @Query('filters[merchant]') int merchantId, {
-    @Query('pagination[page]') int page = 1,
-    @Query('pagination[pageSize]') int size = 10,
-  });
+      @Queries() BaseBody queries);
 
   @DELETE(productWithIdPath)
   Future<BaseResponse<Product>> deleteProduct(@Path(id) int id);
+
+  @POST(uploud)
+  Future<List<Image>> uploudImage(@Body() FormData data,
+      {@Header('Content-Type') String contentType = 'multipart/form-data'});
+
+  @DELETE(deleteImagePath)
+  Future<Image> deleteImage(@Path(id) int imageId);
 }

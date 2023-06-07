@@ -1,3 +1,4 @@
+import 'package:antreeorder/config/env.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'image.freezed.dart';
@@ -5,11 +6,12 @@ part 'image.g.dart';
 
 @freezed
 class Image with _$Image {
+  const Image._();
   const factory Image({
     @Default(0) int id,
     @Default('') String name,
-    @Default('') String alternativeText,
-    @Default('') String caption,
+    String? alternativeText,
+    String? caption,
     @Default(0) int width,
     @Default(0) int height,
     @Default(Formats()) Formats formats,
@@ -26,6 +28,11 @@ class Image with _$Image {
   }) = _Image;
 
   factory Image.fromJson(Map<String, dynamic> json) => _$ImageFromJson(json);
+
+  String get _baseUrl => Env.baseUrl;
+
+  String get imageUrl =>
+      url.isNotEmpty ? '${_baseUrl.substring(0, _baseUrl.length - 4)}$url' : '';
 }
 
 @freezed
@@ -46,7 +53,7 @@ class Small with _$Small {
     @Default('') String hash,
     @Default('') String ext,
     @Default('') String mime,
-    @Default('') String path,
+    String? path,
     @Default(0) int width,
     @Default(0) int height,
     @Default(0.0) double size,

@@ -1,10 +1,12 @@
 import 'package:antreeorder/config/antree_db.dart';
 import 'package:antreeorder/config/local/dao/category_dao.dart';
+import 'package:antreeorder/models/base_response.dart';
 import 'package:antreeorder/models/base_state2.dart';
 import 'package:antreeorder/models/product.dart';
 import 'package:antreeorder/repository/product_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:image_picker/image_picker.dart';
 
 part 'product_event.dart';
 part 'product_state.dart';
@@ -19,12 +21,14 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     final CategoryDao categoryDao = _antreeDatabase.categoryDao;
     on<AddProduct>((event, emit) async {
       emit(state.copyWith(status: StatusState.loading));
-      final response = await _productRepository.addProduct(event.product);
+      final response =
+          await _productRepository.addProduct(event.product, event.file);
       final newState = response.when(
         data: (data, meta) => state.copyWith(
             status: StatusState.success,
             data: data,
-            message: 'Berhasil menambahkan produk \'${data.title}\''),
+            message: 'Berhasil menambahkan produk \'${data.title}\'',
+            xfile: null),
         error: (message) =>
             state.copyWith(status: StatusState.failure, message: message),
       );
@@ -32,10 +36,17 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     });
     on<MerchantProducts>((event, emit) async {
       emit(state.copyWith(status: StatusState.loading));
-      final response = await _productRepository.getMerchantProducts();
+      final response =
+          await _productRepository.getMerchantProducts(page: event.page);
       final newState = response.when(
-        data: (data, meta) =>
-            state.copyWith(products: data, status: StatusState.idle),
+        data: (data, meta) {
+          final page = meta?.pagination ?? Pagination();
+          final isLastPage = page.page == page.pageCount;
+          return state.copyWith(
+              products: data,
+              status: StatusState.idleList,
+              isLastPage: isLastPage);
+        },
         error: (message) =>
             state.copyWith(status: StatusState.failure, message: message),
       );
@@ -43,12 +54,14 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     });
     on<UpdateProduct>((event, emit) async {
       emit(state.copyWith(status: StatusState.loading));
-      final response = await _productRepository.updateProduct(event.product);
+      final response =
+          await _productRepository.updateProduct(event.product, event.file);
       final newState = response.when(
         data: (data, meta) => state.copyWith(
             status: StatusState.success,
             data: data,
-            message: 'Product \'${data.title}\' berhasil diperbarui'),
+            message: 'Product \'${data.title}\' berhasil diperbarui',
+            xfile: null),
         error: (message) =>
             state.copyWith(status: StatusState.failure, message: message),
       );
@@ -56,12 +69,12 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     });
     on<DeleteProduct>((event, emit) async {
       emit(state.copyWith(status: StatusState.loading));
-      final response = await _productRepository.deleteProduct(event.productId);
+      final response = await _productRepository.deleteProduct(event.product);
       final newState = response.when(
         data: (data, meta) => state.copyWith(
-            status: StatusState.success,
-            message: 'Product berhasil dihapus',
-            products: data),
+          status: StatusState.success,
+          message: 'Product berhasil dihapus',
+        ),
         error: (message) =>
             state.copyWith(status: StatusState.failure, message: message),
       );
@@ -72,10 +85,8 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       var categories = ["No Category"];
       var data = response.map((e) => e.title).toList();
       categories.addAll(data);
-      emit(state.copyWith(categories: categories));
+      emit(state.copyWith(categories: categories, status: StatusState.idle));
     });
-
-    on<Initial>(
-        (event, emit) => emit(state.copyWith(status: StatusState.idle)));
+    on<AddImage>((event, emit) => emit(state.copyWith(xfile: event.image)));
   }
 }

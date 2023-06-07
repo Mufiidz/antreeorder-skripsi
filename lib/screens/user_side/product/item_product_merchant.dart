@@ -15,41 +15,31 @@ class ItemProductMerchant extends StatelessWidget {
     return InkWell(
       onTap: onClick,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Row(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(right: 16.0),
-              child: Container(
-                width: 50,
-                height: 50,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6),
-                  color: Colors.black,
-                ),
-              ),
-            ),
+            Expanded(flex: 1, child: getImageProduct() ?? Container()),
             Expanded(
+              flex: 4,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   AntreeText(
                     product.title,
-                    style: AntreeTextStyle.medium.bold,
-                    fontSize: 18,
+                    style: AntreeTextStyle.bold,
+                    fontSize: 16,
+                    maxLines: 2,
                   ),
-                  const AntreeSpacer(),
-                  Container(
-                    width: context.mediaSize.width,
-                    padding: const EdgeInsets.only(right: 8),
-                    child: AntreeText(
-                      product.description,
-                      maxLines: 2,
-                      fontSize: 16,
-                      textColor: Colors.grey,
-                    ),
+                  // const AntreeSpacer(),
+                  AntreeText(
+                    product.description,
+                    maxLines: 2,
+                    fontSize: 14,
+                    textColor: Colors.grey,
                   ),
-                  const AntreeSpacer(),
+                  const AntreeSpacer(
+                    size: 8,
+                  ),
                   AntreeText(
                     product.price.toIdr(),
                     fontSize: 16,
@@ -61,5 +51,19 @@ class ItemProductMerchant extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget? getImageProduct() {
+    final imgProduct = product.cover?.imageUrl ?? '';
+    return imgProduct.isNotEmpty
+        ? Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: AntreeImage(
+              imgProduct,
+              fit: BoxFit.cover,
+              height: 60,
+            ),
+          )
+        : null;
   }
 }

@@ -2,6 +2,7 @@ import 'package:antreeorder/config/api_client.dart';
 import 'package:antreeorder/utils/export_utils.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'image.dart';
 import 'merchant.dart';
 import 'order.dart';
 
@@ -22,6 +23,7 @@ class Product with _$Product {
       @Default(0) int quantity,
       @Default(0) int price,
       @Default(true) bool isAvailable,
+      Image? cover,
       @Default(Merchant()) Merchant merchant}) = _Product;
 
   factory Product.fromJson(Map<String, dynamic> data) =>

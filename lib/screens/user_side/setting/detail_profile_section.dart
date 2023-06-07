@@ -10,12 +10,12 @@ class DetailProfileSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AntreeList(
+    return AntreeList<ContentDetail>(
       profiles,
       isSeparated: true,
       shrinkWrap: true,
       scrollPhysics: const NeverScrollableScrollPhysics(),
-      itemBuilder: (BuildContext context, ContentDetail item, int index) =>
+      itemBuilder: (BuildContext context, item, int index) =>
           Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
         child: Column(

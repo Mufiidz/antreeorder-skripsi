@@ -10,4 +10,7 @@ abstract class Env {
 
   @EnviedField(varName: 'DB_FILENAME')
   static const String dbFileName = _Env.dbFileName;
+
+  @EnviedField(varName: 'NOTIF_TOKEN')
+  static const String firebaseNotifToken = _Env.firebaseNotifToken;
 }

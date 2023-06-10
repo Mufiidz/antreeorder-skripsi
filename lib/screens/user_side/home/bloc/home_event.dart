@@ -5,7 +5,6 @@ abstract class HomeEvent extends Equatable {
 }
 
 class GetAllData extends HomeEvent {
-
   const GetAllData();
 
   @override
@@ -13,6 +12,11 @@ class GetAllData extends HomeEvent {
 }
 
 class Dispose extends HomeEvent {
+  @override
+  List<Object?> get props => [];
+}
+
+class GetNotificationToken extends HomeEvent {
   @override
   List<Object?> get props => [];
 }

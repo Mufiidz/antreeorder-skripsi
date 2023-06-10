@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1046363111275",
+    "project_id": "antreeorder",
+    "storage_bucket": "antreeorder.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1046363111275:android:13d1dc6106cb9d7d74162e",
+        "android_client_info": {
+          "package_name": "id.my.mufidz.antreeorder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1046363111275-fgghigkkd58h8i5gsd4jikgg4dd7715n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZVFDfb50AL9abXvzSXOa6r-9825qONcs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1046363111275-fgghigkkd58h8i5gsd4jikgg4dd7715n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

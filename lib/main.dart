@@ -1,12 +1,25 @@
+import 'package:antreeorder/config/firebase_setup.dart';
 import 'package:antreeorder/di/injection.dart';
 import 'package:antreeorder/screens/splash_screen.dart';
-import 'package:antreeorder/utils/app_route.dart';
 import 'package:antreeorder/res/custom_color.dart';
+import 'package:antreeorder/service/antree_notification.dart';
+import 'package:antreeorder/utils/export_utils.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  logger.d(message);
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   await setupDI();
+  AntreeNotifications.init();
+  await setupFirebase();
   runApp(const MyApp());
 }
 

@@ -20,6 +20,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc(this._antreeRepository, this._statusAntreeRepository,
       this._notificationRepository)
       : super(const HomeState([])) {
+    on<GetNotificationToken>((event, emit) async {
+      await _notificationRepository.getNotificationToken();
+    });
     on<GetAllData>((event, emit) async {
       emit(state.copyWith(status: StatusState.loading));
       final response = await _antreeRepository.getMerchantAntrees();

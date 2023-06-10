@@ -1,13 +1,18 @@
-import 'package:antreeorder/screens/notification/notification_screen.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:antreeorder/components/export_components.dart';
 import 'package:antreeorder/di/injection.dart';
 import 'package:antreeorder/models/antree.dart';
+import 'package:antreeorder/models/notification.dart' as notif;
 import 'package:antreeorder/models/status_antree.dart';
+import 'package:antreeorder/repository/sharedprefs_repository.dart';
+import 'package:antreeorder/screens/merchant_side/detail_antree/detail_antree_screen.dart';
 import 'package:antreeorder/screens/merchant_side/home/item_home.dart';
 import 'package:antreeorder/screens/merchant_side/settings/setting_merchant_screen.dart';
+import 'package:antreeorder/screens/notification/notification_screen.dart';
+import 'package:antreeorder/screens/user_side/antree/antree_screen.dart';
 import 'package:antreeorder/utils/export_utils.dart';
 
 import 'bloc/home_bloc.dart';
@@ -25,6 +30,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     _homeBloc = getIt<HomeBloc>();
     _homeBloc.add(GetAllData());
+    _homeBloc.add(GetNotificationToken());
+    setupNotification();
     super.initState();
   }
 
@@ -75,6 +82,33 @@ class _HomeScreenState extends State<HomeScreen> {
       antree = antree.copyWith(status: statusAntree);
     }
     _homeBloc.add(UpadateStatusAntree(antree, antree.status.id == 1));
+  }
+
+  Future<void> setupNotification() async {
+    RemoteMessage? initialMessage =
+        await getIt<FirebaseMessaging>().getInitialMessage();
+
+    if (initialMessage != null) {
+      _handleMessage(initialMessage);
+    }
+    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
+  }
+
+  void _handleMessage(RemoteMessage message) {
+    final data = message.data;
+    logger.d(data);
+    if (data.isEmpty) return;
+    final notification = notif.Notification.fromFirebaseMessaging(data);
+    final isMerchant =
+        getIt<SharedPrefsRepository>().account?.isMerchant ?? false;
+
+    if (notification.type == notif.NotificationType.antree) {
+      if (isMerchant) {
+        AppRoute.to(DetailAntreeScreen(antreeId: notification.contentId));
+      } else {
+        AppRoute.to(AntreeScreen(notification.contentId));
+      }
+    }
   }
 
   @override

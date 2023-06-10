@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'env.dart';
 import 'remote/antree_apiclient.dart';
 import 'remote/auth_apiclient.dart';
+import 'remote/firebase_notif_apiclient.dart';
 import 'remote/merchant_apiclient.dart';
 import 'remote/notification_apiclient.dart';
 import 'remote/product_apiclient.dart';
@@ -28,4 +29,7 @@ class ApiClient {
 
   NotificationApiClient get notification =>
       NotificationApiClient(dio, baseUrl: baseUrl);
+
+  FirebaseNotifApiClient get firebaseNotification =>
+      FirebaseNotifApiClient(dio);
 }

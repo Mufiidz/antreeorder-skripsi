@@ -15,6 +15,7 @@ abstract class AuthRepository {
   Future<ResponseResult<User>> register(User user);
   Future<ResponseResult<User>> login(User user);
   Future<List<Role>> getRoles();
+  Future<ResponseResult<String>> onLogOut();
 }
 
 @Injectable(as: AuthRepository)
@@ -67,7 +68,8 @@ class AuthRepositoryImpl implements AuthRepository {
 
     responseMe.when(
       data: (data, meta) {
-        account = account.copyWith(isMerchant: data.role.isMerchant, user: data);
+        account =
+            account.copyWith(isMerchant: data.role.isMerchant, user: data);
         result = responseMe;
       },
       error: (message) {
@@ -183,5 +185,21 @@ class AuthRepositoryImpl implements AuthRepository {
       result = updatedUserResponse;
     }
     return result;
+  }
+
+  @override
+  Future<ResponseResult<String>> onLogOut() async {
+    final user = _sharedPrefsRepository.account?.user;
+    if (user == null) return ResponseResult.error('Empty User Id');
+    final response = await _apiClient.auth
+        .updateUser(user.id, {"notificationToken": null}).awaitResponse;
+    final newResponse = response.when(
+      data: (data, meta) {
+        _sharedPrefsRepository.onLogout();
+        return ResponseResult.data('Berhasil Keluar', null);
+      },
+      error: (message) => ResponseResult<String>.error(message),
+    );
+    return newResponse;
   }
 }

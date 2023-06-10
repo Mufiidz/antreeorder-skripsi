@@ -26,3 +26,8 @@ class UpadateStatusAntree extends HomeEvent {
   @override
   List<Object?> get props => [antree, isConfirm];
 }
+
+class GetNotificationToken extends HomeEvent {
+  @override
+  List<Object?> get props => [];
+}

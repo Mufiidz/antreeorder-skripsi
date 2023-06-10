@@ -1,3 +1,4 @@
+import 'package:antreeorder/config/api_client.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'role.dart';
@@ -8,22 +9,22 @@ part 'user.g.dart';
 @freezed
 class User with _$User {
   const User._();
-  const factory User({
-    @Default(0) int id,
-    @Default('') String name,
-    @Default('') String username,
-    @Default('') String email,
-    @Default('') String password,
-    @Default('') String provider,
-    @Default(false) bool confirmed,
-    @Default(false) bool blocked,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-    @Default('') String description,
-    @Default(Role()) Role role,
-    @Default(0) int merchantId,
-    @Default(0) int customerId,
-  }) = _User;
+  const factory User(
+      {@Default(0) int id,
+      @Default('') String name,
+      @Default('') String username,
+      @Default('') String email,
+      @Default('') String password,
+      @Default('') String provider,
+      @Default(false) bool confirmed,
+      @Default(false) bool blocked,
+      DateTime? createdAt,
+      DateTime? updatedAt,
+      @Default('') String description,
+      @Default(Role()) Role role,
+      @Default(0) int merchantId,
+      @Default(0) int customerId,
+      String? notificationToken}) = _User;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
@@ -46,4 +47,6 @@ class User with _$User {
         "identifier": username,
         "password": password,
       };
+  BaseBody get updateNotificationToken =>
+      {"notificationToken": notificationToken};
 }

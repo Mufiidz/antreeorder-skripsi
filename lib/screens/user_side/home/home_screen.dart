@@ -1,3 +1,9 @@
+import 'package:antreeorder/models/notification.dart' as notif;
+import 'package:antreeorder/models/notification.dart';
+import 'package:antreeorder/repository/sharedprefs_repository.dart';
+import 'package:antreeorder/screens/merchant_side/detail_antree/detail_antree_screen.dart';
+import 'package:antreeorder/screens/user_side/antree/antree_screen.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -25,7 +31,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     _homeBloc = getIt<HomeBloc>();
+    _homeBloc.add(GetNotificationToken());
     _homeBloc.add(GetAllData());
+    setupNotification();
     super.initState();
   }
 
@@ -75,5 +83,32 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> setupNotification() async {
+    RemoteMessage? initialMessage =
+        await getIt<FirebaseMessaging>().getInitialMessage();
+
+    if (initialMessage != null) {
+      _handleMessage(initialMessage);
+    }
+    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
+  }
+
+  void _handleMessage(RemoteMessage message) {
+    final data = message.data;
+    logger.d(data);
+    if (data.isEmpty) return;
+    final notification = notif.Notification.fromFirebaseMessaging(data);
+    final isMerchant =
+        getIt<SharedPrefsRepository>().account?.isMerchant ?? false;
+
+    if (notification.type == NotificationType.antree) {
+      if (isMerchant) {
+        AppRoute.to(DetailAntreeScreen(antreeId: notification.contentId));
+      } else {
+        AppRoute.to(AntreeScreen(notification.contentId));
+      }
+    }
   }
 }

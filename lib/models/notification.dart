@@ -1,4 +1,5 @@
 import 'package:antreeorder/config/api_client.dart';
+import 'package:antreeorder/utils/export_utils.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'user.dart';
@@ -28,6 +29,16 @@ class Notification with _$Notification {
   factory Notification.fromJson(Map<String, dynamic> json) =>
       _$NotificationFromJson(json);
 
+  factory Notification.fromFirebaseMessaging(Map<String, dynamic> json) =>
+      Notification(
+        contentId: (json['contentId'] as String? ?? '0').toInt(),
+        id: (json['id'] as String? ?? '0').toInt(),
+        type: json['type'] == null
+            ? NotificationType.nothing
+            : const NotificationTypeConverter()
+                .fromJson(json['type'] as String),
+      );
+
   BaseBody get toAddNotifOrder {
     return {
       "title": title,
@@ -39,6 +50,20 @@ class Notification with _$Notification {
       "isReaded": false
     };
   }
+
+  BaseBody pushNotification(String to) => {
+        "to": to,
+        "notification": {
+          "title": title,
+          "body": message,
+          "android_channel_id": type.name
+        },
+        "data": {
+          "id": id,
+          "contentId": contentId,
+          "type": type.name,
+        }
+      };
 }
 
 enum NotificationType { antree, merchant, consumer, user, product, nothing }

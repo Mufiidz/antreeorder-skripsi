@@ -13,4 +13,10 @@ abstract class Env {
 
   @EnviedField(varName: 'NOTIF_TOKEN')
   static const String firebaseNotifToken = _Env.firebaseNotifToken;
+
+  @EnviedField(varName: 'MIDTRAINS_SANDBOX_BASE_URL')
+  static const String midtrainsBaseUrl = _Env.midtrainsBaseUrl;
+
+  @EnviedField(varName: 'AUTH_SERVER')
+  static const String authServerMidtrains = _Env.authServerMidtrains;
 }

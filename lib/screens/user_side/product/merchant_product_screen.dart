@@ -2,7 +2,6 @@ import 'package:antreeorder/di/injection.dart';
 import 'package:antreeorder/models/base_state2.dart';
 import 'package:antreeorder/models/group_product.dart';
 import 'package:antreeorder/models/merchant.dart';
-import 'package:antreeorder/models/order.dart';
 import 'package:antreeorder/res/export_res.dart';
 import 'package:antreeorder/utils/export_utils.dart';
 import 'package:flutter/material.dart';
@@ -124,10 +123,9 @@ class _MerchantProductScreenState extends State<MerchantProductScreen> {
                                   height: 40,
                                   isChecked: state.orders.isNotEmpty,
                                   onClick: () {
-                                    final List<Order> orders = state.orders;
                                     _merchantProductBloc.add(ResetOrder());
                                     AppRoute.to(CartScreen(
-                                      orders: orders,
+                                      orders: state.orders,
                                       merchant: widget.merchant,
                                     ));
                                   },

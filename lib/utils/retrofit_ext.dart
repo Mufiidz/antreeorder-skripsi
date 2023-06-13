@@ -6,6 +6,7 @@ import 'logger.dart';
 import 'response_result.dart';
 
 extension AwaitResult<T> on Future<T> {
+  /// For Single Response
   Future<ResponseResult<T>> get awaitResponse async {
     ResponseResult<T> responseResult = const ResponseResult.error("EMPTY");
     try {
@@ -31,6 +32,7 @@ extension AwaitResult<T> on Future<T> {
 }
 
 extension AwaitResult2<T> on Future<BaseResponse<T>> {
+  /// For response using BaseResponse<T>
   Future<ResponseResult<T>> get awaitResponse async {
     ResponseResult<T> responseResult = const ResponseResult.error("EMPTY");
     try {

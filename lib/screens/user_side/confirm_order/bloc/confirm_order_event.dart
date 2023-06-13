@@ -17,8 +17,9 @@ class GetInitialConfirm extends ConfirmOrderEvent {
 class AddAntree extends ConfirmOrderEvent {
   final Antree antree;
   final Merchant merchant;
+  final bool bayarOnline;
 
-  const AddAntree(this.antree, this.merchant);
+  const AddAntree(this.antree, this.merchant, this.bayarOnline);
 
   @override
   List<Object?> get props => [antree, merchant];

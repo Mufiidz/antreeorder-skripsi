@@ -2,8 +2,10 @@ import 'package:antreeorder/config/antree_db.dart';
 import 'package:antreeorder/config/api_client.dart';
 import 'package:antreeorder/models/antree.dart';
 import 'package:antreeorder/models/merchant.dart';
+import 'package:antreeorder/models/midtrans_payment.dart';
 import 'package:antreeorder/models/notification.dart';
 import 'package:antreeorder/models/order.dart';
+import 'package:antreeorder/models/online_payment.dart';
 import 'package:antreeorder/models/status_antree.dart';
 import 'package:antreeorder/repository/notification_repository.dart';
 import 'package:antreeorder/repository/sharedprefs_repository.dart';
@@ -16,6 +18,9 @@ import 'package:intl/intl.dart';
 
 abstract class AntreeRepository {
   Future<ResponseResult<Antree>> addAntree(Antree antree, Merchant merchant);
+  Future<ResponseResult<Antree>> addOnlinePayment(
+      Antree antree, Merchant merchant);
+  Future<ResponseResult<Antree>> addAntreeOnlinePayment(int antreeId);
   Future<ResponseResult<Antree>> detailAntree(int antreeId);
   Future<ResponseResult<List<Antree>>> getMerchantAntrees({BaseBody? query});
   Future<ResponseResult<List<Antree>>> getCustomerAntrees();
@@ -43,6 +48,7 @@ class AntreeRepositoryImpl implements AntreeRepository {
       'filters[isVerify][\$eq]': false,
       'populate[orders]': '*',
       'populate[status]': '*',
+      'populate[payment]': '*',
       'pagination[pageSize]': 10,
     };
     return _apiClient.antree.getCustomerAntrees(queries).awaitResponse;
@@ -60,6 +66,7 @@ class AntreeRepositoryImpl implements AntreeRepository {
           'filters[isVerify][\$eq]': false,
           'populate[orders]': '*',
           'populate[status]': '*',
+          'populate[payment]': '*',
           'pagination[pageSize]': 10,
           'sort[0]': 'nomorAntree',
           'sort[1]': 'createdAt:desc',
@@ -94,6 +101,132 @@ class AntreeRepositoryImpl implements AntreeRepository {
       'populate[status]': '*',
     };
     return _apiClient.antree.getAntree(antreeId, queries).awaitResponse;
+  }
+
+  @override
+  Future<ResponseResult<Antree>> addOnlinePayment(
+      Antree antree, Merchant merchant) async {
+    final int customerId = _sharedPrefsRepository.user.customerId;
+    final List<Order> orders = antree.orders;
+    // validation
+    if (customerId == 0) return ResponseResult.error('Customer Id is empty');
+    if (merchant.id == 0) return ResponseResult.error('Merchant Id is empty');
+    if (orders.isEmpty) return ResponseResult.error('Orders is empty');
+    if (antree.seat.id == 0) return ResponseResult.error('Seat is empty');
+
+    ResponseResult<Order> result = ResponseResult.error("Init");
+    // add antree
+    final BaseBody mapAddAntree = {
+      "totalPrice": antree.totalPrice,
+      "merchant": merchant.id,
+      "customer": customerId,
+      "seat": antree.seat.id,
+      "status": 8,
+    };
+    final antreeResponse = await _apiClient.antree
+        .createAntree(mapAddAntree.wrapWithData)
+        .awaitResponse;
+    final antreeId = antreeResponse.when(
+      data: (data, meta) => data.id,
+      error: (message) => 0,
+    );
+
+    if (antreeId == 0) return ResponseResult.error('Antree Id is empty');
+
+    // Get token payment
+    final items = orders.map((order) => order.toItemMidtrans).toList();
+    final midtransPayment = MidtransPayment(
+        transactionDetails: TransactionDetails(
+            orderId: antreeId.toString(),
+            grossAmount: (antree.totalPrice - 1000)),
+        itemDetails: items);
+    final tokenPaymentResponse = await _apiClient
+        .payment()
+        .tokenPayment(midtransPayment.toJson())
+        .awaitResponse;
+    final payment = tokenPaymentResponse.whenOrNull(
+      data: (data, meta) => OnlinePayment(
+          token: data.token,
+          redirectUrl: data.redirectUrl,
+          paymentId: antreeId.toString()),
+    );
+    if (payment == null) return ResponseResult.error('Direct Payment is Empty');
+    // post payment
+    final paymentResponse = await _apiClient
+        .payment(url: ApiClient.baseUrl)
+        .addPayment(payment.toAddPayment.wrapWithData)
+        .awaitResponse;
+    final paymentId = paymentResponse.when(
+      data: (data, meta) => data.id,
+      error: (message) => 0,
+    );
+    if (paymentId == 0) return ResponseResult.error('PaymentId is Empty');
+
+    // post order
+    List<int> orderIds = [];
+    for (var order in orders) {
+      result = await _apiClient.antree
+          .createOrder(order.toAddOrder.wrapWithData)
+          .awaitResponse;
+      if (result is ResponseResultData<Order>) {
+        orderIds.add(result.data.id);
+      }
+      if (result is ResponseResultError<Order>) break;
+    }
+    if (result is ResponseResultError<Order>)
+      return ResponseResult.error(result.message);
+
+    final BaseBody mapAntree = {"orders": orderIds, "payment": paymentId};
+    return _apiClient.antree.updateAntree(
+        antreeId, mapAntree.wrapWithData, {'populate': '*'}).awaitResponse;
+  }
+
+  @override
+  Future<ResponseResult<Antree>> addAntreeOnlinePayment(int antreeId) async {
+    if (antreeId == 0) return ResponseResult.error('Antree Id is empty');
+    final antreeResponse = await _apiClient.antree
+        .getAntree(antreeId, {'populate': '*'}).awaitResponse;
+    final antree = antreeResponse.whenOrNull(
+      data: (data, meta) => data,
+    );
+    if (antree == null) return ResponseResult.error('Antree is Empty');
+    if (antree.merchant.id == 0)
+      return ResponseResult.error('Merchant Id is Empty');
+    var nomorAntree = await _getNomorAntree(antree.merchant.id);
+    nomorAntree = nomorAntree != null ? (nomorAntree - 1) : null;
+    final remaining = nomorAntree != null ? (nomorAntree - 1) : null;
+    final BaseBody mapAntree = {
+      "nomorAntree": nomorAntree,
+      "remaining": remaining,
+      "status": 1
+    };
+    final BaseBody queries = {
+      'populate[merchant][populate][0]': 'user',
+      'populate[orders]': '*',
+      'populate[status]': '*',
+    };
+    final response = await _apiClient.antree
+        .updateAntree(antreeId, mapAntree.wrapWithData, queries)
+        .awaitResponse;
+
+    // add notification
+    final user = _sharedPrefsRepository.user;
+
+    var notification = response.when(
+      data: (data, meta) => Notification(
+          title: "Ada Pesanan baru nih",
+          message: "Pesanan dari customer nih cek yuk buat dikonfirmasi",
+          type: NotificationType.antree,
+          contentId: data.id,
+          from: user,
+          to: data.merchant.user),
+      error: (message) => null,
+    );
+
+    if (notification == null) return response;
+
+    await _notificationRepository.addNotification(notification).awaitResponse;
+    return response;
   }
 
   @override

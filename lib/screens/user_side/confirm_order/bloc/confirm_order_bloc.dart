@@ -5,6 +5,7 @@ import 'package:antreeorder/models/seat.dart';
 import 'package:antreeorder/models/summary.dart';
 import 'package:antreeorder/repository/antree_repository.dart';
 import 'package:antreeorder/repository/seat_repository.dart';
+import 'package:antreeorder/utils/response_result.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -65,11 +66,19 @@ class ConfirmOrderBloc extends Bloc<ConfirmOrderEvent, ConfirmOrderState> {
 
     on<AddAntree>((event, emit) async {
       emit(state.copyWith(status: StatusState.loading));
-      final response =
-          await _antreeRepository.addAntree(event.antree, event.merchant);
+      late final ResponseResult<Antree> response;
+      if (event.bayarOnline) {
+        response = await _antreeRepository.addOnlinePayment(
+            event.antree, event.merchant);
+      } else {
+        response =
+            await _antreeRepository.addAntree(event.antree, event.merchant);
+      }
+
       final newState = response.when(
         data: (data, meta) => state.copyWith(
             status: StatusState.success,
+            antree: data,
             message: "Berhasil menambahkan antree"),
         error: (message) =>
             state.copyWith(message: message, status: StatusState.failure),

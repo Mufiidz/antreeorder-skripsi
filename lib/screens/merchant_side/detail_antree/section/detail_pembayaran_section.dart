@@ -2,6 +2,7 @@ import 'package:antreeorder/components/export_components.dart';
 import 'package:antreeorder/models/antree.dart';
 import 'package:antreeorder/models/summary.dart';
 import 'package:antreeorder/res/export_res.dart';
+import 'package:antreeorder/screens/merchant_side/detail_antree/section/detail_method_section.dart';
 import 'package:antreeorder/screens/user_side/confirm_order/section/summary_section.dart';
 import 'package:antreeorder/utils/export_utils.dart';
 import 'package:flutter/material.dart';
@@ -13,17 +14,26 @@ class DetailPembayaranSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SummarySection(summaries: summaries),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Container(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: AntreeText("Ringkasan",
+                style: AntreeTextStyle.medium.bold, fontSize: 18),
+          ),
+          DetailMethodSection(
+            payment: antree.payment,
+          ),
+          Divider(color: AntreeColors.separator, thickness: 1,),
+          SummarySection(summaries: summaries),
+          Container(
             padding: const EdgeInsets.symmetric(vertical: 16),
             decoration: const BoxDecoration(
                 border: Border(
-                    top: BorderSide(color: AntreeColors.separator),
-                    bottom: BorderSide(color: AntreeColors.separator))),
+                    top: BorderSide(color: AntreeColors.separator))),
             child: Row(
               children: [
                 Expanded(
@@ -39,9 +49,9 @@ class DetailPembayaranSection extends StatelessWidget {
                 )),
               ],
             ),
-          ),
-        )
-      ],
+          )
+        ],
+      ),
     );
   }
 

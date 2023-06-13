@@ -6,6 +6,7 @@ import 'remote/auth_apiclient.dart';
 import 'remote/firebase_notif_apiclient.dart';
 import 'remote/merchant_apiclient.dart';
 import 'remote/notification_apiclient.dart';
+import 'remote/payment_apiclient.dart';
 import 'remote/product_apiclient.dart';
 import 'remote/seat_apiclient.dart';
 
@@ -14,6 +15,7 @@ typedef BaseBody = Map<String, dynamic>;
 class ApiClient {
   final Dio dio;
   static const String baseUrl = Env.baseUrl;
+  static const String midtransBaseUrl = Env.midtrainsBaseUrl;
 
   ApiClient(this.dio);
 
@@ -32,4 +34,7 @@ class ApiClient {
 
   FirebaseNotifApiClient get firebaseNotification =>
       FirebaseNotifApiClient(dio);
+
+  PaymentApiClient payment({String url = midtransBaseUrl}) =>
+      PaymentApiClient(dio, baseUrl: url);
 }

@@ -9,6 +9,8 @@ import 'package:antreeorder/config/api_client.dart';
 import 'package:antreeorder/config/local/dao/category_dao.dart';
 import 'package:antreeorder/config/local/dao/role_dao.dart';
 import 'package:antreeorder/repository/sharedprefs_repository.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
 import '../utils/export_utils.dart';
 
@@ -76,4 +78,20 @@ abstract class AppModule {
 
   @lazySingleton
   FirebaseMessaging get firebaseMessaging => FirebaseMessaging.instance;
+
+  @singleton
+  WebViewController webviewController() {
+    late final PlatformWebViewControllerCreationParams params;
+    if (WebViewPlatform.instance is WebKitWebViewPlatform) {
+      params = WebKitWebViewControllerCreationParams(
+        allowsInlineMediaPlayback: true,
+        mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
+      );
+    } else {
+      params = const PlatformWebViewControllerCreationParams();
+    }
+    final controller = WebViewController.fromPlatformCreationParams(params);
+    controller..setJavaScriptMode(JavaScriptMode.unrestricted);
+    return controller;
+  }
 }

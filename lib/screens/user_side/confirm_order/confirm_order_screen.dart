@@ -7,6 +7,7 @@ import 'package:antreeorder/models/order.dart';
 import 'package:antreeorder/res/custom_color.dart';
 import 'package:antreeorder/screens/user_side/confirm_order/section/seats_section.dart';
 import 'package:antreeorder/screens/user_side/home/home_screen.dart';
+import 'package:antreeorder/screens/user_side/payment/payment_screen.dart';
 import 'package:antreeorder/utils/export_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,6 +31,7 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
   late final AntreeLoadingDialog _dialog;
   bool _isEnabledBack = true;
   bool _isSuccess = false;
+  bool _isBayarLangsung = false;
 
   @override
   void initState() {
@@ -125,7 +127,12 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
                     state.message,
                     status: SnackbarStatus.success,
                   ));
-                  AppRoute.clearAll(const HomeScreen());
+                  final antree = state.antree;
+                  if (_isBayarLangsung && antree != null) {
+                    AppRoute.clearAll(PaymentScreen(antree: antree, isClearTop: true,));
+                  } else {
+                    AppRoute.clearAll(HomeScreen());
+                  }
                 }
               }),
         ),
@@ -136,14 +143,14 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
   void _antree(ConfirmOrderState state) {
     if (widget.orders.isEmpty) return;
     if (widget.merchant.id == 0) return;
-    // _dialog.showLoadingDialog(context);
+    _dialog.showLoadingDialog(context);
     setState(() {
       _isEnabledBack = false;
     });
 
     final antree =
         Antree(totalPrice: state.data, orders: widget.orders, seat: state.seat);
-    _confirmOrderBloc.add(AddAntree(antree, widget.merchant));
+    _confirmOrderBloc.add(AddAntree(antree, widget.merchant, _isBayarLangsung));
   }
 
   List<Widget> _sections(ConfirmOrderState state) => [
@@ -157,7 +164,13 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
                 seats: state.seats,
                 onClick: (seat) => _confirmOrderBloc.add(SelectedSeat(seat)),
               ),
-        const PaymentSection(),
+        PaymentSection(
+          isBayarLangsung: _isBayarLangsung,
+          paymentType: (bool isBayarLangsung) {
+            logger.d(isBayarLangsung);
+            _isBayarLangsung = isBayarLangsung;
+          },
+        ),
         SummarySection(
           summaries: state.summaries,
         )

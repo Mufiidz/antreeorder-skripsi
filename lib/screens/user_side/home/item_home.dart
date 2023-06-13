@@ -2,6 +2,7 @@ import 'package:antreeorder/components/antree_text.dart';
 import 'package:antreeorder/models/antree.dart';
 import 'package:antreeorder/res/export_res.dart';
 import 'package:antreeorder/screens/user_side/antree/antree_screen.dart';
+import 'package:antreeorder/screens/user_side/payment/payment_screen.dart';
 import 'package:antreeorder/screens/user_side/scan/scan_verify_screen.dart';
 import 'package:antreeorder/utils/export_utils.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,11 @@ class ItemHome extends StatelessWidget {
         onTap: () async {
           final status = antree.status;
           if (status.id == 4) return AppRoute.to(ScanVerifyScreen(antree));
+          if (status.id == 8)
+            return AppRoute.to(PaymentScreen(
+              antree: antree,
+              isClearTop: false,
+            ));
           return AppRoute.to(AntreeScreen(antree.id));
         },
         child: Padding(

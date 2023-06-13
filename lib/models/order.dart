@@ -4,6 +4,8 @@ import 'package:json_annotation/json_annotation.dart';
 
 import 'package:antreeorder/models/product.dart';
 
+import 'midtrans_payment.dart';
+
 part 'order.g.dart';
 
 @JsonSerializable()
@@ -49,6 +51,9 @@ class Order extends Equatable {
   factory Order.fromJson(Map<String, dynamic> data) => _$OrderFromJson(data);
 
   Map<String, dynamic> toJson() => _$OrderToJson(this);
+
+  ItemDetail get toItemMidtrans =>
+      ItemDetail(id: '$id', price: price, quantity: quantity, name: title);
 
   BaseBody get toAddOrder => {
         'product': productId,

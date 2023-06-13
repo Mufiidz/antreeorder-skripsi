@@ -1,6 +1,5 @@
 import 'package:antreeorder/config/api_client.dart';
 import 'package:antreeorder/config/env.dart';
-import 'package:antreeorder/models/base_response.dart';
 import 'package:antreeorder/models/firebase_notif.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';

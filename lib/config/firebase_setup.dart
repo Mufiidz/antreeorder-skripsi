@@ -7,7 +7,9 @@ import 'package:flutter_notification_channel/notification_visibility.dart';
 import 'package:antreeorder/di/injection.dart';
 
 Future<void> setupFirebase() async {
-  await getIt<FirebaseMessaging>().requestPermission();
+  final firebaseMessaging = getIt<FirebaseMessaging>();
+  await firebaseMessaging.setAutoInitEnabled(true);
+  await firebaseMessaging.requestPermission();
   await FlutterNotificationChannel.registerNotificationChannel(
     description: 'Your antree notification',
     id: 'antree',

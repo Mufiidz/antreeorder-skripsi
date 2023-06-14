@@ -30,7 +30,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     _homeBloc = getIt<HomeBloc>();
     _homeBloc.add(GetAllData());
-    _homeBloc.add(GetNotificationToken());
     setupNotification();
     super.initState();
   }
@@ -85,8 +84,15 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> setupNotification() async {
-    RemoteMessage? initialMessage =
-        await getIt<FirebaseMessaging>().getInitialMessage();
+    final firebaseMessaging = getIt<FirebaseMessaging>();
+
+    firebaseMessaging.onTokenRefresh.listen((newToken) {
+      if (newToken.isNotEmpty) {
+        _homeBloc.add(UpdateNotificationToken(newToken));
+      }
+    });
+
+    RemoteMessage? initialMessage = await firebaseMessaging.getInitialMessage();
 
     if (initialMessage != null) {
       _handleMessage(initialMessage);

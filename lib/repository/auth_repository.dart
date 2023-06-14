@@ -1,6 +1,7 @@
 import 'package:antreeorder/config/api_client.dart';
 import 'package:antreeorder/config/local/dao/role_dao.dart';
 import 'package:antreeorder/config/remote/response/login_response.dart';
+import 'package:antreeorder/di/injection.dart';
 import 'package:antreeorder/models/account.dart';
 import 'package:antreeorder/models/role.dart';
 import 'package:antreeorder/repository/sharedprefs_repository.dart';
@@ -9,6 +10,7 @@ import 'package:antreeorder/utils/export_utils.dart';
 import 'package:antreeorder/utils/response_result.dart';
 import 'package:antreeorder/utils/retrofit_ext.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:injectable/injectable.dart';
 
 abstract class AuthRepository {
@@ -45,37 +47,54 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<ResponseResult<User>> login(User user) async {
-    ResponseResult<User> result = const ResponseResult.error('EMPTY');
     _dio.options.headers = {"Authorization": ""};
-    final response = await _apiClient.auth.login(user.toLogin).awaitResponse;
     Account account = Account();
-    int userId = 0;
 
-    if (response is ResponseResultData<LoginResponse>) {
-      final data = response.data;
-      _dio.options.headers = {"Authorization": "Bearer ${data.jwt}"};
-      userId = data.user.id;
+    final response = await _apiClient.auth.login(user.toLogin).awaitResponse;
 
-      account = account.copyWith(token: data.jwt);
-      result = ResponseResult.data(data.user, response.meta);
-    }
-
-    if (response is ResponseResultError<LoginResponse>) {
-      return ResponseResult.error(response.message);
-    }
-
-    final responseMe = await _apiClient.auth.detailUser(userId).awaitResponse;
-
-    responseMe.when(
-      data: (data, meta) {
-        account =
-            account.copyWith(isMerchant: data.role.isMerchant, user: data);
-        result = responseMe;
-      },
-      error: (message) {
-        return ResponseResult.error(message);
-      },
+    final loginResponse = response.whenOrNull(
+      data: (data, meta) => data,
     );
+
+    if (response is ResponseResultError<LoginResponse> ||
+        loginResponse == null) {
+      final errorMessage = response.whenOrNull(
+        error: (message) => message,
+      );
+      return ResponseResult.error(errorMessage ?? 'Error Login');
+    }
+
+    final jwt = loginResponse.jwt;
+    User newUser = loginResponse.user;
+
+    if (jwt.isEmpty && newUser.id == 0)
+      return ResponseResult.error('Error empty account');
+
+    _dio.options.headers = {"Authorization": "Bearer $jwt"};
+    account = account.copyWith(token: jwt);
+
+    //===== notification token =====
+    logger.i('===== notification token =====');
+    final notifToken =
+        await getIt<FirebaseMessaging>().getToken().then((value) => value);
+    if (notifToken == null || notifToken.isEmpty)
+      return ResponseResult.error('Cant get notification token');
+    BaseBody mapToken = {'notificationToken': notifToken};
+    final notifResponse = await _apiClient.auth
+        .updateUser(newUser.id, mapToken)
+        .awaitResponse;
+    if (notifResponse is ResponseResultError<User>) return notifResponse;
+    //=======================
+
+    final responseMe =
+        await _apiClient.auth.detailUser(newUser.id).awaitResponse;
+
+    newUser = responseMe.whenOrNull(
+          data: (data, meta) => data,
+        ) ??
+        newUser;
+    account =
+        account.copyWith(isMerchant: newUser.role.isMerchant, user: newUser);
 
     if (account.user.role.id == 0) {
       return ResponseResult.error('Empty Role for this account');
@@ -88,7 +107,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return ResponseResult.error('Empty Customer Id');
     }
     _sharedPrefsRepository.account = account;
-    return result;
+    return responseMe;
   }
 
   @override

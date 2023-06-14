@@ -20,9 +20,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc(this._antreeRepository, this._statusAntreeRepository,
       this._notificationRepository)
       : super(const HomeState([])) {
-    on<GetNotificationToken>((event, emit) async {
-      await _notificationRepository.getNotificationToken();
-    });
+    // on<GetNotificationToken>((event, emit) async {
+    //   await _notificationRepository.getNotificationToken();
+    // });
     on<GetAllData>((event, emit) async {
       emit(state.copyWith(status: StatusState.loading));
       final response = await _antreeRepository.getMerchantAntrees();
@@ -69,6 +69,22 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             state.copyWith(status: StatusState.idle, data: data),
         error: (message) =>
             state.copyWith(status: StatusState.failure, message: message),
+      );
+      emit(newState);
+    });
+    on<UpdateNotificationToken>((event, emit) async {
+      emit(state.copyWith(status: StatusState.loading));
+      final response = await _notificationRepository
+          .updateTokenNotification(event.refreshedToken);
+      final newState = response.when(
+        data: (data, meta) {
+          logger.d('FirebaseMessaging token updated');
+          state.copyWith(status: StatusState.idle);
+        },
+        error: (message) {
+          logger.d('FirebaseMessaging token error => $message');
+          state.copyWith(status: StatusState.idle);
+        },
       );
       emit(newState);
     });

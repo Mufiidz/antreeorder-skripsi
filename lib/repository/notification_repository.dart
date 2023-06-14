@@ -15,6 +15,7 @@ abstract class NotificationRepository {
   Future<ResponseResult<List<Notification>>> getUnreadNotifications();
   Future<ResponseResult<Notification>> updateReadNotif(int notificationId);
   Future<ResponseResult<User>> getNotificationToken();
+  Future<ResponseResult<User>> updateTokenNotification(String newToken);
 }
 
 @Injectable(as: NotificationRepository)
@@ -109,5 +110,16 @@ class NotificationRepositoryImpl implements NotificationRepository {
       _sharedPrefsRepository.account = account;
     }
     return response;
+  }
+
+  @override
+  Future<ResponseResult<User>> updateTokenNotification(String newToken) async {
+    logger.i('Notif Token Updated => $newToken');
+    User user = _sharedPrefsRepository.user;
+    if (user.id == 0) return ResponseResult.error('User Id is Empty');
+    BaseBody mapToken = {'notificationToken': newToken};
+    return _apiClient.auth
+        .updateUser(user.id, mapToken)
+        .awaitResponse;
   }
 }

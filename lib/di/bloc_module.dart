@@ -4,13 +4,10 @@ import 'package:antreeorder/config/antree_db.dart';
 import 'package:antreeorder/repository/antree_repository.dart';
 import 'package:antreeorder/repository/auth_repository.dart';
 import 'package:antreeorder/repository/merchant_repository.dart';
-import 'package:antreeorder/repository/notification_repository.dart';
 import 'package:antreeorder/repository/product_repository.dart';
 import 'package:antreeorder/repository/seat_repository.dart';
-import 'package:antreeorder/repository/status_antree_repository.dart';
 import 'package:antreeorder/screens/login/bloc/login_bloc.dart';
 import 'package:antreeorder/screens/merchant_side/category/bloc/category_bloc.dart';
-import 'package:antreeorder/screens/merchant_side/home/bloc/home_bloc.dart';
 import 'package:antreeorder/screens/merchant_side/product/bloc/product_bloc.dart';
 import 'package:antreeorder/screens/register/bloc/register_bloc.dart';
 import 'package:antreeorder/screens/user_side/cart/bloc/cart_bloc.dart';
@@ -33,15 +30,6 @@ abstract class BlocModule {
 
   @lazySingleton
   CartBloc cartBloc() => CartBloc();
-
-  @singleton
-  @factoryMethod
-  HomeBloc homeBloc(
-          AntreeRepository antreeRepository,
-          StatusAntreeRepository statusAntreeRepository,
-          NotificationRepository notificationRepository) =>
-      HomeBloc(
-          antreeRepository, statusAntreeRepository, notificationRepository);
 
   @singleton
   @factoryMethod

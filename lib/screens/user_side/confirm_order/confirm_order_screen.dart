@@ -4,9 +4,12 @@ import 'package:antreeorder/models/antree.dart';
 import 'package:antreeorder/models/base_state2.dart';
 import 'package:antreeorder/models/merchant.dart';
 import 'package:antreeorder/models/order.dart';
+import 'package:antreeorder/repository/sharedprefs_repository.dart';
 import 'package:antreeorder/res/custom_color.dart';
 import 'package:antreeorder/screens/user_side/confirm_order/section/seats_section.dart';
 import 'package:antreeorder/screens/user_side/home/home_screen.dart';
+import 'package:antreeorder/screens/merchant_side/home/home_screen.dart'
+    as merchantHome;
 import 'package:antreeorder/screens/user_side/payment/payment_screen.dart';
 import 'package:antreeorder/utils/export_utils.dart';
 import 'package:flutter/material.dart';
@@ -32,12 +35,14 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
   bool _isEnabledBack = true;
   bool _isSuccess = false;
   bool _isBayarLangsung = false;
+  bool _isMerchant = false;
 
   @override
   void initState() {
     _confirmOrderBloc = getIt<ConfirmOrderBloc>()
       ..add(GetInitialConfirm(widget.orders, widget.merchant.id));
     _dialog = getIt<AntreeLoadingDialog>();
+    _isMerchant = getIt<SharedPrefsRepository>().account?.isMerchant ?? false;
     super.initState();
   }
 
@@ -127,12 +132,7 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
                     state.message,
                     status: SnackbarStatus.success,
                   ));
-                  final antree = state.antree;
-                  if (_isBayarLangsung && antree != null) {
-                    AppRoute.clearAll(PaymentScreen(antree: antree, isClearTop: true,));
-                  } else {
-                    AppRoute.clearAll(HomeScreen());
-                  }
+                  AppRoute.clearAll(_destination(state.antree));
                 }
               }),
         ),
@@ -170,9 +170,24 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
             logger.d(isBayarLangsung);
             _isBayarLangsung = isBayarLangsung;
           },
+          isMerchant: _isMerchant,
         ),
-        SummarySection(
-          summaries: state.summaries,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: SummarySection(
+            summaries: state.summaries,
+          ),
         )
       ];
+
+  Widget _destination(Antree? antree) {
+    if (_isBayarLangsung && antree != null) {
+      return PaymentScreen(
+        antree: antree,
+        isClearTop: true,
+      );
+    }
+    if (_isMerchant) return merchantHome.HomeScreen();
+    return HomeScreen();
+  }
 }

@@ -1,25 +1,13 @@
 part of 'home_bloc.dart';
 
-class HomeState extends BaseState<List<Antree>> {
-  final Antree? antree;
-  final int notificationCounter;
-  const HomeState(super.data,
-      {super.message, super.status, this.antree, this.notificationCounter = 0});
-
-  @override
-  List<Object?> get props =>
-      [data, message, status, antree, notificationCounter];
-
-  HomeState copyWith(
-      {List<Antree>? data,
-      StatusState? status,
-      String? message,
-      int? notificationCounter,
-      Antree? antree}) {
-    return HomeState(data ?? this.data,
-        status: status ?? this.status,
-        message: message ?? this.message,
-        antree: antree,
-        notificationCounter: notificationCounter ?? this.notificationCounter);
-  }
+@freezed
+class HomeState with _$HomeState {
+  const factory HomeState(
+      {@Default('') String message,
+      @Default(0) int notificationCounter,
+      @Default([]) List<Antree> antrees,
+      Antree? antree,
+      @Default(StatusState.idle) StatusState status,
+      @Default(true) bool isLastPage,
+      Merchant? merchant}) = _HomeState;
 }

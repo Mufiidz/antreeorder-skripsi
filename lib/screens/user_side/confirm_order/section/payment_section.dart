@@ -7,8 +7,12 @@ import 'package:antreeorder/res/export_res.dart';
 class PaymentSection extends StatelessWidget {
   final bool isBayarLangsung;
   final Function(bool isBayarLangsung) paymentType;
+  final bool isMerchant;
   const PaymentSection(
-      {Key? key, required this.paymentType, this.isBayarLangsung = false})
+      {Key? key,
+      required this.paymentType,
+      this.isBayarLangsung = false,
+      required this.isMerchant})
       : super(key: key);
 
   @override
@@ -56,10 +60,14 @@ class PaymentSection extends StatelessWidget {
     );
   }
 
-  List<PaymentTypeItem> get _paymentTypes => [
-        PaymentTypeItem('Bayar di tempat', PaymentType.onthespot),
-        PaymentTypeItem('Bayar langsung', PaymentType.langsung)
-      ];
+  List<PaymentTypeItem> get _paymentTypes => isMerchant
+      ? [
+          PaymentTypeItem('Bayar di tempat', PaymentType.onthespot),
+        ]
+      : [
+          PaymentTypeItem('Bayar di tempat', PaymentType.onthespot),
+          PaymentTypeItem('Bayar langsung', PaymentType.langsung)
+        ];
 
   PaymentTypeItem _paymentTypeValue(bool isBayarLangsung) {
     final type = isBayarLangsung ? PaymentType.langsung : PaymentType.onthespot;

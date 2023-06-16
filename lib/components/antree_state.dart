@@ -51,6 +51,7 @@ class AntreeState<Bloc extends StateStreamable<State>, State extends BaseState>
         }
       },
       builder: (context, state) {
+        logger.d('status => ${state.status}');
         final data = state.data;
         if (state.status == StatusState.loading) {
           return loading ?? const AntreeLoading();

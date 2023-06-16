@@ -20,6 +20,7 @@ class ProductScreen extends StatefulWidget {
 
 class _ProductScreenState extends State<ProductScreen> {
   late final ProductBloc _productBloc;
+  int page = 1;
   final PagingController<int, Product> _pagingController =
       PagingController(firstPageKey: 1);
 
@@ -38,7 +39,10 @@ class _ProductScreenState extends State<ProductScreen> {
       child: Scaffold(
         appBar: AntreeAppBar('My Product'),
         body: RefreshIndicator(
-          onRefresh: () async => _pagingController.refresh(),
+          onRefresh: () async {
+            page = 1;
+            _pagingController.refresh();
+          },
           child: BlocListener<ProductBloc, ProductState>(
             bloc: _productBloc,
             listener: (context, state) {
@@ -46,8 +50,8 @@ class _ProductScreenState extends State<ProductScreen> {
                 if (state.isLastPage) {
                   _pagingController.appendLastPage(state.products);
                 } else {
-                  _pagingController.appendPage(
-                      state.products, _pagingController.nextPageKey);
+                  page += 1;
+                  _pagingController.appendPage(state.products, page);
                 }
               }
               if (state.status == StatusState.failure) {
@@ -67,12 +71,17 @@ class _ProductScreenState extends State<ProductScreen> {
           ),
         ),
         floatingActionButton: FloatingActionButton.small(
-          onPressed: () {
-            AppRoute.to(const AddProductScreen());
-          },
+          onPressed: () => AppRoute.to(const AddProductScreen()),
           child: const Icon(Icons.add),
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    page = 1;
+    _pagingController.dispose();
+    super.dispose();
   }
 }

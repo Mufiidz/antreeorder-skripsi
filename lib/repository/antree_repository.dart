@@ -22,8 +22,9 @@ abstract class AntreeRepository {
       Antree antree, Merchant merchant);
   Future<ResponseResult<Antree>> addAntreeOnlinePayment(int antreeId);
   Future<ResponseResult<Antree>> detailAntree(int antreeId);
-  Future<ResponseResult<List<Antree>>> getMerchantAntrees({BaseBody? query});
-  Future<ResponseResult<List<Antree>>> getCustomerAntrees();
+  Future<ResponseResult<List<Antree>>> getMerchantAntrees(
+      {int page = 1, BaseBody? query});
+  Future<ResponseResult<List<Antree>>> getCustomerAntrees({int page = 1});
   Future<ResponseResult<List<StatusAntree>>> getStatusAntree();
 }
 
@@ -38,7 +39,8 @@ class AntreeRepositoryImpl implements AntreeRepository {
       this._antreeDatabase, this._notificationRepository);
 
   @override
-  Future<ResponseResult<List<Antree>>> getCustomerAntrees() async {
+  Future<ResponseResult<List<Antree>>> getCustomerAntrees(
+      {int page = 1}) async {
     final int customerId = _sharedPrefsRepository.user.customerId;
     if (customerId == 0) return ResponseResult.error('Customer Id is empty');
     // send notif here
@@ -50,13 +52,14 @@ class AntreeRepositoryImpl implements AntreeRepository {
       'populate[status]': '*',
       'populate[payment]': '*',
       'pagination[pageSize]': 10,
+      'pagination[page]': page,
     };
     return _apiClient.antree.getCustomerAntrees(queries).awaitResponse;
   }
 
   @override
   Future<ResponseResult<List<Antree>>> getMerchantAntrees(
-      {BaseBody? query}) async {
+      {int page = 1, BaseBody? query}) async {
     final int merchantId = _sharedPrefsRepository.user.merchantId;
     if (merchantId == 0) return ResponseResult.error('Merchant Id is empty');
     final BaseBody queries = query ??
@@ -68,6 +71,9 @@ class AntreeRepositoryImpl implements AntreeRepository {
           'populate[status]': '*',
           'populate[payment]': '*',
           'pagination[pageSize]': 10,
+          'pagination[page]': page,
+          'filters[status][id][\$gte]': 1,
+          'filters[status][id][\$lt]': 6,
           'sort[0]': 'nomorAntree',
           'sort[1]': 'createdAt:desc',
         };
@@ -234,8 +240,11 @@ class AntreeRepositoryImpl implements AntreeRepository {
       Antree antree, Merchant merchant) async {
     final int customerId = _sharedPrefsRepository.user.customerId;
     final List<Order> orders = antree.orders;
+    final bool isMerchant = _sharedPrefsRepository.account?.isMerchant ?? false;
     // validation
-    if (customerId == 0) return ResponseResult.error('Customer Id is empty');
+    if (!isMerchant) {
+      if (customerId == 0) return ResponseResult.error('Customer Id is empty');
+    }
     if (merchant.id == 0) return ResponseResult.error('Merchant Id is empty');
     if (orders.isEmpty) return ResponseResult.error('Orders is empty');
     if (antree.seat.id == 0) return ResponseResult.error('Seat is empty');
@@ -258,21 +267,26 @@ class AntreeRepositoryImpl implements AntreeRepository {
     // post antree
     final nomorAntree = await _getNomorAntree(merchant.id);
     final remaining = nomorAntree != null ? (nomorAntree - 1) : null;
-    final BaseBody mapAntree = {
+    BaseBody mapAntree = {
       "totalPrice": antree.totalPrice,
       "merchant": merchant.id,
-      "customer": customerId,
       "seat": antree.seat.id,
       "orders": orderIds,
       "nomorAntree": nomorAntree,
       "remaining": remaining,
       "status": 1
     };
+    if (!isMerchant) {
+      mapAntree["customer"] = customerId;
+    }
     logger.d(mapAntree);
 
     final response = await _apiClient.antree
         .createAntree(mapAntree.wrapWithData)
         .awaitResponse;
+
+    // dont send notif if from merchant
+    if (isMerchant) return response;
 
     // add notification
     final user = _sharedPrefsRepository.user;

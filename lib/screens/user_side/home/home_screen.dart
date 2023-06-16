@@ -1,16 +1,18 @@
-import 'package:antreeorder/models/notification.dart' as notif;
-import 'package:antreeorder/models/notification.dart';
-import 'package:antreeorder/repository/sharedprefs_repository.dart';
-import 'package:antreeorder/screens/merchant_side/detail_antree/detail_antree_screen.dart';
-import 'package:antreeorder/screens/user_side/antree/antree_screen.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import 'package:antreeorder/components/export_components.dart';
 import 'package:antreeorder/di/injection.dart';
 import 'package:antreeorder/models/antree.dart';
+import 'package:antreeorder/models/base_state2.dart';
+import 'package:antreeorder/models/notification.dart' as notif;
+import 'package:antreeorder/models/notification.dart';
+import 'package:antreeorder/repository/sharedprefs_repository.dart';
+import 'package:antreeorder/screens/merchant_side/detail_antree/detail_antree_screen.dart';
 import 'package:antreeorder/screens/notification/notification_screen.dart';
+import 'package:antreeorder/screens/user_side/antree/antree_screen.dart';
 import 'package:antreeorder/screens/user_side/home/bloc/home_bloc.dart';
 import 'package:antreeorder/screens/user_side/merchant/choose_merchant_screen.dart';
 import 'package:antreeorder/screens/user_side/setting/setting_user_screen.dart';
@@ -27,12 +29,17 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late final HomeBloc _homeBloc;
+  int page = 1;
+  final PagingController<int, Antree> _pagingController =
+      PagingController(firstPageKey: 1);
 
   @override
   void initState() {
     _homeBloc = getIt<HomeBloc>();
-    _homeBloc.add(GetAllData());
+    _homeBloc.add(HomeEvent.unreadNotification());
     setupNotification();
+    _pagingController.addPageRequestListener(
+        (pageKey) => _homeBloc.add(HomeEvent.antreesPagination(pageKey)));
     super.initState();
   }
 
@@ -61,19 +68,36 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         body: RefreshIndicator(
-          onRefresh: () async => _homeBloc.add(GetAllData()),
-          child: BlocSelector<HomeBloc, HomeState, List<Antree>>(
-            bloc: _homeBloc,
-            selector: (state) => state.data,
-            builder: (context, state) {
-              return GridView.builder(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2),
-                  itemCount: state.length,
-                  itemBuilder: (context, index) => ItemHome(state[index]));
+          onRefresh: () async {
+            page = 1;
+            _homeBloc.add(HomeEvent.unreadNotification());
+            _pagingController.refresh();
+          },
+          child: BlocConsumer<HomeBloc, HomeState>(
+            listener: (context, state) {
+              if (state.status == StatusState.failure) {
+                context.snackbar.showSnackBar(AntreeSnackbar(
+                  state.message,
+                  status: SnackbarStatus.error,
+                ));
+              }
+              if (state.status == StatusState.idleList) {
+                if (state.isLastPage) {
+                  _pagingController.appendLastPage(state.data);
+                } else {
+                  page += 1;
+                  _pagingController.appendPage(state.data, page);
+                }
+              }
             },
+            builder: (context, state) => PagedGridView<int, Antree>(
+                pagingController: _pagingController,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                builderDelegate: PagedChildBuilderDelegate(
+                    itemBuilder: (context, item, index) => ItemHome(item)),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2)),
           ),
         ),
         floatingActionButton: FloatingActionButton.small(
@@ -89,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     firebaseMessaging.onTokenRefresh.listen((newToken) {
       if (newToken.isNotEmpty) {
-        _homeBloc.add(UpdateNotificationToken(newToken));
+        _homeBloc.add(HomeEvent.updateNotificationToken(newToken));
       }
     });
 
@@ -116,5 +140,12 @@ class _HomeScreenState extends State<HomeScreen> {
         AppRoute.to(AntreeScreen(notification.contentId));
       }
     }
+  }
+
+  @override
+  void dispose() {
+    page = 1;
+    _pagingController.dispose();
+    super.dispose();
   }
 }

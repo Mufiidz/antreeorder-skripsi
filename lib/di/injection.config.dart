@@ -167,11 +167,12 @@ extension GetItInjectableX on _i1.GetIt {
               gh<_i34.StatusAntreeRepository>(),
               gh<_i25.AntreeRepository>(),
             ));
-    gh.singleton<_i37.HomeBloc>(blocModule.homeBloc(
-      gh<_i25.AntreeRepository>(),
-      gh<_i34.StatusAntreeRepository>(),
-      gh<_i19.NotificationRepository>(),
-    ));
+    gh.factory<_i37.HomeBloc>(() => _i37.HomeBloc(
+          gh<_i25.AntreeRepository>(),
+          gh<_i19.NotificationRepository>(),
+          gh<_i18.MerchantRepository>(),
+          gh<_i34.StatusAntreeRepository>(),
+        ));
     gh.factory<_i38.ScanVerifyBloc>(
         () => _i38.ScanVerifyBloc(gh<_i34.StatusAntreeRepository>()));
     return this;

@@ -20,7 +20,7 @@ class AntreeUserSwitcher extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         const AntreeText('Merchant'),
-        Switch(
+        Switch.adaptive(
           value: isUser,
           onChanged: onUserSwitch,
           inactiveTrackColor: AntreeColors.separator,

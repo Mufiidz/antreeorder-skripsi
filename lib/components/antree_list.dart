@@ -119,7 +119,7 @@ class BaseList<T> extends StatelessWidget {
   Widget get pagingList => PagedListView(
         pagingController:
             pagingController ?? PagingController<int, T>(firstPageKey: 1),
-        padding: padding,
+        padding: padding ?? const EdgeInsets.only(top: 8, bottom: 16),
         scrollDirection: scrollDirection,
         shrinkWrap: shrinkWrap,
         physics: scrollPhysics,
@@ -128,7 +128,7 @@ class BaseList<T> extends StatelessWidget {
   Widget get pagingListSeparated => PagedListView.separated(
         pagingController:
             pagingController ?? PagingController<int, T>(firstPageKey: 1),
-        padding: padding,
+        padding: padding ?? const EdgeInsets.only(top: 8, bottom: 16),
         scrollDirection: scrollDirection,
         shrinkWrap: shrinkWrap,
         physics: scrollPhysics,

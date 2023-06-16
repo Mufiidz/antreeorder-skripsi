@@ -12,10 +12,8 @@ class AntreeBadge extends StatelessWidget {
     return InkWell(
       onTap: onClick,
       customBorder: const CircleBorder(),
-      child: Badge(
-          isLabelVisible: counter != 0,
-          label: Text(counter.toString()),
-          child: Icon(icon)),
+      child: Badge.count(
+          isLabelVisible: counter != 0, count: counter, child: Icon(icon)),
     );
   }
 }

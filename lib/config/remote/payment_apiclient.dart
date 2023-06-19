@@ -1,5 +1,4 @@
 import 'package:antreeorder/config/api_client.dart';
-import 'package:antreeorder/config/env.dart';
 import 'package:antreeorder/config/remote/response/token_midtrains_response.dart';
 import 'package:antreeorder/models/base_response.dart';
 import 'package:antreeorder/models/online_payment.dart';
@@ -18,8 +17,7 @@ abstract class PaymentApiClient {
 
   @POST(transactions)
   Future<TokenMidtrainsResponse> tokenPayment(@Body() BaseBody body,
-      {@Header(authorization)
-      String authorization = 'Basic ${Env.authServerMidtrains}'});
+      {@Header(authorization) required String authorization});
 
   @POST(payments)
   Future<BaseResponse<OnlinePayment>> addPayment(@Body() BaseBody body);

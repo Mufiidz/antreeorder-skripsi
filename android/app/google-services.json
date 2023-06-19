@@ -29,6 +29,13 @@
             {
               "client_id": "1046363111275-fgghigkkd58h8i5gsd4jikgg4dd7715n.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "1046363111275-29ln6mudek8hgj7j0q0lvcqvaus9qc9e.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "id.my.mufidz.antreeorder"
+              }
             }
           ]
         }

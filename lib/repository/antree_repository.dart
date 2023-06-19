@@ -1,5 +1,6 @@
 import 'package:antreeorder/config/antree_db.dart';
 import 'package:antreeorder/config/api_client.dart';
+import 'package:antreeorder/config/env.dart';
 import 'package:antreeorder/models/antree.dart';
 import 'package:antreeorder/models/merchant.dart';
 import 'package:antreeorder/models/midtrans_payment.dart';
@@ -148,7 +149,8 @@ class AntreeRepositoryImpl implements AntreeRepository {
         itemDetails: items);
     final tokenPaymentResponse = await _apiClient
         .payment()
-        .tokenPayment(midtransPayment.toJson())
+        .tokenPayment(midtransPayment.toJson(),
+            authorization: 'Basic ${Env.authServerMidtrains}')
         .awaitResponse;
     final payment = tokenPaymentResponse.whenOrNull(
       data: (data, meta) => OnlinePayment(

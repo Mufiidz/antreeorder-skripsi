@@ -35,13 +35,27 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<List<Role>> getRoles() async {
     var roles = <Role>[];
     roles = await _roleDao.roles();
-    if (roles.isEmpty) {
+
+    if (roles.isNotEmpty) return roles;
+
+    try {
       final response = await _apiClient.auth.getRoles();
-      for (var element in response.roles) {
-        _roleDao.addRole(element);
-      }
       roles = response.roles;
+      if (roles.isNotEmpty) {
+        for (var element in roles) {
+          _roleDao.addRole(element);
+        }
+      }
+    } catch (e) {
+      roles = [
+        Role(
+            id: 1,
+            name: 'Customer',
+            description: 'Default role given to authenticated user.'),
+        Role(id: 3, name: 'Merchant', description: 'for merchant')
+      ];
     }
+    logger.d(roles);
     return roles;
   }
 
@@ -80,9 +94,8 @@ class AuthRepositoryImpl implements AuthRepository {
     if (notifToken == null || notifToken.isEmpty)
       return ResponseResult.error('Cant get notification token');
     BaseBody mapToken = {'notificationToken': notifToken};
-    final notifResponse = await _apiClient.auth
-        .updateUser(newUser.id, mapToken)
-        .awaitResponse;
+    final notifResponse =
+        await _apiClient.auth.updateUser(newUser.id, mapToken).awaitResponse;
     if (notifResponse is ResponseResultError<User>) return notifResponse;
     //=======================
 

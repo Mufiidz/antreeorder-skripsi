@@ -25,7 +25,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   late final RegisterBloc _registerBloc;
   late final AntreeLoadingDialog _dialog;
-  var _password = '';
   String? roleOption = null;
 
   @override
@@ -56,6 +55,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
             if (state.status == StatusState.loading) {
               _dialog.showLoadingDialog(context);
             }
+            if (state.status == StatusState.idle) {
+              _dialog.dismiss();
+            }
             if (state.status == StatusState.failure) {
               _dialog.dismiss();
               context.snackbar.showSnackBar(AntreeSnackbar(
@@ -83,7 +85,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
         FormBuilder(
           key: _formKey,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Column(
             children: [
               AntreeDropdown(
@@ -102,7 +103,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 'name',
                 label: "Name",
                 textCapitalization: TextCapitalization.words,
-                initialValue: 'Merchant1',
               ),
               const SizedBox(
                 height: 16,
@@ -110,7 +110,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
               const AntreeTextField(
                 'username',
                 label: "Username",
-                initialValue: 'merchant',
               ),
               const SizedBox(
                 height: 16,
@@ -123,14 +122,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     'password',
                     isObscureText: state,
                     label: "Password",
-                    initialValue: '12345678',
-                    onChanged: (value) {
-                      setState(() {
-                        if (value != null) {
-                          _password = value;
-                        }
-                      });
-                    },
+                    onChanged: (value) => _registerBloc
+                        .add(RegisterEvent.onPasswordChange(value ?? '')),
                     suffixIcon: IconButton(
                       onPressed: () => _registerBloc
                           .add(RegisterEvent.passwordVisibility(!state)),
@@ -144,22 +137,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
               const SizedBox(
                 height: 16,
               ),
-              BlocSelector<RegisterBloc, RegisterState, bool>(
+              BlocBuilder<RegisterBloc, RegisterState>(
                 bloc: _registerBloc,
-                selector: (state) => state.isVisibleConfirmPassword,
                 builder: (context, state) {
                   return AntreeTextField(
                     'confirm_password',
-                    isObscureText: state,
-                    initialValue: '12345678',
+                    isObscureText: state.isVisibleConfirmPassword,
                     label: "Confirm Password",
                     suffixIcon: IconButton(
                         onPressed: () => _registerBloc.add(
-                            RegisterEvent.confrimPasswordVisibility(!state)),
-                        icon: Icon(
-                            state ? Icons.visibility : Icons.visibility_off)),
+                            RegisterEvent.confrimPasswordVisibility(
+                                !state.isVisibleConfirmPassword)),
+                        icon: Icon(state.isVisibleConfirmPassword
+                            ? Icons.visibility
+                            : Icons.visibility_off)),
                     validators: [
-                      FormBuilderValidators.equal(_password,
+                      FormBuilderValidators.equal(state.password,
                           errorText:
                               "This field value must be same with password.")
                     ],

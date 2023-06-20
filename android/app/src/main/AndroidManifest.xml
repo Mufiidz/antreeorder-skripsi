@@ -10,8 +10,7 @@
         android:label="antreeorder"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
-        tools:replace="android:label"
-        android:theme="@style/AppTheme">
+        tools:replace="android:label">
         <activity
             android:name=".MainActivity"
             android:exported="true"

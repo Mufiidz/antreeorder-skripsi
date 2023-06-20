@@ -21,6 +21,17 @@ void main() async {
   AntreeNotifications.init();
   await setupFirebase();
   runApp(const MyApp());
+  // runApp(DevicePreview(
+  //   enabled: kDebugMode,
+  //   tools: [
+  //     ...DevicePreview.defaultTools,
+  //     DevicePreviewScreenshot(
+  //       multipleScreenshots: true,
+  //       onScreenshot: screenshotAsFiles(Directory.current),
+  //     )
+  //   ],
+  //   builder: (BuildContext context) => const MyApp(),
+  // ));
 }
 
 class MyApp extends StatelessWidget {

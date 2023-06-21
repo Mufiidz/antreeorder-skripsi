@@ -1,6 +1,6 @@
 import 'package:antreeorder/config/api_client.dart';
-import 'package:antreeorder/config/local/dao/role_dao.dart';
-import 'package:antreeorder/config/remote/response/login_response.dart';
+import 'package:antreeorder/data/local/dao/role_dao.dart';
+import 'package:antreeorder/data/remote/response/login_response.dart';
 import 'package:antreeorder/di/injection.dart';
 import 'package:antreeorder/models/account.dart';
 import 'package:antreeorder/models/role.dart';

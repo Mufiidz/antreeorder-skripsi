@@ -1,4 +1,4 @@
-import 'package:antreeorder/config/local/dao/category_dao.dart';
+import 'package:antreeorder/data/local/dao/category_dao.dart';
 import 'package:antreeorder/models/account.dart';
 import 'package:antreeorder/models/user.dart';
 import 'package:antreeorder/utils/export_utils.dart';

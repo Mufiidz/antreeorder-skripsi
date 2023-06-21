@@ -1,14 +1,15 @@
 import 'package:dio/dio.dart';
 
+import 'package:antreeorder/data/remote/antree_apiclient.dart';
+import 'package:antreeorder/data/remote/auth_apiclient.dart';
+import 'package:antreeorder/data/remote/firebase_notif_apiclient.dart';
+import 'package:antreeorder/data/remote/merchant_apiclient.dart';
+import 'package:antreeorder/data/remote/notification_apiclient.dart';
+import 'package:antreeorder/data/remote/payment_apiclient.dart';
+import 'package:antreeorder/data/remote/product_apiclient.dart';
+import 'package:antreeorder/data/remote/seat_apiclient.dart';
+
 import 'env.dart';
-import 'remote/antree_apiclient.dart';
-import 'remote/auth_apiclient.dart';
-import 'remote/firebase_notif_apiclient.dart';
-import 'remote/merchant_apiclient.dart';
-import 'remote/notification_apiclient.dart';
-import 'remote/payment_apiclient.dart';
-import 'remote/product_apiclient.dart';
-import 'remote/seat_apiclient.dart';
 
 typedef BaseBody = Map<String, dynamic>;
 

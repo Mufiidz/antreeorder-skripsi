@@ -1,4 +1,4 @@
-import 'package:antreeorder/config/remote/dio_exceptions.dart';
+import 'package:antreeorder/data/remote/dio_exceptions.dart';
 import 'package:antreeorder/models/base_response.dart';
 import 'package:dio/dio.dart';
 

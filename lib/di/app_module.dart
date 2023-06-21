@@ -8,11 +8,10 @@ import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:antreeorder/components/antree_loading_dialog.dart';
 import 'package:antreeorder/config/antree_db.dart';
 import 'package:antreeorder/config/api_client.dart';
-import 'package:antreeorder/config/local/dao/category_dao.dart';
-import 'package:antreeorder/config/local/dao/role_dao.dart';
+import 'package:antreeorder/data/local/dao/category_dao.dart';
+import 'package:antreeorder/data/local/dao/role_dao.dart';
 import 'package:antreeorder/repository/sharedprefs_repository.dart';
-
-import '../utils/export_utils.dart';
+import 'package:antreeorder/utils/export_utils.dart';
 
 @module
 @injectable

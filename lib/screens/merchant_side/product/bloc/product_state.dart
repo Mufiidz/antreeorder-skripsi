@@ -31,7 +31,7 @@ class ProductState extends BaseState<Product> {
         message: message ?? this.message,
         categories: categories ?? this.categories,
         isLastPage: isLastPage ?? this.isLastPage,
-        file: xfile ?? this.file);
+        file: xfile);
   }
 
   @override

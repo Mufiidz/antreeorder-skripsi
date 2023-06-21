@@ -32,7 +32,7 @@ class ConfirmOrderBloc extends Bloc<ConfirmOrderEvent, ConfirmOrderState> {
         _subTotal += (order.quantity * order.price);
       }
       _summaries.add(Summary(title: 'Subtotal Pesanan', price: _subTotal));
-      _summaries.add(Summary(title: 'Biaya Layanan', price: 1000));
+      _summaries.add(Summary(title: 'Biaya Layanan', price: 0));
       for (var summary in _summaries) {
         _total += summary.price;
       }

@@ -31,10 +31,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
   @override
   void initState() {
     super.initState();
-    _product = widget.product;
     _productBloc = getIt<ProductBloc>();
+    _productBloc.add(Initial());
     _dialog = getIt<AntreeLoadingDialog>();
-    _productBloc.add(GetCategory());
+    _product = widget.product;
   }
 
   @override
@@ -103,17 +103,15 @@ class _AddProductScreenState extends State<AddProductScreen> {
           },
         ),
         BlocSelector<ProductBloc, ProductState, XFile?>(
-          bloc: _productBloc,
-          selector: (state) => state.file,
-          builder: (context, state) {
-            logger.d('file => $state');
-            return ImageAddProduct(
-              file: state,
-              imageUrl: _product?.cover?.imageUrl,
-              onImagePick: (XFile? file) => _productBloc.add(AddImage(file)),
-            );
-          },
-        ),
+            bloc: _productBloc,
+            selector: (state) => state.file,
+            builder: (context, state) {
+              return ImageAddProduct(
+                file: state,
+                imageUrl: _product?.cover?.imageUrl,
+                onImagePick: (XFile? file) => _productBloc.add(AddImage(file)),
+              );
+            }),
         BlocSelector<ProductBloc, ProductState, Product>(
           bloc: _productBloc,
           selector: (state) => state.data,

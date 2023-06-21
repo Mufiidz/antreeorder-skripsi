@@ -19,6 +19,17 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     this._antreeDatabase,
   ) : super(ProductState(Product())) {
     final CategoryDao categoryDao = _antreeDatabase.categoryDao;
+    on<Initial>((event, emit) async {
+      final response = await categoryDao.categories();
+      var categories = ["No Category"];
+      var data = response.map((e) => e.title).toList();
+      categories.addAll(data);
+      emit(state.copyWith(
+          categories: categories,
+          status: StatusState.idle,
+          xfile: null,
+          data: null));
+    });
     on<AddProduct>((event, emit) async {
       emit(state.copyWith(status: StatusState.loading));
       final response =
@@ -79,13 +90,6 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
             state.copyWith(status: StatusState.failure, message: message),
       );
       emit(newState);
-    });
-    on<GetCategory>((event, emit) async {
-      final response = await categoryDao.categories();
-      var categories = ["No Category"];
-      var data = response.map((e) => e.title).toList();
-      categories.addAll(data);
-      emit(state.copyWith(categories: categories, status: StatusState.idle));
     });
     on<AddImage>((event, emit) => emit(state.copyWith(xfile: event.image)));
   }

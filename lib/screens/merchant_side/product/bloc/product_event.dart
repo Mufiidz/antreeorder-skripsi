@@ -4,6 +4,11 @@ abstract class ProductEvent extends Equatable {
   const ProductEvent();
 }
 
+class Initial extends ProductEvent {
+  @override
+  List<Object?> get props => [];
+}
+
 class AddProduct extends ProductEvent {
   final Product product;
   final XFile? file;
@@ -40,11 +45,6 @@ class DeleteProduct extends ProductEvent {
   const DeleteProduct(this.product);
   @override
   List<Object?> get props => [product];
-}
-
-class GetCategory extends ProductEvent {
-  @override
-  List<Object?> get props => [];
 }
 
 class AddImage extends ProductEvent {

@@ -14,6 +14,7 @@ class DetailPembayaranSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    logger.d(antree.payment);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
@@ -27,13 +28,15 @@ class DetailPembayaranSection extends StatelessWidget {
           DetailMethodSection(
             payment: antree.payment,
           ),
-          Divider(color: AntreeColors.separator, thickness: 1,),
+          Divider(
+            color: AntreeColors.separator,
+            thickness: 1,
+          ),
           SummarySection(summaries: summaries),
           Container(
             padding: const EdgeInsets.symmetric(vertical: 16),
             decoration: const BoxDecoration(
-                border: Border(
-                    top: BorderSide(color: AntreeColors.separator))),
+                border: Border(top: BorderSide(color: AntreeColors.separator))),
             child: Row(
               children: [
                 Expanded(
@@ -57,7 +60,7 @@ class DetailPembayaranSection extends StatelessWidget {
 
   List<Summary> get summaries => [
         Summary(title: 'Subtotal pesanan', price: subTotal),
-        Summary(title: 'Biaya layanan', price: 1000)
+        // Summary(title: 'Biaya layanan', price: 1000)
       ];
 
   int get subTotal => antree.orders.fold(

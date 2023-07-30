@@ -8,7 +8,6 @@ class AntreeLoadingDialog {
   void showLoadingDialog(BuildContext context,
       {String message = '', bool dismissable = false}) {
     isShow = true;
-    logger.d(isShow);
     showDialog(
         barrierDismissible: dismissable,
         context: context,

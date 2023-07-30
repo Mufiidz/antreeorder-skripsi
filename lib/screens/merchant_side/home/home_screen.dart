@@ -73,6 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
           },
           child: BlocConsumer<HomeBloc, HomeState>(
             bloc: _homebloc,
+            //TODO: tambahin layout loading & error
             builder: (context, state) => AntreeList<Antree>.paging(
               _pagingController,
               itemBuilder: (context, item, index) => ItemHome(

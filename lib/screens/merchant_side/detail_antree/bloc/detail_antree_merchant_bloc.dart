@@ -142,6 +142,7 @@ List<ContentDetail> detailsAntree(Antree antree) {
   List<ContentDetail> detailsAntree = [
     ContentDetail(title: "Status", value: antree.status.message),
     ContentDetail(title: "Antree ID", value: antree.id.toString()),
+    ContentDetail(title: "Seat", value: antree.seat.title),
     ContentDetail(
         title: "Tanggal Pembelian",
         value: antree.createdAt

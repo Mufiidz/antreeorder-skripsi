@@ -2,6 +2,7 @@ import 'package:antreeorder/config/antree_db.dart';
 import 'package:antreeorder/config/api_client.dart';
 import 'package:antreeorder/config/env.dart';
 import 'package:antreeorder/models/antree.dart';
+import 'package:antreeorder/models/base_response.dart';
 import 'package:antreeorder/models/merchant.dart';
 import 'package:antreeorder/models/midtrans_payment.dart';
 import 'package:antreeorder/models/notification.dart';
@@ -9,6 +10,7 @@ import 'package:antreeorder/models/order.dart';
 import 'package:antreeorder/models/online_payment.dart';
 import 'package:antreeorder/models/status_antree.dart';
 import 'package:antreeorder/repository/notification_repository.dart';
+import 'package:antreeorder/repository/payment_repository.dart';
 import 'package:antreeorder/repository/sharedprefs_repository.dart';
 import 'package:antreeorder/utils/export_utils.dart';
 import 'package:antreeorder/utils/map_mapper.dart';
@@ -35,16 +37,21 @@ class AntreeRepositoryImpl implements AntreeRepository {
   final SharedPrefsRepository _sharedPrefsRepository;
   final AntreeDatabase _antreeDatabase;
   final NotificationRepository _notificationRepository;
+  final PaymentRepository _paymentRepository;
 
-  AntreeRepositoryImpl(this._apiClient, this._sharedPrefsRepository,
-      this._antreeDatabase, this._notificationRepository);
+  AntreeRepositoryImpl(
+    this._apiClient,
+    this._sharedPrefsRepository,
+    this._antreeDatabase,
+    this._notificationRepository,
+    this._paymentRepository,
+  );
 
   @override
   Future<ResponseResult<List<Antree>>> getCustomerAntrees(
       {int page = 1}) async {
     final int customerId = _sharedPrefsRepository.user.customerId;
     if (customerId == 0) return ResponseResult.error('Customer Id is empty');
-    // send notif here
     final BaseBody queries = {
       'filters[customer]': customerId,
       'populate[merchant][populate][0]': 'user',
@@ -54,8 +61,17 @@ class AntreeRepositoryImpl implements AntreeRepository {
       'populate[payment]': '*',
       'pagination[pageSize]': 10,
       'pagination[page]': page,
+      'sort[0]': 'nomorAntree',
+      'sort[1]': 'createdAt:desc'
     };
-    return _apiClient.antree.getCustomerAntrees(queries).awaitResponse;
+    var response =
+        await _apiClient.antree.getCustomerAntrees(queries).awaitResponse;
+    // Checking payment
+    response = await response.when(
+      data: (data, meta) => checkingPayment(data, meta),
+      error: (message) => response,
+    );
+    return response;
   }
 
   @override
@@ -144,8 +160,7 @@ class AntreeRepositoryImpl implements AntreeRepository {
     final items = orders.map((order) => order.toItemMidtrans).toList();
     final midtransPayment = MidtransPayment(
         transactionDetails: TransactionDetails(
-            orderId: antreeId.toString(),
-            grossAmount: (antree.totalPrice - 1000)),
+            orderId: antreeId.toString(), grossAmount: antree.totalPrice),
         itemDetails: items);
     final tokenPaymentResponse = await _apiClient
         .payment()
@@ -330,5 +345,32 @@ class AntreeRepositoryImpl implements AntreeRepository {
     );
     nomorAntree = nomorAntree != null ? (nomorAntree + 1) : nomorAntree;
     return nomorAntree;
+  }
+
+  Future<ResponseResult<List<Antree>>> checkingPayment(
+      List<Antree> data, Meta? meta) async {
+    var newData = <Antree>[];
+    for (var antree in data) {
+      final paymentId = antree.payment?.paymentId ?? '';
+      final statusId = antree.status.id;
+
+      if (statusId != 8 || paymentId.isEmpty) {
+        newData.add(antree);
+        continue;
+      }
+
+      final response = await _paymentRepository.paymentStatus(paymentId);
+      antree = response.when(
+        data: (data, meta) {
+          if (data.toPaymentStatusState().id != 11) return antree;
+          var newAntree = antree.copyWith(status: data.toPaymentStatusState());
+          _paymentRepository.expirePayment(newAntree);
+          return newAntree;
+        },
+        error: (message) => antree,
+      );
+      newData.add(antree);
+    }
+    return ResponseResult.data(newData, meta);
   }
 }

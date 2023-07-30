@@ -17,6 +17,7 @@ class ApiClient {
   final Dio dio;
   static const String baseUrl = Env.baseUrl;
   static const String midtransBaseUrl = Env.midtrainsBaseUrl;
+  static const String midtransBaseUrlV2 = 'https://api.sandbox.midtrans.com/v2';
 
   ApiClient(this.dio);
 

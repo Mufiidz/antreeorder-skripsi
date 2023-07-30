@@ -31,10 +31,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
     final url = widget.antree.payment?.redirectUrl;
     logger.d(url);
     _controller = getIt<WebViewController>();
+    _controller.setNavigationDelegate(_navigationDelegate);
     if (url != null && url.isNotEmpty) {
       _controller.loadRequest(Uri.parse(url));
     }
-    _controller.setNavigationDelegate(_navigationDelegate);
     super.initState();
   }
 
@@ -86,9 +86,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
   NavigationDelegate get _navigationDelegate => NavigationDelegate(
         onProgress: (progress) =>
             _paymentBloc.add(PaymentEvent.loadingPayment(progress != 100)),
-        onPageFinished: (url) =>
-            _paymentBloc.add(PaymentEvent.loadingPayment(false)),
+        onPageFinished: (url) {
+          if (url.endsWith('/407')) {
+            return _paymentBloc.add(PaymentEvent.expirePayment(widget.antree));
+          }
+          return _paymentBloc.add(PaymentEvent.loadingPayment(false));
+        },
         onNavigationRequest: (NavigationRequest request) {
+          logger.d('requested url: ${request.url}');
           if (request.url
               .startsWith('https://id.my.mufidz.antreeorder/payment/success')) {
             _loadingDialog.showLoadingDialog(context);
